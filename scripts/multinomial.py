@@ -214,7 +214,6 @@ def main(_):
       loss = -(tf.reduce_mean(gamma.log_prob(qgamma)) + \
                tf.reduce_mean(beta.log_prob(qbeta)) + \
                tf.reduce_mean(Y.log_prob(Y_ph)) * (N / batch_size))
-      loss = tf.Print(loss, [loss])
       optimizer = tf.train.AdamOptimizer(learning_rate)
 
       gradients, variables = zip(*optimizer.compute_gradients(loss))
@@ -295,6 +294,22 @@ def main(_):
       mse, mrc = cross_validation(test_metadata.values,
                                   pred_beta, pred_gamma, y_test)
       print("MSE: %f, MRC: %f" % (mse, mrc))
+
+      md_ids = np.array(train_metadata.columns)
+      samp_ids = train_table.ids(axis='sample')
+      obs_ids = train_table.ids(axis='observation')
+
+      _, summary, train_loss, grads, beta_, gamma_ = session.run(
+        [train, merged, loss, gradients, qbeta, qgamma],
+        feed_dict=feed_dict
+      )
+
+      pd.DataFrame(
+        beta_, index=md_ids, columns=obs_ids,
+      ).to_csv(os.path.join(save_path, 'beta.csv'))
+      pd.DataFrame(
+        gamma_, index=['intercept'], columns=obs_ids,
+      ).to_csv(os.path.join(save_path, 'gamma.csv'))
 
 
 if __name__ == "__main__":
