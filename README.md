@@ -1,6 +1,13 @@
 # Installation
+First make sure to install Tensorflow, namely
+```
+conda create -n regression tensorflow -c conda-forge
+source activate regression
+```
+Then install this package from source
+```
 pip install git+https://github.com/mortonjt/regression.git
-
+```
 # Getting started
 
 First split your dataset into train/test datasets

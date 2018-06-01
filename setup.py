@@ -50,7 +50,7 @@ classes = """
 """
 classifiers = [s.strip() for s in classes.split('\n') if s]
 
-description = ('Bayesian Regression Benchmarks')
+description = ('Regression methods')
 
 
 # version parsing from __init__ pulled from Flask's setup.py
@@ -59,7 +59,7 @@ _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
 version='0.1'
 
-setup(name='bayesian-regression',
+setup(name='regression',
       version=version,
       license='BSD',
       description='',
