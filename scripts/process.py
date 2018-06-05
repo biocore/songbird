@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import os
 from util import random_multinomial_model, random_poisson_model
-from gneiss.cluster import rank_linkage
 from biom.util import biom_open
 from biom.table import Table
 

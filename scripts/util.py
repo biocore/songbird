@@ -4,7 +4,6 @@ import pandas as pd
 from sklearn.utils import check_random_state
 from scipy.sparse import coo_matrix
 from skbio.stats.composition import closure
-from gneiss.util import match, rename_internal_nodes
 from patsy import dmatrix
 from skbio.stats.composition import clr_inv
 from scipy.stats import spearmanr
