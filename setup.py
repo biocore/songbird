@@ -59,7 +59,7 @@ _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
 version='0.1'
 
-setup(name='regression',
+setup(name='songbird',
       version=version,
       license='BSD',
       description='',

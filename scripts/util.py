@@ -404,7 +404,7 @@ def match_tips(table, tree):
     return _table, _tree
 
 
-def cross_validation(md, beta, gamma, data, k=50):
+def cross_validation(md, beta, data, k=50):
     """ Computes two cross validation metrics
 
     1) Rank difference
@@ -433,8 +433,9 @@ def cross_validation(md, beta, gamma, data, k=50):
        correlation across every sample.  This boils down to matching
        rank species curves per sample.
     """
+
     n = data.sum(axis=1).reshape(-1, 1)
-    pred = np.multiply(n, clr_inv(md @ beta + gamma))
+    pred = np.multiply(n, clr_inv(md @ beta))
     mse = np.mean([cityblock(data[i], pred[i])
                    for i in range(data.shape[0])]) / data.shape[1]
     rc = []

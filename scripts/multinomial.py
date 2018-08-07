@@ -8,12 +8,12 @@ from gneiss.balances import _balance_basis
 from gneiss.composition import ilr_transform
 from gneiss.util import match, match_tips, rename_internal_nodes
 
-from tensorflow.contrib.distributions import Multinomial, Normal
 from patsy import dmatrix
 from skbio import TreeNode
-from skbio.stats.composition import closure, clr_inv
+from skbio.stats.composition import closure, clr_inv, clr
 from scipy.stats import spearmanr
 from util import cross_validation
+from tqdm import tqdm
 import time
 
 
@@ -48,7 +48,7 @@ flags.DEFINE_integer(
     "completely.")
 flags.DEFINE_integer("num_neg_samples", 25,
                      "Negative samples per training sample.")
-flags.DEFINE_integer("batch_size", 512,
+flags.DEFINE_integer("batch_size", 5,
                      "Number of training samples processed per step "
                      "(size of a minibatch).")
 flags.DEFINE_integer("min_sample_count", 1000,
@@ -72,7 +72,7 @@ FLAGS = flags.FLAGS
 
 
 class Options(object):
-  """Options used by our Poisson Niche model."""
+  """Options used by our Regression model."""
 
   def __init__(self, **kwargs):
     for k, v in kwargs.items():
@@ -88,12 +88,18 @@ class Options(object):
       self.test_table = self.test_biom
 
     if isinstance(self.train_metadata, str):
-      self.train_metadata = pd.read_table(self.train_metadata, index_col=0)
+      cols = pd.read_csv(self.train_metadata, nrows=1, sep='\t').columns.tolist()
+      self.train_metadata = pd.read_table(
+        self.train_metadata, dtype={cols[0]: object})
+      self.train_metadata = self.train_metadata.set_index(cols[0])
     elif isinstance(self.train_metadata, pd.DataFrame):
       self.train_metadata = self.train_metadata
 
     if isinstance(self.test_metadata, str):
-      self.test_metadata = pd.read_table(self.test_metadata, index_col=0)
+      cols = pd.read_csv(self.test_metadata, nrows=1, sep='\t').columns.tolist()
+      self.test_metadata = pd.read_table(
+        self.test_metadata, dtype={cols[0]: object})
+      self.test_metadata = self.test_metadata.set_index(cols[0])
     elif isinstance(self.test_metadata, pd.DataFrame):
       self.test_metadata = self.test_metadata
 
@@ -107,7 +113,7 @@ class Options(object):
 
     if not os.path.exists(self.save_path):
       os.makedirs(self.save_path)
-    self.formula = self.formula + '+0'
+    self.formula = self.formula
 
 
 def main(_):
@@ -147,9 +153,14 @@ def main(_):
   train_table = train_table.filter(sample_filter, axis='sample')
   train_table = train_table.filter(read_filter, axis='observation')
   train_metadata = train_metadata.loc[train_table.ids(axis='sample')]
+
   sort_f = lambda xs: [xs[train_metadata.index.get_loc(x)] for x in xs]
   train_table = train_table.sort(sort_f=sort_f, axis='sample')
   train_metadata = dmatrix(opts.formula, train_metadata, return_type='dataframe')
+
+  metadata_filter = lambda val, id_, md: id_ in train_metadata.index
+  train_table = train_table.filter(metadata_filter, axis='sample')
+
 
   # hold out data preprocessing
   test_table, test_metadata = opts.test_table, opts.test_metadata
@@ -157,23 +168,27 @@ def main(_):
   obs_lookup = set(train_table.ids(axis='observation'))
   feat_filter = lambda val, id_, md: id_ in obs_lookup
 
+  metadata_filter = lambda val, id_, md: id_ in test_metadata.index
   test_table = test_table.filter(metadata_filter, axis='sample')
   test_table = test_table.filter(feat_filter, axis='observation')
   test_metadata = test_metadata.loc[test_table.ids(axis='sample')]
   sort_f = lambda xs: [xs[test_metadata.index.get_loc(x)] for x in xs]
   test_table = test_table.sort(sort_f=sort_f, axis='sample')
   test_metadata = dmatrix(opts.formula, test_metadata, return_type='dataframe')
+  metadata_filter = lambda val, id_, md: id_ in test_metadata.index
+  test_table = test_table.filter(metadata_filter, axis='sample')
 
   p = train_metadata.shape[1]   # number of covariates
   G_data = train_metadata.values
   y_data = np.array(train_table.matrix_data.todense()).T
   y_test = np.array(test_table.matrix_data.todense()).T
   N, D = y_data.shape
+
   save_path = opts.save_path
   learning_rate = opts.learning_rate
   batch_size = opts.batch_size
-  gamma_mean, gamma_scale = opts.gamma_mean, opts.gamma_scale
   beta_mean, beta_scale = opts.beta_mean, opts.beta_scale
+
   num_iter = (N // batch_size) * opts.epochs_to_train
   holdout_size = test_metadata.shape[0]
   checkpoint_interval = opts.checkpoint_interval
@@ -189,30 +204,20 @@ def main(_):
       total_count = tf.placeholder(tf.float32, [batch_size], name='total_count')
 
       # Define PointMass Variables first
-      qgamma = tf.Variable(tf.random_normal([1, D]), name='qgamma')
-      qbeta = tf.Variable(tf.random_normal([p, D]), name='qB')
+      qbeta = tf.Variable(tf.random_normal([p, D-1]), name='qB')
 
       # Distributions
-      # species bias
-      gamma = Normal(loc=tf.zeros([1, D]) + gamma_mean,
-                     scale=tf.ones([1, D]) * gamma_scale,
-                     name='gamma')
       # regression coefficents distribution
-      beta = Normal(loc=tf.zeros([p, D]) + beta_mean,
-                    scale=tf.ones([p, D]) * beta_scale,
+      beta = Normal(loc=tf.zeros([p, D-1]) + beta_mean,
+                    scale=tf.ones([p, D-1]) * beta_scale,
                     name='B')
 
-      Bprime = tf.concat([qgamma, qbeta], axis=0)
-
-      # add bias terms for samples
-      Gprime = tf.concat([tf.ones([batch_size, 1]), G_ph], axis=1)
-
-      eta = tf.matmul(Gprime, Bprime)
+      Bprime = tf.concat([tf.zeros([p, 1]), qbeta], axis=1)
+      eta = tf.matmul(G_ph, Bprime)
       phi = tf.nn.log_softmax(eta)
       Y = Multinomial(total_count=total_count, logits=phi, name='Y')
 
-      loss = -(tf.reduce_mean(gamma.log_prob(qgamma)) + \
-               tf.reduce_mean(beta.log_prob(qbeta)) + \
+      loss = -(tf.reduce_mean(beta.log_prob(qbeta)) + \
                tf.reduce_mean(Y.log_prob(Y_ph)) * (N / batch_size))
       optimizer = tf.train.AdamOptimizer(learning_rate)
 
@@ -223,13 +228,12 @@ def main(_):
       with tf.name_scope('accuracy'):
         holdout_count = tf.reduce_sum(Y_holdout, axis=1)
         pred =  tf.reshape(holdout_count, [-1, 1]) * tf.nn.softmax(
-          tf.matmul(G_holdout, qbeta) + qgamma)
+          tf.matmul(G_holdout, Bprime))
         mse = tf.reduce_mean(tf.squeeze(tf.abs(pred - Y_holdout)))
         tf.summary.scalar('mean_absolute_error', mse)
 
       tf.summary.scalar('loss', loss)
       tf.summary.histogram('qbeta', qbeta)
-      tf.summary.histogram('qgamma', qgamma)
       merged = tf.summary.merge_all()
 
       tf.global_variables_initializer().run()
@@ -243,8 +247,10 @@ def main(_):
       last_checkpoint_time = 0
       start_time = time.time()
       saver = tf.train.Saver()
-      for i in range(num_iter):
+
+      for i in tqdm(range(0, num_iter)):
           batch_idx = np.random.choice(idx, size=batch_size)
+
           feed_dict={
               Y_ph: y_data[batch_idx].astype(np.float32),
               G_ph: train_metadata.values[batch_idx].astype(np.float32),
@@ -289,27 +295,24 @@ def main(_):
       print('Elapsed Time: %f seconds' % elapsed_time)
 
       # Cross validation
-      pred_beta = qbeta.eval()
-      pred_gamma = qgamma.eval()
+      pred_beta = Bprime.eval()
       mse, mrc = cross_validation(test_metadata.values,
-                                  pred_beta, pred_gamma, y_test)
+                                  pred_beta,  y_test)
       print("MSE: %f, MRC: %f" % (mse, mrc))
 
       md_ids = np.array(train_metadata.columns)
       samp_ids = train_table.ids(axis='sample')
       obs_ids = train_table.ids(axis='observation')
 
-      _, summary, train_loss, grads, beta_, gamma_ = session.run(
-        [train, merged, loss, gradients, qbeta, qgamma],
+      _, summary, train_loss, grads, beta_ = session.run(
+        [train, merged, loss, gradients, qbeta],
         feed_dict=feed_dict
       )
 
+      beta_ = clr(clr_inv(np.hstack((np.zeros((p, 1)), beta_))))
       pd.DataFrame(
         beta_, index=md_ids, columns=obs_ids,
       ).to_csv(os.path.join(save_path, 'beta.csv'))
-      pd.DataFrame(
-        gamma_, index=['intercept'], columns=obs_ids,
-      ).to_csv(os.path.join(save_path, 'gamma.csv'))
 
 
 if __name__ == "__main__":
