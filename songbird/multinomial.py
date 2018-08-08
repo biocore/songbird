@@ -191,6 +191,6 @@ class MultRegression(object):
                            global_step=i)
                 last_checkpoint_time = now
 
-        B = self.session.run([self.qbeta])
-        self.B = B[0]
+        train_loss, cv, B = self.session.run([self.loss, self.cv, self.qbeta])
+        self.B = B
         return train_loss, cv
