@@ -31,7 +31,6 @@ class MultRegression(object):
            The log loss of the model.
 
         """
-
         if save_path is None:
             basename = "logdir"
             suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
@@ -76,15 +75,23 @@ class MultRegression(object):
         self.D = trainY.shape[1]
 
         # Place holder variables to accept input data
-        X_ph = tf.constant(trainX, dtype=tf.float32)
-        Y_ph = tf.constant(trainY, dtype=tf.float32)
-        X_holdout = tf.constant(testX, dtype=tf.float32)
-        Y_holdout = tf.constant(testY, dtype=tf.float32)
-        total_count = tf.reduce_sum(Y_ph, axis=1)
-        holdout_count = tf.reduce_sum(Y_holdout, axis=1)
+        self.X_ph = tf.constant(trainX, dtype=tf.float32)
+        self.Y_ph = tf.constant(trainY, dtype=tf.float32)
+        self.X_holdout = tf.constant(testX, dtype=tf.float32)
+        self.Y_holdout = tf.constant(testY, dtype=tf.float32)
+        holdout_count = tf.reduce_sum(self.Y_holdout, axis=1)
+
+        # subsample datasets
+        batch_ids = tf.multinomial(tf.zeros([1, self.N]),
+                                   self.batch_size)
+        sample_ids = tf.squeeze(batch_ids)
+
+        Y_batch = tf.gather(self.Y_ph, sample_ids, axis=0)
+        X_batch = tf.gather(self.X_ph, sample_ids, axis=0)
+        total_count = tf.reduce_sum(Y_batch, axis=1)
 
         # Define PointMass Variables first
-        qbeta = tf.Variable(tf.random_normal([self.p, self.D-1]), name='qB')
+        self.qbeta = tf.Variable(tf.random_normal([self.p, self.D-1]), name='qB')
 
         # Distributions
         # regression coefficents distribution
@@ -92,31 +99,31 @@ class MultRegression(object):
                       scale=tf.ones([self.p, self.D-1]) * self.beta_scale,
                       name='B')
 
-        Bprime = tf.concat([tf.zeros([self.p, 1]), qbeta], axis=1)
-        eta = tf.matmul(X_ph, Bprime)
+        Bprime = tf.concat([tf.zeros([self.p, 1]), self.qbeta], axis=1)
+        eta = tf.matmul(X_batch, Bprime)
         phi = tf.nn.log_softmax(eta)
         Y = Multinomial(total_count=total_count, logits=phi, name='Y')
 
         # cross validation
         with tf.name_scope('accuracy'):
             pred =  tf.reshape(holdout_count, [-1, 1]) * tf.nn.softmax(
-                tf.matmul(X_holdout, Bprime))
-            self.cv = tf.reduce_mean(tf.squeeze(tf.abs(pred - Y_holdout)))
+                tf.matmul(self.X_holdout, Bprime))
+            self.cv = tf.reduce_mean(tf.squeeze(tf.abs(pred - self.Y_holdout)))
             tf.summary.scalar('mean_absolute_error', self.cv)
 
-        loss = -(tf.reduce_mean(beta.log_prob(qbeta)) + \
-                 tf.reduce_mean(Y.log_prob(Y_ph)) * (self.N / self.batch_size))
+        self.loss = -(tf.reduce_mean(beta.log_prob(self.qbeta)) + \
+                tf.reduce_mean(Y.log_prob(Y_batch)) * (self.N / self.batch_size))
         optimizer = tf.train.AdamOptimizer(
             self.learning_rate, beta1=self.beta_1, beta2=self.beta_2)
 
-        gradients, variables = zip(*optimizer.compute_gradients(loss))
-        gradients, _ = tf.clip_by_global_norm(gradients, self.clipnorm)
-        train = optimizer.apply_gradients(zip(gradients, variables))
+        gradients, variables = zip(*optimizer.compute_gradients(self.loss))
+        self.gradients, _ = tf.clip_by_global_norm(gradients, self.clipnorm)
+        self.train = optimizer.apply_gradients(zip(gradients, variables))
 
-        tf.summary.scalar('loss', loss)
-        tf.summary.histogram('qbeta', qbeta)
-        merged = tf.summary.merge_all()
-
+        tf.summary.scalar('loss', self.loss)
+        tf.summary.histogram('qbeta', self.qbeta)
+        self.merged = tf.summary.merge_all()
+        self.writer = tf.summary.FileWriter(self.save_path, self.session.graph)
         tf.global_variables_initializer().run()
 
 
@@ -140,7 +147,7 @@ class MultRegression(object):
             cross validation loss
         """
         num_iter = (self.N // self.batch_size) * epoch
-        idx = np.arange(train_metadata.shape[0])
+        idx = np.arange(self.N)
         cv = None
         last_checkpoint_time = 0
         last_summary_time = 0
@@ -148,40 +155,31 @@ class MultRegression(object):
         saver = tf.train.Saver()
 
         for i in tqdm(range(0, num_iter)):
-            batch_idx = np.random.choice(idx, size=batch_size)
+            batch_idx = np.random.choice(idx, size=self.batch_size)
 
-            feed_dict={
-                Y_ph: y_data[batch_idx].astype(np.float32),
-                G_ph: train_metadata.values[batch_idx].astype(np.float32),
-                Y_holdout: y_test.astype(np.float32),
-                G_holdout: test_metadata.values.astype(np.float32),
-                total_count: y_data[batch_idx].sum(axis=1).astype(np.float32)
-            }
             now = time.time()
 
             if now - last_summary_time > summary_interval:
                 run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
                 run_metadata = tf.RunMetadata()
-                _, cv, summary, train_loss, grads, B = session.run(
+                _, cv, summary, train_loss, grads, B = self.session.run(
                     [self.train, self.cv, self.merged,
                      self.loss, self.gradients, self.qbeta],
-                    feed_dict=feed_dict,
                     options=run_options,
                     run_metadata=run_metadata
                 )
-                writer.add_run_metadata(run_metadata, 'step%d' % i)
-                writer.add_summary(summary, i)
+                self.writer.add_run_metadata(run_metadata, 'step%d' % i)
+                self.writer.add_summary(summary, i)
                 last_summary_time = now
             else:
-                _, summary, train_loss, grads = session.run(
-                    [train, merged, loss, gradients],
-                    feed_dict=feed_dict
+                _, summary, train_loss, grads = self.session.run(
+                    [self.train, self.merged, self.loss, self.gradients],
                 )
-                writer.add_summary(summary, i)
+                self.writer.add_summary(summary, i)
 
             if now - last_checkpoint_time > checkpoint_interval:
-                saver.save(session,
-                           os.path.join(opts.save_path, "model.ckpt"),
+                saver.save(self.session,
+                           os.path.join(self.save_path, "model.ckpt"),
                            global_step=i)
                 last_checkpoint_time = now
 

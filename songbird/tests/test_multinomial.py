@@ -33,6 +33,19 @@ class TestMultRegression(unittest.TestCase):
         with tf.Graph().as_default(), tf.Session() as session:
             model(session, trainX, trainY, testX, testY)
 
+    def test_fit(self):
+        model = MultRegression(batch_size=3)
+        Y = np.array(self.table.matrix_data.todense()).T
+        X = self.md.values
+        trainX = X[:15]
+        trainY = Y[:15]
+        testX = X[15:]
+        testY = Y[15:]
+        print(trainY.shape)
+        with tf.Graph().as_default(), tf.Session() as session:
+            model(session, trainX, trainY, testX, testY)
+            model.fit(epoch=50)
+
 
 if __name__ == "__main__":
     unittest.main()
