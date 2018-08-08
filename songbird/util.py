@@ -54,16 +54,18 @@ def random_multinomial_model(num_samples, num_features,
     # generate all of the coefficient using the random poisson model
     state = check_random_state(seed)
     beta = state.normal(beta_mean, beta_scale, size=(2, num_features-1))
-    B = np.hstack((np.zeros((2, 1)), beta))
+    #B = np.hstack((np.zeros((2, 1)), beta))
 
     X = np.hstack([np.linspace(low, high, num_samples // reps)]
                   for _ in range(reps))
-    X = np.sort(X)
+    #X = np.sort(X)
     X = np.vstack((np.ones(N), X)).T
-
-    probs = softmax(X @ B)
-    n = state.poisson(state.lognormal(mu, sigma, size=N))
+    phi = np.hstack((np.zeros((N, 1)), X @ beta))
+    #phi = X @ beta
+    probs = softmax(phi)
+    #n = state.poisson(state.lognormal(mu, sigma, size=N))
     #n = state.poisson(mu, size=N)
+    n = [mu] * N
 
     table = np.vstack(
         state.multinomial(n[i], probs[i, :])

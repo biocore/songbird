@@ -1,6 +1,7 @@
 import tensorflow as tf
 import unittest
 import numpy as np
+import numpy.testing as npt
 from songbird.multinomial import MultRegression
 from songbird.util import random_multinomial_model
 
@@ -9,42 +10,33 @@ class TestMultRegression(unittest.TestCase):
 
     def setUp(self):
         res = random_multinomial_model(
-            num_samples=20, num_features=10,
+            num_samples=150, num_features=50,
             reps=1,
-            low=2, high=10,
+            low=-1, high=1,
             beta_mean=0,
-            beta_scale=0.5,
-            mu = 6,
-            sigma = 0.1,
+            beta_scale=1,
+            mu = 1000,
+            sigma = 0.5,
             seed=0)
+
         self.table, self.md, self.beta = res
 
-    def test_init(self):
-        model = MultRegression()
-
-    def test_call(self):
-        model = MultRegression()
-        Y = np.array(self.table.matrix_data.todense()).T
-        X = self.md.values
-        trainX = X[:15]
-        trainY = Y[:15]
-        testX = X[15:]
-        testY = Y[15:]
-        with tf.Graph().as_default(), tf.Session() as session:
-            model(session, trainX, trainY, testX, testY)
 
     def test_fit(self):
-        model = MultRegression(batch_size=3)
+        tf.set_random_seed(0)
+        model = MultRegression(batch_size=100, learning_rate=1e-3, beta_scale=1)
         Y = np.array(self.table.matrix_data.todense()).T
         X = self.md.values
-        trainX = X[:15]
-        trainY = Y[:15]
-        testX = X[15:]
-        testY = Y[15:]
+        trainX = X[:-5]
+        trainY = Y[:-5]
+        testX = X[-5:]
+        testY = Y[-5:]
         print(trainY.shape)
         with tf.Graph().as_default(), tf.Session() as session:
             model(session, trainX, trainY, testX, testY)
-            model.fit(epoch=50)
+            model.fit(epoch=int(10000))
+
+        npt.assert_allclose(self.beta, model.B.T, atol=0.15, rtol=0.15)
 
 
 if __name__ == "__main__":
