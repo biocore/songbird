@@ -4,9 +4,6 @@ import numpy as np
 import pandas as pd
 from biom import load_table, Table
 
-from gneiss.balances import _balance_basis
-from gneiss.composition import ilr_transform
-from gneiss.util import match, match_tips, rename_internal_nodes
 
 from tensorflow.contrib.distributions import Multinomial, Normal
 from patsy import dmatrix
