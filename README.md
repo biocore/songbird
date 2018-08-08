@@ -16,7 +16,7 @@ songbird multinomial \
     --formula "your_formula"
     --input-biom <your-training-biom>.biom\
     --metadata-file <your-training-metadata>.txt \
-    --save_path <results>
+    --summary-dir <results>
 ```
 All of the coefficients are stored under `<results>/beta.csv`.
 
