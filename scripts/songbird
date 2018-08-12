@@ -29,9 +29,9 @@ def songbird():
               help='Number of random training examples if --training-column is not specified')
 @click.option('--epoch',
               help='Number of epochs to train', default=10)
-@click.option('--batch_size',
+@click.option('--batch-size',
               help='Size of mini-batch', default=32)
-@click.option('--beta_prior',
+@click.option('--beta-prior',
               help=('Width of normal prior for the coefficients  '
                     'Smaller values will regularize parameters towards zero. '
                     'Values must be greater than 0.'),
@@ -65,9 +65,11 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
 
     # load metadata and tables
     cols = pd.read_csv(metadata_file, nrows=1, sep='\t').columns.tolist()
+    print(cols)
     metadata = pd.read_table(
         metadata_file, dtype={cols[0]: object})
     metadata = metadata.set_index(cols[0])
+    print(metadata.columns)
     table = load_table(input_biom)
 
     # match them
@@ -85,9 +87,10 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
 
     sort_f = lambda xs: [xs[metadata.index.get_loc(x)] for x in xs]
     table = table.sort(sort_f=sort_f, axis='sample')
-    metadata = dmatrix(formula, metadata, return_type='dataframe')
+    design = dmatrix(formula, metadata, return_type='dataframe')
+    design = design.dropna()
 
-    metadata_filter = lambda val, id_, md: id_ in metadata.index
+    metadata_filter = lambda val, id_, md: id_ in design.index
     table = table.filter(metadata_filter, axis='sample')
 
     # convert to dense representation
@@ -95,16 +98,16 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
 
     # split up training and testing
     if training_column is None:
-        idx = np.random.random(metadata.shape[0])
+        idx = np.random.random(design.shape[0])
         i = np.argsort(idx)[num_random_test_examples]
         threshold = idx[i]
         train_idx = idx < threshold
-
     else:
-        train_idx = metadata[training_column] == "Train"
+        train_idx = metadata.loc[design.index, training_column] == "Train"
 
-    trainX = metadata.loc[train_idx].values
-    testX = metadata.loc[~train_idx].values
+
+    trainX = design.loc[train_idx].values
+    testX = design.loc[~train_idx].values
 
     trainY = dense_table.loc[train_idx].values
     testY = dense_table.loc[~train_idx].values
@@ -121,7 +124,7 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
             summary_interval=summary_interval,
             checkpoint_interval=checkpoint_interval)
 
-    md_ids = np.array(metadata.columns)
+    md_ids = np.array(design.columns)
     obs_ids = table.ids(axis='observation')
 
     beta_ = clr(clr_inv(np.hstack((np.zeros((model.p, 1)), model.B))))
