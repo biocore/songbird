@@ -65,11 +65,11 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
 
     # load metadata and tables
     cols = pd.read_csv(metadata_file, nrows=1, sep='\t').columns.tolist()
-    print(cols)
+
     metadata = pd.read_table(
         metadata_file, dtype={cols[0]: object})
     metadata = metadata.set_index(cols[0])
-    print(metadata.columns)
+
     table = load_table(input_biom)
 
     # match them
