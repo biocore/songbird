@@ -69,7 +69,7 @@ def random_multinomial_model(num_samples, num_features,
 
     table = np.vstack(
         state.multinomial(n[i], probs[i, :])
-        for i in range(N)
+b        for i in range(N)
     ).T
 
     samp_ids = ['S%d' % i for i in range(num_samples)]
