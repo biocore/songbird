@@ -24,7 +24,9 @@ The most important aspect of the coefficients are the rankings, or the ordering 
 
 Diagnostics can be run via Tensorboard
 
+```
 tensorboard --logdir <results>
+```
 
 This will give cross validation results and information about the loss. 
 
