@@ -45,7 +45,6 @@ version='0.1.0'
 
 setup(name='songbird',
       version=version,
-      license='BSD',
       description='',
       long_description='',
       author="gneiss development team",
