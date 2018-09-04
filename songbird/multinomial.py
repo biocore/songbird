@@ -3,8 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 from biom import load_table, Table
-
-
 from tensorflow.contrib.distributions import Multinomial, Normal
 from patsy import dmatrix
 from skbio import TreeNode
