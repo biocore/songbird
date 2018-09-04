@@ -25,17 +25,6 @@ class build_ext(_build_ext):
         self.include_dirs.append(numpy.get_include())
 
 
-# Dealing with Cython
-USE_CYTHON = os.environ.get('USE_CYTHON', False)
-ext = '.pyx' if USE_CYTHON else '.c'
-
-extensions = [
-]
-
-if USE_CYTHON:
-    from Cython.Build import cythonize
-    extensions = cythonize(extensions)
-
 classes = """
     Development Status :: 4 - Beta
     License :: OSI Approved :: BSD License
@@ -52,12 +41,7 @@ classifiers = [s.strip() for s in classes.split('\n') if s]
 
 description = ('Regression methods')
 
-
-# version parsing from __init__ pulled from Flask's setup.py
-# https://github.com/mitsuhiko/flask/blob/master/setup.py
-_version_re = re.compile(r'__version__\s+=\s+(.*)')
-
-version='0.1'
+version='0.1.0'
 
 setup(name='songbird',
       version=version,
