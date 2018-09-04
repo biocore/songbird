@@ -16,15 +16,6 @@ from setuptools import find_packages, setup
 from setuptools.command.build_ext import build_ext as _build_ext
 
 
-class build_ext(_build_ext):
-    def finalize_options(self):
-        _build_ext.finalize_options(self)
-        # Prevent numpy from thinking it is still in its setup process:
-        __builtins__.__NUMPY_SETUP__ = False
-        import numpy
-        self.include_dirs.append(numpy.get_include())
-
-
 classes = """
     Development Status :: 4 - Beta
     License :: OSI Approved :: BSD License
@@ -54,8 +45,6 @@ setup(name='songbird',
       packages=['songbird'],
       scripts=glob('scripts/songbird'),
       setup_requires=['numpy >= 1.9.2'],
-      ext_modules=extensions,
-      cmdclass={'build_ext': build_ext},
       install_requires=[
           'IPython >= 3.2.0',
           'numpy >= 1.9.2',
