@@ -70,6 +70,13 @@ setup(name='songbird',
           'seaborn'
       ],
       classifiers=classifiers,
+
+      license='BSD-3-Clause',
+      url="https://github.com/mortonjt/songbird",
+      entry_points={
+          'qiime2.plugins': ['q2-songbird=songbird.q2.plugin_setup:plugin']
+      },
       package_data={
           },
-      )
+      zip_safe=False,
+)
