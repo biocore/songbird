@@ -3,3 +3,4 @@ biom-format
 scikit-bio >0.5.0
 tqdm
 pycodestyle
+flake8
