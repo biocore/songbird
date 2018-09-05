@@ -36,7 +36,7 @@ class TestMultRegression(unittest.TestCase):
             model(session, trainX, trainY, testX, testY)
             model.fit(epoch=int(10000))
 
-        npt.assert_allclose(self.beta, model.B.T, atol=0.15, rtol=0.15)
+        npt.assert_allclose(self.beta, model.B.T, atol=0.2, rtol=0.2)
 
 
 if __name__ == "__main__":
