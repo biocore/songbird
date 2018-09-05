@@ -3,7 +3,7 @@
 sudo: false
 language: python
 env:
-  - PYVERSION=3.5 MAKE_DOC=FALSE
+  - PYVERSION=3.5
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -22,7 +22,6 @@ install:
   - pip install -e .
 script:
   - WITH_COVERAGE=TRUE make all
-  - if [ ${MAKE_DOC} ]; then make -C doc clean html; fi
 notifications:
   webhooks:
     on_success: change
