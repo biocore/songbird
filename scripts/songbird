@@ -91,8 +91,6 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
 
     table, metadata = match_and_filter(table, metadata)
 
-
-
     # convert to dense representation
     dense_table = table.to_dataframe().to_dense().T
 
@@ -104,7 +102,6 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
         train_idx = idx < threshold
     else:
         train_idx = metadata.loc[design.index, training_column] == "Train"
-
 
     trainX = design.loc[train_idx].values
     testX = design.loc[~train_idx].values
