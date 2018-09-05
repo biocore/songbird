@@ -3,9 +3,10 @@
 
 [run]
 omit =
+    scripts/*
     */tests*
     */__init__.py
-source = gneiss
+source = songbird
 branch = True
 include = */songbird/*
 
@@ -15,5 +16,6 @@ exclude_lines =
     raise NotImplementedError
     if __name__ == .__main__.:
 omit =
+    scripts/*
     */tests*
     */__init__.py

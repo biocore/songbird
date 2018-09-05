@@ -23,8 +23,6 @@ install:
 script:
   - WITH_COVERAGE=TRUE make all
   - if [ ${MAKE_DOC} ]; then make -C doc clean html; fi
-after_success:
-  - coveralls
 notifications:
   webhooks:
     on_success: change
