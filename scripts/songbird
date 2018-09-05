@@ -8,7 +8,7 @@ from biom import load_table
 import click
 from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
-from songbird.util import read_metadata
+from songbird.util import read_metadata, match_and_filter
 
 
 @click.group()
@@ -66,29 +66,32 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
 
     # load metadata and tables
     metadata = read_metadata(metadata_file)
-
     table = load_table(input_biom)
 
     # match them
-    metadata = metadata.loc[table.ids(axis='sample')]
+    # metadata = metadata.loc[table.ids(axis='sample')]
+    #
+    # sample_filter = lambda val, id_, md: (
+    #     (id_ in metadata.index) and np.sum(val) > min_sample_count)
+    # read_filter = lambda val, id_, md: np.sum(val) > min_feature_count
+    # metadata_filter = lambda val, id_, md: id_ in metadata.index
+    #
+    # table = table.filter(metadata_filter, axis='sample')
+    # table = table.filter(sample_filter, axis='sample')
+    # table = table.filter(read_filter, axis='observation')
+    # metadata = metadata.loc[table.ids(axis='sample')]
+    #
+    # sort_f = lambda xs: [xs[metadata.index.get_loc(x)] for x in xs]
+    # table = table.sort(sort_f=sort_f, axis='sample')
+    # design = dmatrix(formula, metadata, return_type='dataframe')
+    # design = design.dropna()
+    #
+    # metadata_filter = lambda val, id_, md: id_ in design.index
+    # table = table.filter(metadata_filter, axis='sample')
 
-    sample_filter = lambda val, id_, md: (
-        (id_ in metadata.index) and np.sum(val) > min_sample_count)
-    read_filter = lambda val, id_, md: np.sum(val) > min_feature_count
-    metadata_filter = lambda val, id_, md: id_ in metadata.index
+    table, metadata = match_and_filter(table, metadata)
 
-    table = table.filter(metadata_filter, axis='sample')
-    table = table.filter(sample_filter, axis='sample')
-    table = table.filter(read_filter, axis='observation')
-    metadata = metadata.loc[table.ids(axis='sample')]
 
-    sort_f = lambda xs: [xs[metadata.index.get_loc(x)] for x in xs]
-    table = table.sort(sort_f=sort_f, axis='sample')
-    design = dmatrix(formula, metadata, return_type='dataframe')
-    design = design.dropna()
-
-    metadata_filter = lambda val, id_, md: id_ in design.index
-    table = table.filter(metadata_filter, axis='sample')
 
     # convert to dense representation
     dense_table = table.to_dataframe().to_dense().T

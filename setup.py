@@ -8,12 +8,8 @@
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import re
-import ast
-import os
 from glob import glob
-from setuptools import find_packages, setup
-from setuptools.command.build_ext import build_ext as _build_ext
+from setuptools import setup
 
 
 classes = """
@@ -32,7 +28,7 @@ classifiers = [s.strip() for s in classes.split('\n') if s]
 
 description = ('Regression methods')
 
-version='0.1.0'
+version = '0.1.0'
 
 setup(name='songbird',
       version=version,
@@ -64,7 +60,5 @@ setup(name='songbird',
       entry_points={
           'qiime2.plugins': ['q2-songbird=songbird.q2.plugin_setup:plugin']
       },
-      package_data={
-          },
-      zip_safe=False,
-)
+      package_data={},
+      zip_safe=False)

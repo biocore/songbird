@@ -15,16 +15,16 @@ class TestMultRegression(unittest.TestCase):
             low=-1, high=1,
             beta_mean=0,
             beta_scale=1,
-            mu = 1000,
-            sigma = 0.5,
+            mu=1000,
+            sigma=0.5,
             seed=0)
 
         self.table, self.md, self.beta = res
 
-
     def test_fit(self):
         tf.set_random_seed(0)
-        model = MultRegression(batch_size=100, learning_rate=1e-3, beta_scale=1)
+        model = MultRegression(
+            batch_size=100, learning_rate=1e-3, beta_scale=1)
         Y = np.array(self.table.matrix_data.todense()).T
         X = self.md.values
         trainX = X[:-5]

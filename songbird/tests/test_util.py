@@ -30,7 +30,6 @@ class TestUtil(unittest.TestCase):
             )
         )
 
-
     def test_read_index(self):
         res = read_metadata(self.data1)
         exp = pd.DataFrame(
@@ -43,7 +42,6 @@ class TestUtil(unittest.TestCase):
 
         exp = exp.set_index('sampleid')
         pdt.assert_frame_equal(exp, res)
-
 
     def test_read_categorical(self):
         res = read_metadata(self.data2)
