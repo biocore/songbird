@@ -176,4 +176,4 @@ def match_and_filter(table, metadata,
 
     table = table.filter(design_filter, axis='sample')
 
-    return table, metadata
+    return table, metadata, design
