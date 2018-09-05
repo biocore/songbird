@@ -2,3 +2,6 @@ tensorflow >1.2
 biom-format
 scikit-bio >0.5.0
 tqdm
+pycodestyle
+flake8
+coveralls

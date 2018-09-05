@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.utils import check_random_state
 from skbio.stats.composition import clr_inv as softmax
 from biom import Table
+from patsy import dmatrix
 
 
 def random_multinomial_model(num_samples, num_features,
@@ -11,8 +11,8 @@ def random_multinomial_model(num_samples, num_features,
                              low=2, high=10,
                              beta_mean=0,
                              beta_scale=5,
-                             mu = 1,
-                             sigma = 1,
+                             mu=1,
+                             sigma=1,
                              seed=0):
     """ Generates a table using a random poisson regression model.
 
@@ -49,22 +49,17 @@ def random_multinomial_model(num_samples, num_features,
     beta : np.array
         Regression parameter estimates.
     """
-    N, D = num_samples, num_features
+    N = num_samples
 
     # generate all of the coefficient using the random poisson model
     state = check_random_state(seed)
     beta = state.normal(beta_mean, beta_scale, size=(2, num_features-1))
-    #B = np.hstack((np.zeros((2, 1)), beta))
 
     X = np.hstack([np.linspace(low, high, num_samples // reps)]
                   for _ in range(reps))
-    #X = np.sort(X)
     X = np.vstack((np.ones(N), X)).T
     phi = np.hstack((np.zeros((N, 1)), X @ beta))
-    #phi = X @ beta
     probs = softmax(phi)
-    #n = state.poisson(state.lognormal(mu, sigma, size=N))
-    #n = state.poisson(mu, size=N)
     n = [mu] * N
 
     table = np.vstack(
@@ -78,19 +73,23 @@ def random_multinomial_model(num_samples, num_features,
 
     table = Table(table, feat_ids, samp_ids)
     metadata = pd.DataFrame(X, columns=['Ones', 'X'], index=samp_ids)
-    beta = pd.DataFrame(beta.T, columns=['Intercept', 'beta'], index=balance_ids)
+    beta = pd.DataFrame(beta.T, columns=['Intercept', 'beta'],
+                        index=balance_ids)
 
     return table, metadata, beta
 
 
 def _type_cast_to_float(df):
     """ Attempt to cast all of the values in dataframe to float.
+
     This will try to type cast all of the series within the
     dataframe into floats.  If a column cannot be type casted,
     it will be kept as is.
+
     Parameters
     ----------
     df : pd.DataFrame
+
     Returns
     -------
     pd.DataFrame
@@ -125,3 +124,56 @@ def read_metadata(filepath):
     metadata = _type_cast_to_float(metadata.copy())
 
     return metadata
+
+
+def match_and_filter(table, metadata,
+                     formula, training_column, num_random_test_examples,
+                     min_sample_count, min_feature_count):
+    """ Matches and aligns biom and metadata tables.
+
+    This will also return the patsy representation.
+
+    Parameters
+    ----------
+    table : biom.Table
+        Biom table of abundances
+    metadata : pd.DataFrame
+        Sample metadata
+
+    Returns
+    -------
+    table : biom.Table
+        Filtered biom table
+    metadata : pd.DataFrame
+        Sample metadata
+    """
+    # match them
+    metadata = metadata.loc[table.ids(axis='sample')]
+
+    def sample_filter(val, id_, md):
+        return id_ in metadata.index and np.sum(val) > min_sample_count
+
+    def read_filter(val, id_, md):
+        return np.sum(val) > min_feature_count
+
+    def metadata_filter(val, id_, md):
+        return id_ in metadata.index
+
+    table = table.filter(metadata_filter, axis='sample')
+    table = table.filter(sample_filter, axis='sample')
+    table = table.filter(read_filter, axis='observation')
+    metadata = metadata.loc[table.ids(axis='sample')]
+
+    def sort_f(xs):
+        return [xs[metadata.index.get_loc(x)] for x in xs]
+
+    table = table.sort(sort_f=sort_f, axis='sample')
+    design = dmatrix(formula, metadata, return_type='dataframe')
+    design = design.dropna()
+
+    def design_filter(val, id_, md):
+        return id_ in design.index
+
+    table = table.filter(design_filter, axis='sample')
+
+    return table, metadata, design

@@ -8,21 +8,8 @@
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import re
-import ast
-import os
 from glob import glob
-from setuptools import find_packages, setup
-from setuptools.command.build_ext import build_ext as _build_ext
-
-
-class build_ext(_build_ext):
-    def finalize_options(self):
-        _build_ext.finalize_options(self)
-        # Prevent numpy from thinking it is still in its setup process:
-        __builtins__.__NUMPY_SETUP__ = False
-        import numpy
-        self.include_dirs.append(numpy.get_include())
+from setuptools import setup
 
 
 classes = """
@@ -41,11 +28,10 @@ classifiers = [s.strip() for s in classes.split('\n') if s]
 
 description = ('Regression methods')
 
-version='0.1.0'
+version = '0.1.0'
 
 setup(name='songbird',
       version=version,
-      license='BSD',
       description='',
       long_description='',
       author="gneiss development team",
@@ -55,8 +41,6 @@ setup(name='songbird',
       packages=['songbird'],
       scripts=glob('scripts/songbird'),
       setup_requires=['numpy >= 1.9.2'],
-      ext_modules=extensions,
-      cmdclass={'build_ext': build_ext},
       install_requires=[
           'IPython >= 3.2.0',
           'numpy >= 1.9.2',
@@ -70,6 +54,11 @@ setup(name='songbird',
           'seaborn'
       ],
       classifiers=classifiers,
-      package_data={
-          },
-      )
+
+      license='BSD-3-Clause',
+      url="https://github.com/mortonjt/songbird",
+      entry_points={
+          'qiime2.plugins': ['q2-songbird=songbird.q2.plugin_setup:plugin']
+      },
+      package_data={},
+      zip_safe=False)

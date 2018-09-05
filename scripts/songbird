@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 import os
 import tensorflow as tf
-from patsy import dmatrix
 import pandas as pd
 import numpy as np
 from biom import load_table
 import click
 from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
-from songbird.util import read_metadata
+from songbird.util import read_metadata, match_and_filter
 
 
 @click.group()
@@ -22,12 +21,15 @@ def songbird():
 @click.option('--metadata-file',
               help='Input microbial abundances for testing')
 @click.option('--formula',
-              help='statistical formula specifying the covariates to test for.')
+              help=('statistical formula specifying the covariates '
+                    'to test for.'))
 @click.option('--training-column', default=None,
-              help=('The column in the metadata file used to specify training and testing.'
-                    'These columns should be specifically labeled (Train) and (Test)'))
+              help=('The column in the metadata file used to '
+                    'specify training and testing. These columns '
+                    'should be specifically labeled (Train) and (Test)'))
 @click.option('--num-random-test-examples', default=10,
-              help='Number of random training examples if --training-column is not specified')
+              help=('Number of random training examples if '
+                    '--training-column is not specified'))
 @click.option('--epoch',
               help='Number of epochs to train', default=10)
 @click.option('--batch-size',
@@ -44,12 +46,12 @@ def songbird():
               help=('Gradient clipping size.'),
               default=10.)
 @click.option('--min-sample-count',
-              help=("The minimum number of counts a sample needs for it to be "
-                     "included in the analysis"),
+              help=("The minimum number of counts a sample needs "
+                    "for it to be included in the analysis"),
               default=1000)
 @click.option('--min-feature-count',
-              help=("The minimum number of counts a feature needs for it to be "
-                     "included in the analysis"),
+              help=("The minimum number of counts a feature needs for "
+                    "it to be included in the analysis"),
               default=5)
 @click.option('--checkpoint-interval',
               help=('Number of seconds before a saving a checkpoint'),
@@ -59,36 +61,17 @@ def songbird():
               default=60)
 @click.option('--summary-dir', default='summarydir',
               help='Summary directory to save cross validation results.')
-def multinomial(input_biom, metadata_file, formula, training_column, num_random_test_examples,
-                epoch, batch_size, beta_prior,
+def multinomial(input_biom, metadata_file, formula, training_column,
+                num_random_test_examples, epoch, batch_size, beta_prior,
                 learning_rate, clipnorm, min_sample_count, min_feature_count,
                 checkpoint_interval, summary_interval, summary_dir):
 
     # load metadata and tables
     metadata = read_metadata(metadata_file)
-
     table = load_table(input_biom)
 
     # match them
-    metadata = metadata.loc[table.ids(axis='sample')]
-
-    sample_filter = lambda val, id_, md: (
-        (id_ in metadata.index) and np.sum(val) > min_sample_count)
-    read_filter = lambda val, id_, md: np.sum(val) > min_feature_count
-    metadata_filter = lambda val, id_, md: id_ in metadata.index
-
-    table = table.filter(metadata_filter, axis='sample')
-    table = table.filter(sample_filter, axis='sample')
-    table = table.filter(read_filter, axis='observation')
-    metadata = metadata.loc[table.ids(axis='sample')]
-
-    sort_f = lambda xs: [xs[metadata.index.get_loc(x)] for x in xs]
-    table = table.sort(sort_f=sort_f, axis='sample')
-    design = dmatrix(formula, metadata, return_type='dataframe')
-    design = design.dropna()
-
-    metadata_filter = lambda val, id_, md: id_ in design.index
-    table = table.filter(metadata_filter, axis='sample')
+    table, metadata, design = match_and_filter(table, metadata)
 
     # convert to dense representation
     dense_table = table.to_dataframe().to_dense().T
@@ -102,7 +85,6 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
     else:
         train_idx = metadata.loc[design.index, training_column] == "Train"
 
-
     trainX = design.loc[train_idx].values
     testX = design.loc[~train_idx].values
 
@@ -112,7 +94,7 @@ def multinomial(input_biom, metadata_file, formula, training_column, num_random_
     model = MultRegression(learning_rate=learning_rate, clipnorm=clipnorm,
                            beta_mean=beta_prior,
                            batch_size=batch_size,
-                           save_path = summary_dir)
+                           save_path=summary_dir)
     with tf.Graph().as_default(), tf.Session() as session:
         model(session, trainX, trainY, testX, testY)
 

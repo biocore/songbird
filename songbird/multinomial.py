@@ -1,13 +1,6 @@
 import tensorflow as tf
 import os
-import numpy as np
-import pandas as pd
-from biom import load_table, Table
 from tensorflow.contrib.distributions import Multinomial, Normal
-from patsy import dmatrix
-from skbio import TreeNode
-from skbio.stats.composition import closure, clr_inv, clr
-from scipy.stats import spearmanr
 from tqdm import tqdm
 import time
 import datetime
@@ -45,7 +38,6 @@ class MultRegression(object):
         self.beta_2 = beta_2
         self.clipnorm = clipnorm
         self.save_path = save_path
-
 
     def __call__(self, session, trainX, trainY, testX, testY):
         """ Initialize the actual graph
@@ -86,7 +78,8 @@ class MultRegression(object):
         holdout_count = tf.reduce_sum(self.Y_holdout, axis=1)
 
         # Define PointMass Variables first
-        self.qbeta = tf.Variable(tf.random_normal([self.p, self.D-1]), name='qB')
+        self.qbeta = tf.Variable(
+            tf.random_normal([self.p, self.D-1]), name='qB')
 
         # regression coefficents distribution
         beta = Normal(loc=tf.zeros([self.p, self.D-1]) + self.beta_mean,
@@ -96,25 +89,30 @@ class MultRegression(object):
         eta = tf.matmul(X_batch, self.qbeta, name='eta')
 
         phi = tf.nn.log_softmax(
-            tf.concat([tf.zeros([self.batch_size, 1]), eta], axis=1), name='phi')
-        #phi = tf.nn.log_softmax(eta, name='phi')
+            tf.concat(
+                [tf.zeros([self.batch_size, 1]), eta], axis=1), name='phi'
+        )
 
         Y = Multinomial(total_count=total_count, logits=phi, name='Y')
 
         # cross validation
         with tf.name_scope('accuracy'):
-            pred =  tf.reshape(holdout_count, [-1, 1]) * tf.nn.softmax(
-                tf.concat([
-                    tf.zeros([holdout_size, 1]),
-                    tf.matmul(self.X_holdout, self.qbeta)
-                ], axis=1), name='phi'
-            )
+            pred = tf.reshape(
+                holdout_count, [-1, 1]) * tf.nn.softmax(
+                    tf.concat([
+                        tf.zeros([holdout_size, 1]),
+                        tf.matmul(self.X_holdout, self.qbeta)
+                    ], axis=1), name='phi'
+                )
 
-            self.cv = tf.reduce_mean(tf.squeeze(tf.abs(pred - self.Y_holdout)))
+            self.cv = tf.reduce_mean(
+                tf.squeeze(tf.abs(pred - self.Y_holdout))
+            )
             tf.summary.scalar('mean_absolute_error', self.cv)
 
-        self.loss = -(tf.reduce_sum(beta.log_prob(self.qbeta)) + \
-                      tf.reduce_sum(Y.log_prob(Y_batch)) * (self.N / self.batch_size))
+        self.loss = -(tf.reduce_sum(beta.log_prob(self.qbeta)) +
+                      tf.reduce_sum(Y.log_prob(Y_batch)) *
+                      (self.N / self.batch_size))
 
         optimizer = tf.train.AdamOptimizer(
             self.learning_rate, beta1=self.beta_1, beta2=self.beta_2)
@@ -128,7 +126,6 @@ class MultRegression(object):
         self.merged = tf.summary.merge_all()
         self.writer = tf.summary.FileWriter(self.save_path, self.session.graph)
         tf.global_variables_initializer().run()
-
 
     def fit(self, epoch=10, summary_interval=100, checkpoint_interval=3600):
         """ Fits the model.
@@ -150,20 +147,17 @@ class MultRegression(object):
             cross validation loss
         """
         num_iter = (self.N // self.batch_size) * epoch
-        idx = np.arange(self.N)
         cv = None
         last_checkpoint_time = 0
         last_summary_time = 0
-        start_time = time.time()
         saver = tf.train.Saver()
-
 
         for i in tqdm(range(0, num_iter)):
             now = time.time()
-            batch_idx = np.random.choice(idx, size=self.batch_size)
 
             if now - last_summary_time > summary_interval:
-                run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
+                run_options = tf.RunOptions(
+                    trace_level=tf.RunOptions.FULL_TRACE)
                 run_metadata = tf.RunMetadata()
                 _, summary, train_loss, grads = self.session.run(
                     [self.train, self.merged,
@@ -186,6 +180,8 @@ class MultRegression(object):
                            global_step=i)
                 last_checkpoint_time = now
 
-        train_loss, cv, B = self.session.run([self.loss, self.cv, self.qbeta])
+        train_loss, cv, B = self.session.run(
+            [self.loss, self.cv, self.qbeta]
+        )
         self.B = B
         return train_loss, cv
