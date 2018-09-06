@@ -7,7 +7,8 @@
 #
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
-
+import re
+import ast
 from glob import glob
 from setuptools import setup
 
@@ -28,7 +29,13 @@ classifiers = [s.strip() for s in classes.split('\n') if s]
 
 description = ('Regression methods')
 
-version = '0.1.0'
+# version parsing from __init__ pulled from Flask's setup.py
+# https://github.com/mitsuhiko/flask/blob/master/setup.py
+_version_re = re.compile(r'__version__\s+=\s+(.*)')
+
+with open('songbird/__init__.py', 'rb') as f:
+    hit = _version_re.search(f.read().decode('utf-8')).group(1)
+    version = str(ast.literal_eval(hit))
 
 setup(name='songbird',
       version=version,
@@ -54,7 +61,6 @@ setup(name='songbird',
           'seaborn'
       ],
       classifiers=classifiers,
-
       license='BSD-3-Clause',
       url="https://github.com/mortonjt/songbird",
       entry_points={
