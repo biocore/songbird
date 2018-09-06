@@ -128,7 +128,8 @@ class MultRegression(object):
         tf.summary.histogram('qbeta', self.qbeta)
         self.merged = tf.summary.merge_all()
         if self.save_path is not None:
-            self.writer = tf.summary.FileWriter(self.save_path, self.session.graph)
+            self.writer = tf.summary.FileWriter(self.save_path,
+                                                self.session.graph)
         else:
             self.writer = None
         tf.global_variables_initializer().run()

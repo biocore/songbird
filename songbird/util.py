@@ -197,4 +197,3 @@ def split_training(dense_table, metadata, design, training_column=None,
     testY = dense_table.loc[~train_idx].values
 
     return trainX, testX, trainY, testY
-
