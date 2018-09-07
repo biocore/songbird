@@ -67,7 +67,8 @@ def random_multinomial_model(num_samples, num_features,
         for i in range(N)
     ).T
 
-    samp_ids = ['S%d' % i for i in range(num_samples)]
+    samp_ids = pd.Index(['S%d' % i for i in range(num_samples)],
+                        name='sampleid')
     feat_ids = ['F%d' % i for i in range(num_features)]
     balance_ids = ['L%d' % i for i in range(num_features-1)]
 
@@ -135,8 +136,8 @@ def match_and_filter(table, metadata,
 
     Parameters
     ----------
-    table : biom.Table
-        Biom table of abundances
+    table : biom.Table or pd.DataFrame
+        Table of abundances
     metadata : pd.DataFrame
         Sample metadata
 
@@ -177,3 +178,23 @@ def match_and_filter(table, metadata,
     table = table.filter(design_filter, axis='sample')
 
     return table, metadata, design
+
+
+def split_training(dense_table, metadata, design, training_column=None,
+                   num_random_test_examples=10):
+
+    if training_column is None:
+        idx = np.random.random(design.shape[0])
+        i = np.argsort(idx)[num_random_test_examples]
+        threshold = idx[i]
+        train_idx = idx < threshold
+    else:
+        train_idx = metadata.loc[design.index, training_column] == "Train"
+
+    trainX = design.loc[train_idx].values
+    testX = design.loc[~train_idx].values
+
+    trainY = dense_table.loc[train_idx].values
+    testY = dense_table.loc[~train_idx].values
+
+    return trainX, testX, trainY, testY

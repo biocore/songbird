@@ -10,7 +10,7 @@ class MultRegression(object):
 
     def __init__(self, beta_mean=0, beta_scale=1,
                  batch_size=50, learning_rate=0.1, beta_1=0.9, beta_2=0.99,
-                 clipnorm=10., save_path=None):
+                 clipnorm=10., save_path=""):
         """ Build a tensorflow model
 
         Returns
@@ -18,8 +18,11 @@ class MultRegression(object):
         loss : tf.Tensor
            The log loss of the model.
 
+        Notes
+        -----
+        If save_path is None, there won't be anything saved
         """
-        if save_path is None:
+        if save_path == "":
             basename = "logdir"
             suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
             save_path = "_".join([basename, suffix])
@@ -124,7 +127,11 @@ class MultRegression(object):
         tf.summary.scalar('loss', self.loss)
         tf.summary.histogram('qbeta', self.qbeta)
         self.merged = tf.summary.merge_all()
-        self.writer = tf.summary.FileWriter(self.save_path, self.session.graph)
+        if self.save_path is not None:
+            self.writer = tf.summary.FileWriter(self.save_path,
+                                                self.session.graph)
+        else:
+            self.writer = None
         tf.global_variables_initializer().run()
 
     def fit(self, epoch=10, summary_interval=100, checkpoint_interval=3600):
@@ -165,19 +172,22 @@ class MultRegression(object):
                     options=run_options,
                     run_metadata=run_metadata
                 )
-                self.writer.add_run_metadata(run_metadata, 'step%d' % i)
-                self.writer.add_summary(summary, i)
+                if self.writer is not None:
+                    self.writer.add_run_metadata(run_metadata, 'step%d' % i)
+                    self.writer.add_summary(summary, i)
                 last_summary_time = now
             else:
                 _, summary, train_loss, grads = self.session.run(
                     [self.train, self.merged, self.loss, self.gradients],
                 )
-                self.writer.add_summary(summary, i)
+                if self.writer is not None:
+                    self.writer.add_summary(summary, i)
 
-            if now - last_checkpoint_time > checkpoint_interval:
-                saver.save(self.session,
-                           os.path.join(self.save_path, "model.ckpt"),
-                           global_step=i)
+            if checkpoint_interval is not None:
+                if now - last_checkpoint_time > checkpoint_interval:
+                    saver.save(self.session,
+                               os.path.join(self.save_path, "model.ckpt"),
+                               global_step=i)
                 last_checkpoint_time = now
 
         train_loss, cv, B = self.session.run(
