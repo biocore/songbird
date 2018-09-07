@@ -5,6 +5,7 @@
 #
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
+import qiime2
 import qiime2.plugin
 import qiime2.sdk
 from songbird import __version__
