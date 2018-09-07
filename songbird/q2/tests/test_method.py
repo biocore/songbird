@@ -12,7 +12,7 @@ class TestMultinomial(unittest.TestCase):
 
     def setUp(self):
         res = random_multinomial_model(
-            num_samples=150, num_features=20,
+            num_samples=200, num_features=15,
             reps=1,
             low=-1, high=1,
             beta_mean=0,
