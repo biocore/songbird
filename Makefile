@@ -9,7 +9,7 @@ help:
 test:
 	$(TEST_COMMAND)
 pep8:
-	pycodestyle songbird setup.py --ignore=E129
+	pycodestyle songbird setup.py
 	flake8 songbird setup.py
 
 all: pep8 test

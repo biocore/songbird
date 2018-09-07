@@ -183,11 +183,11 @@ class MultRegression(object):
                 if self.writer is not None:
                     self.writer.add_summary(summary, i)
 
-            if (checkpoint_interval is not None and
-                now - last_checkpoint_time > checkpoint_interval):
-                saver.save(self.session,
-                           os.path.join(self.save_path, "model.ckpt"),
-                           global_step=i)
+            if checkpoint_interval is not None:
+                if now - last_checkpoint_time > checkpoint_interval:
+                    saver.save(self.session,
+                               os.path.join(self.save_path, "model.ckpt"),
+                               global_step=i)
                 last_checkpoint_time = now
 
         train_loss, cv, B = self.session.run(
