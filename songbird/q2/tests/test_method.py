@@ -31,7 +31,7 @@ class TestMultinomial(unittest.TestCase):
         exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
         res_beta = multinomial(table=self.table, metadata=md,
                                formula="X", epoch=50000)
-        npt.assert_allclose(exp_beta, res_beta.T, atol=0.3, rtol=0.3)
+        npt.assert_allclose(exp_beta, res_beta.T, atol=0.5, rtol=0.5)
 
 
 if __name__ == "__main__":
