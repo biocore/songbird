@@ -11,7 +11,7 @@ from qiime2.plugin import Metadata
 def multinomial(table: biom.Table,
                 metadata: Metadata,
                 formula: str,
-                training_column: str,
+                training_column: str = None,
                 num_random_test_examples: int=10,
                 epoch: int=10,
                 batch_size: int=5,
@@ -28,13 +28,17 @@ def multinomial(table: biom.Table,
     metadata = metadata.to_dataframe()
 
     # match them
-    table, metadata, design = match_and_filter(table, metadata)
+    table, metadata, design = match_and_filter(
+        table, metadata,
+        formula, training_column, num_random_test_examples,
+        min_sample_count, min_feature_count
+    )
 
     # convert to dense representation
     dense_table = table.to_dataframe().to_dense().T
 
     # split up training and testing
-    trainX, trainY, testX, testY = split_training(
+    trainX, testX, trainY, testY = split_training(
         dense_table, metadata, design,
         training_column, num_random_test_examples
     )

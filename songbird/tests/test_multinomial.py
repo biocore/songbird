@@ -15,7 +15,7 @@ class TestMultRegression(unittest.TestCase):
             low=-1, high=1,
             beta_mean=0,
             beta_scale=1,
-            mu=1000,
+            mu=1000,  # sequencing depth
             sigma=0.5,
             seed=0)
 
@@ -31,7 +31,6 @@ class TestMultRegression(unittest.TestCase):
         trainY = Y[:-5]
         testX = X[-5:]
         testY = Y[-5:]
-        print(trainY.shape)
         with tf.Graph().as_default(), tf.Session() as session:
             model(session, trainX, trainY, testX, testY)
             model.fit(epoch=int(10000))

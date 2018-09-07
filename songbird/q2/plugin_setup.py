@@ -10,7 +10,7 @@ import qiime2.sdk
 from songbird import __version__
 from ._method import multinomial
 from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
-from q2_types.feature_table import FeatureTable, Frequency
+from q2_types.feature_table import FeatureTable, Composition, Frequency
 
 
 # citations = qiime2.plugin.Citations.load(
@@ -45,7 +45,7 @@ plugin.methods.register_function(
     },
     outputs=[
         ('coefficients',
-         FeatureTable[Frequency] % Properties('coefficients'))
+         FeatureTable[Composition % Properties('coefficients')])
     ],
     input_descriptions={
         'table': 'Input table of counts.',

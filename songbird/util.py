@@ -67,7 +67,8 @@ def random_multinomial_model(num_samples, num_features,
         for i in range(N)
     ).T
 
-    samp_ids = ['S%d' % i for i in range(num_samples)]
+    samp_ids = pd.Index(['S%d' % i for i in range(num_samples)],
+                        name='sampleid')
     feat_ids = ['F%d' % i for i in range(num_features)]
     balance_ids = ['L%d' % i for i in range(num_features-1)]
 
