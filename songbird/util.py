@@ -176,7 +176,7 @@ def match_and_filter(table, metadata,
         return id_ in design.index
 
     table = table.filter(design_filter, axis='sample')
-
+    return table, metadata, design
 
 
 def split_training(dense_table, metadata, design, training_column=None,
