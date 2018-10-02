@@ -6,7 +6,7 @@ source activate regression
 ```
 Then install this package from source
 ```
-pip install git+https://github.com/mortonjt/regression.git
+pip install git+https://github.com/mortonjt/songbird.git
 ```
 # Getting started
 
