@@ -65,20 +65,27 @@ def multinomial(input_biom, metadata_file, formula, training_column,
                 num_random_test_examples, epoch, batch_size, beta_prior,
                 learning_rate, clipnorm, min_sample_count, min_feature_count,
                 checkpoint_interval, summary_interval, summary_dir):
-
     # load metadata and tables
     metadata = read_metadata(metadata_file)
     table = load_table(input_biom)
 
     # match them
-    table, metadata, design = match_and_filter(table, metadata)
+    table, metadata, design = match_and_filter(
+        table, metadata,
+        formula, training_column, num_random_test_examples,
+        min_sample_count, min_feature_count)
 
     # convert to dense representation
     dense_table = table.to_dataframe().to_dense().T
 
-    # split up training and testing
+    trainX, testX, trainY, testY = split_training(
+        dense_table, metadata, design,
+        training_column,
+        num_random_test_examples)
 
-    model = MultRegression(learning_rate=learning_rate, clipnorm=clipnorm,
+    # split up training and testing
+    model = MultRegression(learning_rate=learning_rate,
+                           clipnorm=clipnorm,
                            beta_mean=beta_prior,
                            batch_size=batch_size,
                            save_path=summary_dir)
