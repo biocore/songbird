@@ -151,11 +151,12 @@ def match_and_filter(table, metadata,
     # match them
 
     metadata = metadata.loc[table.ids(axis='sample')]
+
     def sample_filter(val, id_, md):
         return id_ in metadata.index and np.sum(val) > min_sample_count
 
     def read_filter(val, id_, md):
-        return np.sum(val>0) > min_feature_count
+        return np.sum(val > 0) > min_feature_count
 
     def metadata_filter(val, id_, md):
         return id_ in metadata.index

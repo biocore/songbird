@@ -75,7 +75,6 @@ plugin.methods.register_function(
 )
 
 
-
 plugin.methods.register_function(
     function=regression_biplot,
     inputs={

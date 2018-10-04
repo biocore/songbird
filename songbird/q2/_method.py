@@ -14,8 +14,6 @@ def regression_biplot(coefficients: pd.DataFrame) -> skbio.OrdinationResults:
     coefs = clr(centralize(clr_inv(coefficients)))
     u, s, v = np.linalg.svd(coefs)
     pc_ids = ['PC%d' % i for i in range(len(s))]
-    print(coefficients.shape)
-    print(u.shape, s.shape, v.shape)
     samples = pd.DataFrame(u[:, :len(s)],
                            columns=pc_ids, index=coefficients.index)
     features = pd.DataFrame(v.T[:, :len(s)],
