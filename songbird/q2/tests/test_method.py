@@ -56,7 +56,7 @@ class TestRegressionBiplot(unittest.TestCase):
         self.assertIsInstance(res, OrdinationResults)
         u = res.samples.values
         v = res.features.values.T
-        npt.assert_allclose(u @ v, np.array(exp))
+        npt.assert_allclose(u @ v, np.array(exp), atol=0.5, rtol=0.5)
 
 
 if __name__ == "__main__":
