@@ -1,11 +1,31 @@
 import biom
+import skbio
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from skbio.stats.composition import clr, clr_inv
+from skbio import OrdinationResults
+from skbio.stats.composition import clr, clr_inv, centralize
 from songbird.multinomial import MultRegression
 from songbird.util import match_and_filter, split_training
 from qiime2.plugin import Metadata
+
+
+def regression_biplot(coefficients: pd.DataFrame) -> skbio.OrdinationResults:
+    coefs = clr(centralize(clr_inv(coefficients)))
+    u, s, v = np.linalg.svd(coefs)
+    pc_ids = ['PC%d' % i for i in range(len(s))]
+    samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
+                           columns=pc_ids, index=coefficients.index)
+    features = pd.DataFrame(v.T[:, :len(s)],
+                            columns=pc_ids, index=coefficients.columns)
+    short_method_name = 'regression_biplot'
+    long_method_name = 'Multinomial regression biplot'
+    eigvals = pd.Series(s, index=pc_ids)
+    proportion_explained = eigvals / eigvals.sum()
+    res = OrdinationResults(short_method_name, long_method_name, eigvals,
+                            samples=samples, features=features,
+                            proportion_explained=proportion_explained)
+    return res
 
 
 def multinomial(table: biom.Table,

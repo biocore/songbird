@@ -149,13 +149,14 @@ def match_and_filter(table, metadata,
         Sample metadata
     """
     # match them
+
     metadata = metadata.loc[table.ids(axis='sample')]
 
     def sample_filter(val, id_, md):
         return id_ in metadata.index and np.sum(val) > min_sample_count
 
     def read_filter(val, id_, md):
-        return np.sum(val) > min_feature_count
+        return np.sum(val > 0) > min_feature_count
 
     def metadata_filter(val, id_, md):
         return id_ in metadata.index
@@ -163,6 +164,7 @@ def match_and_filter(table, metadata,
     table = table.filter(metadata_filter, axis='sample')
     table = table.filter(sample_filter, axis='sample')
     table = table.filter(read_filter, axis='observation')
+
     metadata = metadata.loc[table.ids(axis='sample')]
 
     def sort_f(xs):
@@ -184,6 +186,7 @@ def split_training(dense_table, metadata, design, training_column=None,
 
     if training_column is None:
         idx = np.random.random(design.shape[0])
+
         i = np.argsort(idx)[num_random_test_examples]
         threshold = idx[i]
         train_idx = idx < threshold

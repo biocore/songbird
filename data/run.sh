@@ -1,8 +1,21 @@
+# songbird multinomial \
+#     --input-biom feature-table.biom \
+#     --metadata-file Workbook4.txt \
+#     --formula Cat \
+#     --min-feature-count 10
+
+formula="Depth+Temperature+Salinity+Oxygen+Fluorescence+Turbidity+Nitrate+Phosphate"
+mdfile=redsea/redsea_metadata.txt
+biom=redsea/redsea.biom
 songbird multinomial \
-    --input-biom feature-table.biom \
-    --metadata-file Workbook4.txt \
-    --formula Cat \
-    --min-feature-count 10
+    --input-biom $biom \
+    --metadata-file $mdfile \
+    --formula $formula \
+    --min-feature-count 10 \
+    --batch-size 3 \
+    --epoch 10000 \
+    --num-random-test-examples 5 \
+    --summary-interval 1
 
 
 

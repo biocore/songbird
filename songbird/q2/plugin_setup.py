@@ -8,9 +8,10 @@
 import qiime2.plugin
 import qiime2.sdk
 from songbird import __version__
-from ._method import multinomial
+from ._method import multinomial, regression_biplot
 from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
 from q2_types.feature_table import FeatureTable, Composition, Frequency
+from q2_types.ordination import PCoAResults
 
 
 # citations = qiime2.plugin.Citations.load(
@@ -64,17 +65,33 @@ plugin.methods.register_function(
                        'Smaller values will regularize parameters towards '
                        'zero. Values must be greater than 0.'),
         'learning_rate': ('Gradient descent decay rate.'),
-        'min_sample_count': ("The minimum number of counts a sample needs "
-                             "for it to be included in the analysis"),
-        'min_feature_count': ("The minimum number of counts a feature "
-                              "needs for it to be included in the analysis"),
-        'summary_interval': ('Number of seconds before a storing a summary.'),
-    },
-    output_descriptions={
-        'coefficients': ('The resulting coefficients learned from the '
-                         'multinomial regression.')
+
     },
     name='Multinomial regression',
+    description=("Performs multinomial regression and calculates "
+                 "rank differentials for organisms with respect to the "
+                 "covariates of interest."),
+    citations=[]
+)
+
+
+plugin.methods.register_function(
+    function=regression_biplot,
+    inputs={
+        'coefficients': FeatureTable[Composition % Properties('coefficients')]
+    },
+    parameters={},
+    outputs=[
+        ('biplot', PCoAResults % Properties("biplot"))
+    ],
+    input_descriptions={
+        'coefficients': 'Input table of coefficients',
+    },
+    parameter_descriptions={},
+    output_descriptions={
+        'biplot': ('A biplot of the regression coefficients')
+    },
+    name='Builds Multinomial regression biplot',
     description=("Performs multinomial regression and calculates "
                  "rank differentials for organisms with respect to the "
                  "covariates of interest."),
