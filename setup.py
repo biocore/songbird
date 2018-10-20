@@ -5,7 +5,7 @@
 #
 # Distributed under the terms of the Modified BSD License.
 #
-# The full license is in the file COPYING.txt, distributed with this software.
+# The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 import re
 import ast
@@ -14,7 +14,7 @@ from setuptools import setup
 
 
 classes = """
-    Development Status :: 2 - Pre-Alpha
+    Development Status :: 3 - Alpha
     License :: OSI Approved :: BSD License
     Topic :: Software Development :: Libraries
     Topic :: Scientific/Engineering
@@ -39,8 +39,9 @@ with open('songbird/__init__.py', 'rb') as f:
 
 setup(name='songbird',
       version=version,
-      description='',
-      long_description='',
+      description='Microbial regression method',
+      long_description=('Vanilla regression methods for microbiome '
+                        'differential abundance analysis'),
       author="gneiss development team",
       author_email="jamietmorton@gmail.com",
       maintainer="gneiss development team",
