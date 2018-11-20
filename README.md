@@ -1,7 +1,7 @@
 # Installation
 First make sure to install Tensorflow, namely
 ```
-conda create -n regression tensorflow tqdm pip
+conda create -n regression python=3.5 tensorflow tqdm pip
 conda install -n regression biom-format scikit-bio -c conda-forge
 source activate regression
 ```
