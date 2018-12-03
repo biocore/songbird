@@ -29,7 +29,7 @@ The most important aspect of the coefficients are the rankings, or the ordering 
 Diagnostics can be run via Tensorboard
 
 ```
-tensorboard --logdir <results>
+tensorboard --logdir <your-result-directory>
 ```
 
 This will give cross validation results and information about the loss.
@@ -39,6 +39,11 @@ See more information about the multinomial regression through
 ```
 songbird multinomial --help
 ```
+
+For a more complete tutorial see the following url that includes real datasets
+
+https://github.com/knightlab-analyses/reference-frames
+
 
 # Qiime2 tutorial
 
