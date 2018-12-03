@@ -7,8 +7,11 @@ source activate regression
 ```
 Then install this package from source
 ```
-pip install git+https://github.com/mortonjt/songbird.git
+pip install h5py git+https://github.com/mortonjt/songbird.git
 ```
+
+If you are getting errors, it is likely because you have garbage channels under your .condarc.  Make sure to delete your .condarc -- you shouldn't need it.
+
 # Getting started
 
 Try running the following
