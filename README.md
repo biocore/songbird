@@ -106,7 +106,7 @@ Returning line will look something like:
 TensorBoard 1.9.0 at http://Lisas-MacBook-Pro-2.local:6006 (Press CTRL+C to quit)
 ```
 
-Open the website (highlighted in red) in a browser. (Hint; if that doesn’t work try only putting only the bolded red part into the url, adding ‘host’, localhost:6006, that worked for me). Leave this tab alone. Now any songbird output directories that you add to the folder that tensorflow is running in will be added to the webpage.
+Open the website (highlighted in red) in a browser. (Hint; if that doesn’t work try only putting only the port number (here it is 6006), adding `localhost`, localhost:6006). Leave this tab alone. Now any songbird output directories that you add to the folder that tensorflow is running in will be added to the webpage.
 
 This should produce a website with 2 graphs, which tensorflow actively updates as songbird is running.
 ![tensorboard](https://github.com/mortonjt/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
