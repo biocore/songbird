@@ -111,24 +111,24 @@ Open the website (highlighted in red) in a browser. (Hint; if that doesn’t wor
 This should produce a website with 2 graphs, which tensorflow actively updates as songbird is running.
 ![tensorboard](https://github.com/mortonjt/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
 
-FIRST GRAPH
-‘Prediction accuracy’
-Labelled  ‘accuracy/mean_absolute_error’
+FIRST GRAPH 'Prediction accuracy'. Labelled  ‘accuracy/mean_absolute_error’
 
 
 This is a graph of the prediction accuracy of the model; the model will try to guess the count values for the training samples that were set aside in the script above, using only the metadata categories it has. Then it looks at the real values and sees how close it was.
 
 This is a graph of the prediction accuracy of the model; the model will try to guess the count values for the training samples that were set aside in the script above, using only the metadata categories it has. Then it looks at the real values and sees how close it was. 
 
-X-axis is # of iterations (meaning times the model is training across the entire dataset - every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis. 
+X-axis is # of iterations (meaning times the model is training across the entire dataset - every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis.
+
 **Number of iterations = `--epoch #` multiplied by the `--batch-size` parameter**
+
 Y-axis is average # of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the example above it means that, on average, the model is off by ~16-17 counts, which is low. However, this is ABSOLUTE error not relative error (unfortunately we can’t do relative errors because of zeros)
 
 So how can you tell if this graph ‘looks good’?? 
 The raw numbers will be variable, so it is difficult to make a blanket statement, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau (further discussion below)
 
-SECOND graph
-‘Model fit’
+SECOND graph 'Model fit'
+
 Its labelled ‘loss’ because ‘loss’ is the function being optimized = error of the training samples
 
 This graph represents how well the model fits your data.
@@ -151,8 +151,7 @@ So basically we want to futz around with the parameters until we see two nice ex
 Once you have that, we can go into that directory and look at the ranks:
 
 
-
-Credits to Lisa Marotz (@lisa55asil) and Julia Gauglitz for the FAQs notes.
+Credits to Lisa Marotz (@lisa55asil) for the FAQs notes.
 
 
 
