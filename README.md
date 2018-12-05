@@ -44,7 +44,7 @@ For a more complete tutorial see the following url that includes real datasets
 
 https://github.com/knightlab-analyses/reference-frames
 
-#FAQs
+# FAQs
 **Q** What am I looking at in the output directory?
 
 **A** There are 3 major types of files to note
@@ -99,9 +99,12 @@ The `--beta-prior` command specifies the width of the prior distribution of the 
 
 **A**. Tensorboard is a diagnostic tool that runs in a web browser. To open tensorboard, make sure you’re in the songbird environment (`regression`) and `cd` into the folder you are running the script above from. Then run:
 
-> tensorboard --logdir .
+```bash
+tensorboard --logdir .
+
 Returning line will look something like:
 TensorBoard 1.9.0 at http://Lisas-MacBook-Pro-2.local:6006 (Press CTRL+C to quit)
+```
 
 Open the website (highlighted in red) in a browser. (Hint; if that doesn’t work try only putting only the bolded red part into the url, adding ‘host’, localhost:6006, that worked for me). Leave this tab alone. Now any songbird output directories that you add to the folder that tensorflow is running in will be added to the webpage.
 
