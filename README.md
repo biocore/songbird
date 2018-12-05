@@ -65,7 +65,7 @@ note: continuous variables should only produce ONE column in the beta.csv file, 
 
 **Q**. What is a formula?  What should be passed into here?
 
-A. A formula specifies the statistical model to be built based on the columns in the metadata file.
+**A**. A formula specifies the statistical model to be built based on the columns in the metadata file.
 For example, if a user wanted to build a statistical model testing for differences between disease states
 while controlling for gender, the formula would look something as follows
 
@@ -151,7 +151,7 @@ So basically we want to futz around with the parameters until we see two nice ex
 Once you have that, we can go into that directory and look at the ranks:
 
 
-Credits to Lisa Marotz (@lisa55asil) for the FAQs notes.
+Credits to Lisa Marotz ([@lisa55asil](https://github.com/lisa55asil)) for the FAQs notes.
 
 
 
