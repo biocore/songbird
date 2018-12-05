@@ -44,8 +44,117 @@ For a more complete tutorial see the following url that includes real datasets
 
 https://github.com/knightlab-analyses/reference-frames
 
+#FAQs
+**Q** What am I looking at in the output directory?
 
-# Qiime2 tutorial
+**A** There are 3 major types of files to note
+
+`beta.csv`: This contains the ranks of the microbes for a given metadata categories.  The higher the rank, the more associated it is with that category.  The lower the rank, the more negatively associated it is with a category.  The recommended way to view these files is to sort the microbes within a given columns in this file and investigate the top/bottom microbes with the highest/lowest ranks.
+
+The first column is the features (if you plugged in a q2 table, then you can look up the sequence or bacterial name by merging with rep-seqs or taxonomy, respectively).  Once you have identified the microbes that change the most and least (have the highest and lowest coefficients) you can plot the log ratio of these microbes across metadata categories or gradients!
+
+note: continuous variables should only produce ONE column in the beta.csv file, if not, something is wrong with the metadata (maybe not all numbers or something)
+
+`checkpoint` : this points to checkpoint files -- this can be used for saving intermediate results.  This is more important for jobs that will take days to run, where the models parameter can be investigated while the program is running, rather than waiting for `beta.csv` to be written.
+
+`events.out.tfevents.*` : These files are what is being read into Tensorboard - more discussion on this later.
+
+**Q**. Why do I so many columns in my beta.csv?  I have so many columns when I'm only using one continuous variable.
+
+**A**. A couple things could be happening.  First, the standalone songbird script assumes that the mapping files only have 1 line for the header, so you need to reformat.  In addition, it could be that there are other values in that column (i.e. Not Applicable, NA, nan, ...), and these sorts of values need to be removed in order to properly perform songbird regression on continuous variables.
+
+**Q**. What is a formula?  What should be passed into here?
+
+A. A formula specifies the statistical model to be built based on the columns in the metadata file.
+For example, if a user wanted to build a statistical model testing for differences between disease states
+while controlling for gender, the formula would look something as follows
+
+--formula "diseased + gender"
+
+where "diseased" and "gender" are the columns of the sample metadata file.
+This is similar to the statistical formulas used in R. The backend we use here is called patsy.
+More details can be found here: https://patsy.readthedocs.io/en/latest/formulas.html
+
+**Q**. That's cool!  How many variables can be pass into the formula?
+
+**A**. That depends on the number of samples you have -- the rule of thumb is to only have about 10% of your samples.
+So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  You can sometime migitate this risk with the `--beta-prior` parameter.
+
+**Q**. Wait a minute, what do you mean that I can migitate overfitting with the `--beta-prior`?
+
+**A**. When I mean overfitting, I'm referring to scenarios when the models attempts to memorize data points rather than
+building predictive models to undercover biological patterns.  See https://xkcd.com/1725/
+
+The `--beta-prior` command specifies the width of the prior distribution of the coefficients. For `--beta-prior 1`, this  this means 99% of rankings (given in beta.csv) are within -3 and +3 (log fold change). The higher beta-prior is, the more parameters can have bigger changes, so you want to keep this relatively small.  If you see overfitting (accuracy and fit increasing over iterations in tensorboard) you may consider reducing the beta-prior in order to reduce the parameter space.
+
+**Q**. What's up with the `--training-column` argument?
+
+**A**. That is used for cross-validation if you have a specific reproducibility question that you are interested in answering.  If this is specified, only samples labeled "Train" under this column will be used for building the model and samples labeled "Test" will be used for cross validation.  In order words the model will attempt to predict the microbe abundances for the "Test" samples.  The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 10 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified.
+
+**Q**. How long should I expect this program to run?
+
+**A**. That primarily depends on a few things, namely how many samples and microbes are in your dataset, and the number of `--epoch` and the `--batch-size`.  The `--batch-size` specifies the number of samples to analyze for each iteration, and the `--epoch` specifies the number of total passes through the dataset.  For example, if you have a 100 samples in your dataset and you specify `--batch-size 5` and `--epochs 200`, then you will have `(100/5)*200=4000` iterations total. The large the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, you have decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). You will need to consult with Tensorboard to make sure that your model fit is sane.  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+
+**Q**. I'm confused, what is Tensorboard?
+
+**A**. Tensorboard is a diagnostic tool that runs in a web browser. To open tensorboard, make sure you’re in the songbird environment (`regression`) and `cd` into the folder you are running the script above from. Then run:
+
+> tensorboard --logdir .
+Returning line will look something like:
+TensorBoard 1.9.0 at http://Lisas-MacBook-Pro-2.local:6006 (Press CTRL+C to quit)
+
+Open the website (highlighted in red) in a browser. (Hint; if that doesn’t work try only putting only the bolded red part into the url, adding ‘host’, localhost:6006, that worked for me). Leave this tab alone. Now any songbird output directories that you add to the folder that tensorflow is running in will be added to the webpage.
+
+This should produce a website with 2 graphs, which tensorflow actively updates as songbird is running.
+![tensorboard](https://github.com/mortonjt/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
+
+FIRST GRAPH
+‘Prediction accuracy’
+Labelled  ‘accuracy/mean_absolute_error’
+
+
+This is a graph of the prediction accuracy of the model; the model will try to guess the count values for the training samples that were set aside in the script above, using only the metadata categories it has. Then it looks at the real values and sees how close it was.
+
+This is a graph of the prediction accuracy of the model; the model will try to guess the count values for the training samples that were set aside in the script above, using only the metadata categories it has. Then it looks at the real values and sees how close it was. 
+
+X-axis is # of iterations (meaning times the model is training across the entire dataset - every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis. 
+**Number of iterations = `--epoch #` multiplied by the `--batch-size` parameter**
+Y-axis is average # of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the example above it means that, on average, the model is off by ~16-17 counts, which is low. However, this is ABSOLUTE error not relative error (unfortunately we can’t do relative errors because of zeros)
+
+So how can you tell if this graph ‘looks good’?? 
+The raw numbers will be variable, so it is difficult to make a blanket statement, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau (further discussion below)
+
+SECOND graph
+‘Model fit’
+Its labelled ‘loss’ because ‘loss’ is the function being optimized = error of the training samples
+
+This graph represents how well the model fits your data.
+X-axis is # of iterations (meaning times the model is training across the entire dataset) like the first graph
+Y-axis is MINUS log probability of the model actually fitting - so LOWER is better (maximizing the probability = minimizing the negative log probability).
+
+What does a good model fit look like??
+
+Again the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (above example is a nice one).
+
+So how can you adjust your model to get nice exponential decays in both prediction accuracy and model fit??
+
+If you simply change a parameter and run again (under a different output file name) that graph will pop up on top of the first graphs in tensorflow! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph:
+
+It's recommended to start with a small formula (few variables in model) then increase, because it makes it easier to debug. If your graphs are going down but not exponentially and no plateauing, you should consider increasing the number of iterations by increasing `--epoch`
+
+If your graphs are going down but then going back up, it suggests overfitting; try reducing the number of variables in your formula, or reducing beta prior. As a rule of thumb, you should try not to keep the number of metadata categories less than 10% the number of samples (e.g. 100 samples, 10 metadata categories).
+
+So basically we want to futz around with the parameters until we see two nice exponential decay graphs.
+Once you have that, we can go into that directory and look at the ranks:
+
+
+
+Credits to Lisa Marotz (@lisa55asil) and Julia Gauglitz for the FAQs notes.
+
+
+
+
+# QIIME2 tutorial (In Progress)
 
 First make sure that qiime2 is installed before installing songbird.  Then run
 
@@ -97,6 +206,5 @@ qiime emperor biplot \
 You can view the resulting visualization at https://view.qiime2.org
 
 It should look as follows
-Inline-style:
 ![biplot](https://github.com/mortonjt/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
 
