@@ -31,7 +31,7 @@ def regression_biplot(coefficients: pd.DataFrame) -> skbio.OrdinationResults:
 def multinomial(table: biom.Table,
                 metadata: Metadata,
                 formula: str,
-                training_column: strxb = None,
+                training_column: str = None,
                 num_random_test_examples: int = 10,
                 epoch: int = 10,
                 batch_size: int = 5,
