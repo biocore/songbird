@@ -98,3 +98,36 @@ plugin.methods.register_function(
                  "covariates of interest."),
     citations=[]
 )
+
+plugin.visualizers.register_function(
+    # function=balance_taxonomy,
+    # inputs={'table': FeatureTable[Frequency], 'tree': Hierarchy,
+    #         'taxonomy': FeatureData[Taxonomy]},
+    # parameters={'balance_name': Str,
+    #             'taxa_level': Int,
+    #             'metadata': MetadataColumn[Categorical | Numeric],
+    #             'pseudocount': Float,
+    #             'n_features': Int,
+    #             'threshold': Float},
+    # input_descriptions={
+    #     'table': 'A table of abundances.',
+    #     'tree': 'The tree used to calculate the balances.',
+    #     'taxonomy': 'Taxonomy information for the OTUs.'
+    # },
+    # parameter_descriptions={
+    #     'balance_name': 'Name of the balance to summarize.',
+    #     'taxa_level': 'Level of taxonomy to summarize.',
+    #     'metadata': 'Metadata column for plotting the balance (optional).',
+    #     'n_features': 'The number of features to plot in the proportion plot.',
+    #     'pseudocount': 'The pseudocount to add to avoid division by zero.',
+    #     'threshold': ('A threshold to designate discrete categories '
+    #                   'for a numerical metadata column. This will split the '
+    #                   'numerical column values into two categories, values '
+    #                   'below the threshold, and values above the threshold. '
+    #                   'If not specified, this threshold will '
+    #                   'default to the mean.')
+    # },
+    # name='Balance Summary',
+    # description=("Visualize the distribution of a single balance "
+    #              "and summarize its numerator and denominator components.")
+)
