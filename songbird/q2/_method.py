@@ -32,15 +32,15 @@ def multinomial(table: biom.Table,
                 metadata: Metadata,
                 formula: str,
                 training_column: str = None,
-                num_random_test_examples: int=10,
-                epoch: int=10,
-                batch_size: int=5,
-                beta_prior: float=1,
-                learning_rate: float=0.1,
-                clipnorm: float=10,
-                min_sample_count: int=10,
-                min_feature_count: int=10,
-                summary_interval: int=60) -> (
+                num_random_test_examples: int = 10,
+                epoch: int = 10,
+                batch_size: int = 5,
+                beta_prior: float = 1,
+                learning_rate: float = 0.1,
+                clipnorm: float = 10,
+                min_sample_count: int = 10,
+                min_feature_count: int = 10,
+                summary_interval: int = 60) -> (
                     pd.DataFrame
                 ):
 
