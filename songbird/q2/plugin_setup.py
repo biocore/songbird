@@ -22,7 +22,8 @@ plugin = qiime2.plugin.Plugin(
     version=__version__,
     website="https://github.com/mortonjt/songbird",
     # citations=[citations['morton2017balance']],
-    short_description=('Plugin for building count regression models.'),
+    short_description=('Plugin for differential abundance analysis '
+                       'via count-based models.'),
     description=('This is a QIIME 2 plugin supporting statistical models on '
                  'feature tables and metadata.'),
     package='songbird')

@@ -27,7 +27,8 @@ classes = """
 """
 classifiers = [s.strip() for s in classes.split('\n') if s]
 
-description = ('Regression methods')
+description = ('Vanilla regression methods for microbiome'
+               'differential abundance analysis')
 
 # version parsing from __init__ pulled from Flask's setup.py
 # https://github.com/mitsuhiko/flask/blob/master/setup.py
