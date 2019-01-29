@@ -70,7 +70,7 @@ def multinomial(table: biom.Table,
     with tf.Graph().as_default(), tf.Session() as session:
         model(session, trainX, trainY, testX, testY)
 
-        model.fit(
+        loss, cv = model.fit(
             epoch=epoch,
             summary_interval=summary_interval,
             checkpoint_interval=None)
@@ -83,4 +83,6 @@ def multinomial(table: biom.Table,
     beta_ = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
     )
-    return beta_
+    convergence_stats = pd.DataFrame({'loglikehood': loss,
+                                      'cross-validation': cv})
+    return beta_, convergence_stats

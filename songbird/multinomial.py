@@ -4,6 +4,7 @@ from tensorflow.contrib.distributions import Multinomial, Normal
 from tqdm import tqdm
 import time
 import datetime
+import numpy as np
 
 
 class MultRegression(object):
@@ -111,7 +112,7 @@ class MultRegression(object):
             self.cv = tf.reduce_mean(
                 tf.squeeze(tf.abs(pred - self.Y_holdout))
             )
-            tf.summary.scalar('mean_absolute_error', self.cv)
+            tf.summary.scalar('cv_error', self.cv)
 
         self.loss = -(tf.reduce_sum(beta.log_prob(self.qbeta)) +
                       tf.reduce_sum(Y.log_prob(Y_batch)) *
@@ -158,6 +159,8 @@ class MultRegression(object):
         last_checkpoint_time = 0
         last_summary_time = 0
         saver = tf.train.Saver()
+        loss = []
+        cv = []
 
         for i in tqdm(range(0, num_iter)):
             now = time.time()
@@ -166,12 +169,15 @@ class MultRegression(object):
                 run_options = tf.RunOptions(
                     trace_level=tf.RunOptions.FULL_TRACE)
                 run_metadata = tf.RunMetadata()
-                _, summary, train_loss, grads = self.session.run(
+                _, summary, train_loss, test_cv, grads = self.session.run(
                     [self.train, self.merged,
-                     self.loss, self.gradients],
+                     self.loss, self.cv, self.gradients],
                     options=run_options,
                     run_metadata=run_metadata
                 )
+                cv.append(test_cv)
+                loss.append(train_loss)
+
                 if self.writer is not None:
                     self.writer.add_run_metadata(run_metadata, 'step%d' % i)
                     self.writer.add_summary(summary, i)
@@ -190,8 +196,11 @@ class MultRegression(object):
                                global_step=i)
                 last_checkpoint_time = now
 
-        train_loss, cv, B = self.session.run(
+        train_loss, test_cv, B = self.session.run(
             [self.loss, self.cv, self.qbeta]
         )
+        cv.append(test_cv)
+        loss.append(train_loss)
+
         self.B = B
-        return train_loss, cv
+        return np.array(loss), np.array(cv)

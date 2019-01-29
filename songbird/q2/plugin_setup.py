@@ -49,7 +49,9 @@ plugin.methods.register_function(
     },
     outputs=[
         ('coefficients',
-         FeatureTable[Composition % Properties('coefficients')])
+         FeatureTable[Composition % Properties('coefficients')]),
+        ('regression_stats',
+         SampleData[SongbirdStats])
     ],
     input_descriptions={
         'table': 'Input table of counts.',
@@ -106,24 +108,41 @@ plugin.visualizers.register_function(
     inputs={'convergence_stats': SampleData[SongbirdStats]
     },
     input_descriptions={
-        'results': ' from songbird',
-        'tree': 'The tree used to calculate the balances.',
-        'taxonomy': 'Taxonomy information for the OTUs.'
+        'feature-table': FeatureTable[Frequency],
+        'regression_stats': ('results from multinomial regression '
+                             'model'),
     },
     parameter_descriptions={
-        'balance_name': 'Name of the balance to summarize.',
-        'taxa_level': 'Level of taxonomy to summarize.',
-        'metadata': 'Metadata column for plotting the balance (optional).',
-        'n_features': 'The number of features to plot in the proportion plot.',
-        'pseudocount': 'The pseudocount to add to avoid division by zero.',
-        'threshold': ('A threshold to designate discrete categories '
-                      'for a numerical metadata column. This will split the '
-                      'numerical column values into two categories, values '
-                      'below the threshold, and values above the threshold. '
-                      'If not specified, this threshold will '
-                      'default to the mean.')
+        'feature-table': ('Input biom table that was used for the '
+                          'regression analysis.'),
+        'regression_stats': ('results from multinomial regression '
+                             'for reference model')
     },
-    name='Balance Summary',
-    description=("Visualize the distribution of a single balance "
-                 "and summarize its numerator and denominator components.")
+    name='Regression summary statistics',
+    description=("Visualize the convergence statistics of regression fit "
+                 "including cross validation accuracy and the loglikehood
+                 over the iterations")
+)
+
+plugin.visualizers.register_function(
+    function=paired_summary,
+    inputs={
+        'feature-table': FeatureTable[Frequency],
+        'regression_stats': SampleData[SongbirdStats],
+        'baseline_stats': SampleData[SongbirdStats]
+    },
+    input_descriptions={
+        'feature-table': ('Input biom table that was used for the '
+                          'regression analysis.')
+        'regression_stats': ('results from multinomial regression '
+                             'for reference model'),
+        'baseline_stats': ('results from multinomial regression '
+                           'for baseline model')
+    },
+    parameter_descriptions={
+    },
+    name='Paired regression summary statistics',
+    description=("Visualize the convergence statistics of regression fit "
+                 "including cross validation accuracy, loglikehood over the "
+                 "iterations and the R2.")
 )

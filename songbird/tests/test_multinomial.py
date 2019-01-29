@@ -33,7 +33,9 @@ class TestMultRegression(unittest.TestCase):
         testY = Y[-5:]
         with tf.Graph().as_default(), tf.Session() as session:
             model(session, trainX, trainY, testX, testY)
-            model.fit(epoch=int(50000))
+            loss, cv = model.fit(epoch=int(50000))
+        self.assertGreater(len(loss), 1)
+        self.assertGreater(len(cv), 1)
         npt.assert_allclose(self.beta, model.B.T, atol=0.1, rtol=0.1)
 
 
