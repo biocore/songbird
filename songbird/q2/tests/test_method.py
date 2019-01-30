@@ -38,39 +38,6 @@ class TestMultinomial(unittest.TestCase):
         self.assertGreater(len(res_stats.index), 1)
 
 
-class TestSummary(unittest.TestCase):
-
-    def setUp(self):
-        res = random_multinomial_model(
-            num_samples=50, num_features=5,
-            reps=1,
-            low=-1, high=1,
-            beta_mean=0,
-            beta_scale=1,
-            mu=1000,  # sequencing depth
-            sigma=0.5,
-            seed=0)
-        self.table, self.md, self.beta = res
-
-        tf.set_random_seed(0)
-        md = self.md
-        md.name = 'sampleid'
-        md = qiime2.Metadata(md)
-        self.ref_beta, self.ref_stats = multinomial(
-            table=self.table, metadata=md,
-            formula="X", epoch=50000)
-
-        self.base_beta, self.base_stats = multinomial(
-            table=self.table, metadata=md,
-            formula="1", epoch=50000)
-
-    def test_single_summary(self):
-        single_summary(self.table, self.ref_stats)
-
-    def test_paired_summary(self):
-        paired_summary(self.table, self.ref_stats, self.base_stats)
-
-
 class TestRegressionBiplot(unittest.TestCase):
 
     def setUp(self):

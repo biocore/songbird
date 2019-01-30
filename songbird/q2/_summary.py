@@ -1,3 +1,4 @@
+import os
 import biom
 import skbio
 import pandas as pd
@@ -12,20 +13,24 @@ from qiime2.plugin import Metadata
 
 
 def _convergence_plot(regression, baseline, ax0, ax1):
-        ax0.plot(iterations, np.array(regression['loglikehood']))
-        ax0.ylabel('Loglikehood', fontsize=14)
-        ax0.xlabel('# Iterations', fontsize=14)
+    iterations = np.arange(len(regression.index))
+    ax0.plot(iterations[1:], np.array(regression['loglikehood'])[1:])
+    ax0.set_ylabel('Loglikehood', fontsize=14)
+    ax0.set_xlabel('# Iterations', fontsize=14)
 
-        ax1.plot(iterations, np.array(regression['cross-validation'].values))
-        ax1.ylabel('Cross validation score', fontsize=14)
-        ax1.xlabel('# Iterations', fontsize=14)
+    ax1.plot(iterations[1:], np.array(regression['cross-validation'].values)[1:])
+    ax1.set_ylabel('Cross validation score', fontsize=14)
+    ax1.set_xlabel('# Iterations', fontsize=14)
 
 
-def _summarize(n, regression, baseline=None):
+def _summarize(output_dir: str, n: int,
+               regression: pd.DataFrame, baseline : pd.DataFrame=None):
     """ Helper method for generating summary pages
 
     Parameters
     ----------
+    output_dir : str
+       Name of output directory
     n : int
        Number of samples.
     regression : pd.DataFrame
@@ -34,27 +39,32 @@ def _summarize(n, regression, baseline=None):
     baseline : pd.DataFrame
        Baseline regression summary with column names
        ['loglikehood', 'cross-validation']
+
+    Note
+    ----
+    This assumes that the same summary interval was used
+    for both analyses.
     """
-    iterations = np.arange(regression)
 
     if baseline is None:
-        fig, ax = plt.figure(1, 2, figsize=(10, 10))
+        fig, ax = plt.subplots(2, 1, figsize=(10, 10))
         _convergence_plot(regression, baseline, ax[0], ax[1])
     else:
         # this provides a pseudo-r2 commonly provided in the context
         # of logistic / multinomail regression (proposed by Cox & Snell)
         # http://www3.stat.sinica.edu.tw/statistica/oldpdf/a16n39.pdf
-        D = np.array(regression['loglikehood'] - regression['loglikehood'])
+        bound = min(len(baseline.index), len(regression.index))
+        D = np.array(regression['loglikehood'][:bound] -
+                     baseline['loglikehood'][:bound])
         # need to normalize so that the max is 1.
-        rmax = 1 - np.exp(regression['loglikehood'] * 2 / n)
-        r2 = np.exp(-2 * D / n) / rmax
+        r2 = np.exp(2 * D / n)
 
-        fig, ax = plt.figure(1, 3, figsize=(10, 10))
+        fig, ax = plt.subplots(3, 1, figsize=(10, 10))
         _convergence_plot(regression, baseline, ax[0], ax[1])
-
-        ax[2].plot(iterations, r2)
-        ax[2].ylabel('Pseudo R-squared', fontsize=14)
-        ax[2].xlabel('# Iterations', fontsize=14)
+        iterations = np.arange(bound)
+        ax[2].plot(iterations[1:], r2[1:])
+        ax[2].set_ylabel('Pseudo R-squared', fontsize=14)
+        ax[2].set_xlabel('# Iterations', fontsize=14)
 
     plt.tight_layout()
     fig.savefig(os.path.join(output_dir, 'convergence-plot.svg'))
@@ -64,22 +74,18 @@ def _summarize(n, regression, baseline=None):
     with open(index_fp, 'w') as index_f:
         index_f.write('<html><body>\n')
         index_f.write('<h1>Convergence summary</h1>\n')
-        index_f.write('<img src="convergence-stats.svg" alt="heatmap">')
-        index_f.write('<a href="heatmap.pdf">')
+        index_f.write('<img src="convergence-plot.svg" alt="convergence_plots">')
+        index_f.write('<a href="convergence-plot.pdf">')
         index_f.write('Download as PDF</a><br>\n')
-        index_f.write('<style>%s</style>' % css)
-        index_f.write('<div class="square numerator">'
-                      'Numerator<br/></div>')
-        index_f.write('<div class="square denominator">'
-                      'Denominator<br/></div>')
-        index_f.write('</body></html>\n')
 
 
-def single_summary(table, regression):
+def single_summary(output_dir: str,  table : biom.Table,
+                   regression: pd.DataFrame):
     n = table.shape[1]
-    _summarize(n, regression)
+    _summarize(output_dir, n, regression)
 
 
-def paired_summary(table, regression, baseline):
+def paired_summary(output_dir: str, table : biom.Table,
+                   regression: pd.DataFrame, baseline: pd.DataFrame):
     n = table.shape[1]
-    _summarize(n, regression, baseline)
+    _summarize(output_dir, n, regression, baseline)
