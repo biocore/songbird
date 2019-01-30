@@ -48,6 +48,8 @@ def _summarize(output_dir: str, n: int,
 
     if baseline is None:
         fig, ax = plt.subplots(2, 1, figsize=(10, 10))
+        if len(baseline.index) != len(regression.index):
+            print('Warning: regression model and baseline model may not match.')
         _convergence_plot(regression, baseline, ax[0], ax[1])
     else:
         # this provides a pseudo-r2 commonly provided in the context
@@ -79,13 +81,14 @@ def _summarize(output_dir: str, n: int,
         index_f.write('Download as PDF</a><br>\n')
 
 
-def single_summary(output_dir: str,  table : biom.Table,
-                   regression: pd.DataFrame):
+def summarize_single(output_dir: str,  feature_table : biom.Table,
+                     regression_stats: pd.DataFrame):
     n = table.shape[1]
     _summarize(output_dir, n, regression)
 
 
-def paired_summary(output_dir: str, table : biom.Table,
-                   regression: pd.DataFrame, baseline: pd.DataFrame):
+def summarize_paired(output_dir: str, feature_table : biom.Table,
+                     regression_stats: pd.DataFrame,
+                     baseline_stats: pd.DataFrame):
     n = table.shape[1]
     _summarize(output_dir, n, regression, baseline)

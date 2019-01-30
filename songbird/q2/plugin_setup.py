@@ -12,8 +12,10 @@ from songbird import __version__
 from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
 from q2_types.feature_table import FeatureTable, Composition, Frequency
 from q2_types.ordination import PCoAResults
+from q2_types.sample_data import SampleData
 from songbird.q2 import (SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
-                         multinomial, regression_biplot)
+                         multinomial, regression_biplot,
+                         summarize_single, summarize_paired)
 
 
 # citations = qiime2.plugin.Citations.load(
@@ -104,36 +106,37 @@ plugin.methods.register_function(
 )
 
 plugin.visualizers.register_function(
-    function=single_summary,
-    inputs={'convergence_stats': SampleData[SongbirdStats]
+    function=summarize_single,
+    inputs={
+        'feature_table': FeatureTable[Frequency],
+        'regression_stats': SampleData[SongbirdStats]
     },
+    parameters={},
     input_descriptions={
-        'feature-table': FeatureTable[Frequency],
-        'regression_stats': ('results from multinomial regression '
-                             'model'),
-    },
-    parameter_descriptions={
-        'feature-table': ('Input biom table that was used for the '
+        'feature_table': ('Input biom table that was used for the '
                           'regression analysis.'),
         'regression_stats': ('results from multinomial regression '
                              'for reference model')
     },
+    parameter_descriptions={
+    },
     name='Regression summary statistics',
     description=("Visualize the convergence statistics of regression fit "
-                 "including cross validation accuracy and the loglikehood
-                 over the iterations")
+                 "including cross validation accuracy and the loglikehood "
+                 "over the iterations")
 )
 
 plugin.visualizers.register_function(
-    function=paired_summary,
+    function=summarize_paired,
     inputs={
-        'feature-table': FeatureTable[Frequency],
+        'feature_table': FeatureTable[Frequency],
         'regression_stats': SampleData[SongbirdStats],
         'baseline_stats': SampleData[SongbirdStats]
     },
+    parameters={},
     input_descriptions={
-        'feature-table': ('Input biom table that was used for the '
-                          'regression analysis.')
+        'feature_table': ('Input biom table that was used for the '
+                          'regression analysis.'),
         'regression_stats': ('results from multinomial regression '
                              'for reference model'),
         'baseline_stats': ('results from multinomial regression '

@@ -41,7 +41,7 @@ def multinomial(table: biom.Table,
                 min_sample_count: int = 10,
                 min_feature_count: int = 10,
                 summary_interval: int = 60) -> (
-                    pd.DataFrame
+                    pd.DataFrame, pd.DataFrame
                 ):
 
     # load metadata and tables
