@@ -1,30 +1,25 @@
 import os
 import biom
-import skbio
 import pandas as pd
 import numpy as np
-import tensorflow as tf
-from skbio import OrdinationResults
-from skbio.stats.composition import clr, clr_inv, centralize
-from songbird.multinomial import MultRegression
-from songbird.util import match_and_filter, split_training
 import matplotlib.pyplot as plt
-from qiime2.plugin import Metadata
 
 
 def _convergence_plot(regression, baseline, ax0, ax1):
     iterations = np.arange(len(regression.index))
-    ax0.plot(iterations[1:], np.array(regression['loglikehood'])[1:])
+    ax0.plot(iterations[1:],
+             np.array(regression['loglikehood'])[1:])
     ax0.set_ylabel('Loglikehood', fontsize=14)
     ax0.set_xlabel('# Iterations', fontsize=14)
 
-    ax1.plot(iterations[1:], np.array(regression['cross-validation'].values)[1:])
+    ax1.plot(iterations[1:],
+             np.array(regression['cross-validation'].values)[1:])
     ax1.set_ylabel('Cross validation score', fontsize=14)
     ax1.set_xlabel('# Iterations', fontsize=14)
 
 
 def _summarize(output_dir: str, n: int,
-               regression: pd.DataFrame, baseline : pd.DataFrame=None):
+               regression: pd.DataFrame, baseline: pd.DataFrame = None):
     """ Helper method for generating summary pages
 
     Parameters
@@ -49,7 +44,9 @@ def _summarize(output_dir: str, n: int,
     if baseline is None:
         fig, ax = plt.subplots(2, 1, figsize=(10, 10))
         if len(baseline.index) != len(regression.index):
-            print('Warning: regression model and baseline model may not match.')
+            print(
+                'Warning: regression model and baseline model may not match.'
+            )
         _convergence_plot(regression, baseline, ax[0], ax[1])
     else:
         # this provides a pseudo-r2 commonly provided in the context
@@ -76,19 +73,21 @@ def _summarize(output_dir: str, n: int,
     with open(index_fp, 'w') as index_f:
         index_f.write('<html><body>\n')
         index_f.write('<h1>Convergence summary</h1>\n')
-        index_f.write('<img src="convergence-plot.svg" alt="convergence_plots">')
+        index_f.write(
+            '<img src="convergence-plot.svg" alt="convergence_plots">'
+        )
         index_f.write('<a href="convergence-plot.pdf">')
         index_f.write('Download as PDF</a><br>\n')
 
 
-def summarize_single(output_dir: str,  feature_table : biom.Table,
+def summarize_single(output_dir: str,  feature_table: biom.Table,
                      regression_stats: pd.DataFrame):
-    n = table.shape[1]
-    _summarize(output_dir, n, regression)
+    n = feature_table.shape[1]
+    _summarize(output_dir, n, regression_stats)
 
 
-def summarize_paired(output_dir: str, feature_table : biom.Table,
+def summarize_paired(output_dir: str, feature_table: biom.Table,
                      regression_stats: pd.DataFrame,
                      baseline_stats: pd.DataFrame):
-    n = table.shape[1]
-    _summarize(output_dir, n, regression, baseline)
+    n = feature_table.shape[1]
+    _summarize(output_dir, n, regression_stats, baseline_stats)

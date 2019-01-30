@@ -3,7 +3,6 @@ import unittest
 import numpy as np
 import tensorflow as tf
 from songbird.q2._method import multinomial, regression_biplot
-from songbird.q2._summary import single_summary, paired_summary
 from songbird.util import random_multinomial_model
 
 from skbio import OrdinationResults

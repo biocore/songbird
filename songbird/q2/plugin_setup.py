@@ -13,9 +13,10 @@ from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
 from q2_types.feature_table import FeatureTable, Composition, Frequency
 from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
-from songbird.q2 import (SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
-                         multinomial, regression_biplot,
-                         summarize_single, summarize_paired)
+from songbird.q2 import (
+    SongbirdStats,
+    multinomial, regression_biplot,
+    summarize_single, summarize_paired)
 
 
 # citations = qiime2.plugin.Citations.load(

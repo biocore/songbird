@@ -2,7 +2,8 @@ from qiime2.plugin import SemanticType, model
 from q2_types.sample_data import SampleData
 
 
-SongbirdStats = SemanticType('SongbirdStats', variant_of=SampleData.field['type'])
+SongbirdStats = SemanticType('SongbirdStats',
+                             variant_of=SampleData.field['type'])
 
 
 class SongbirdStatsFormat(model.TextFileFormat):
