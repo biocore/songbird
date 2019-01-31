@@ -34,7 +34,7 @@ class TestMultinomial(unittest.TestCase):
         res_beta, res_stats = multinomial(table=self.table, metadata=md,
                                           formula="X", epoch=50000)
         npt.assert_allclose(exp_beta, res_beta.T, atol=0.5, rtol=0.5)
-        self.assertGreater(len(res_stats.index), 1)
+        self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
 
 class TestRegressionBiplot(unittest.TestCase):
