@@ -44,7 +44,7 @@ class TestSummary(unittest.TestCase):
 
     def test_summarize_single(self):
         summarize_single(self.results, self.table,
-                         qiime2.Metadata(self.ref_stats))
+                         self.ref_stats)
 
         index_fp = os.path.join(self.results, 'index.html')
         self.assertTrue(os.path.exists(index_fp))
@@ -58,10 +58,10 @@ class TestSummary(unittest.TestCase):
             )
             self.assertIn('<a href="convergence-plot.pdf">', html)
 
-    def test_summarized_paired(self):
-        summarized_paired(self.results, self.table,
-                          qiime2.Metadata(self.ref_stats),
-                          qiime2.Metadata(self.base_stats))
+    def test_summarize_paired(self):
+        summarize_paired(self.results, self.table,
+                         self.ref_stats,
+                         self.base_stats)
 
         index_fp = os.path.join(self.results, 'index.html')
         self.assertTrue(os.path.exists(index_fp))
