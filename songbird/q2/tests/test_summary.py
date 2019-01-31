@@ -79,7 +79,5 @@ class TestSummary(unittest.TestCase):
             self.assertIn('<a href="convergence-plot.pdf">', html)
 
 
-
-
 if __name__ == "__main__":
     unittest.main()
