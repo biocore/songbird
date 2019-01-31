@@ -43,7 +43,8 @@ class TestSummary(unittest.TestCase):
         shutil.rmtree(self.results)
 
     def test_summarize_single(self):
-        summarize_single(self.results, self.table, self.ref_stats)
+        summarize_single(self.results, self.table,
+                         qiime2.Metadata(self.ref_stats))
 
         index_fp = os.path.join(self.results, 'index.html')
         self.assertTrue(os.path.exists(index_fp))
@@ -59,7 +60,8 @@ class TestSummary(unittest.TestCase):
 
     def test_summarized_paired(self):
         summarized_paired(self.results, self.table,
-                          self.ref_stats, self.base_stats)
+                          qiime2.Metadata(self.ref_stats),
+                          qiime2.Metadata(self.base_stats))
 
         index_fp = os.path.join(self.results, 'index.html')
         self.assertTrue(os.path.exists(index_fp))
@@ -67,11 +69,16 @@ class TestSummary(unittest.TestCase):
         with open(index_fp, 'r') as fh:
             html = fh.read()
             self.assertIn('<h1>Convergence summary</h1>', html)
+            self.assertIn('Pseudo R-squared', html)
+            self.assertIn('Pseudo Q-squared', html)
+
             self.assertIn(
                 '<img src="convergence-plot.svg" alt="convergence_plots">',
                 html
             )
             self.assertIn('<a href="convergence-plot.pdf">', html)
+
+
 
 
 if __name__ == "__main__":
