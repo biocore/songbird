@@ -72,8 +72,14 @@ def _summarize(output_dir: str, n: int,
         l0 = np.mean(baseline['loglikehood'][-end:])
         lm = np.mean(regression['loglikehood'][-end:])
         D = lm - l0
-        # need to normalize so that the max is 1.
         r2 = np.exp(2 * D / n)
+
+        # compute a q2 score, which is commonly used in
+        # partial least squares for cross validation
+        l0 = np.mean(baseline['cross-validation'][-end:])
+        lm = np.mean(regression['cross-validation'][-end:])
+        D = lm - l0
+        q2 = np.exp(2 * D / n)
 
     plt.tight_layout()
     fig.savefig(os.path.join(output_dir, 'convergence-plot.svg'))
@@ -84,6 +90,9 @@ def _summarize(output_dir: str, n: int,
         index_f.write('<html><body>\n')
         index_f.write('<h1>Convergence summary</h1>\n')
         if r2 is not None:
+            index_f.write(
+                'Pseudo Q-squared: %f\n' % q2
+            )
             index_f.write(
                 'Pseudo R-squared: %f\n' % r2
             )
