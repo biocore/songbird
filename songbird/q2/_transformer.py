@@ -1,7 +1,7 @@
 import qiime2
 
-from q2_dada2 import SongbirdStatsFormat
-from q2_dada2.plugin_setup import plugin
+from songbird.q2 import SongbirdStatsFormat
+from songbird.q2.plugin_setup import plugin
 
 
 @plugin.register_transformer

@@ -5,4 +5,5 @@ from ._summary import summarize_single, summarize_paired
 
 __all__ = ['multinomial', 'regression_biplot',
            'summarize_single', 'summarize_paired',
-           'SongbirdStats', 'SongbirdStatsFormat', 'SongbirdStatsDirFmt']
+           'SongbirdStats', 'SongbirdStatsFormat',
+           'SongbirdStatsDirFmt']

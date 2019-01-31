@@ -1,5 +1,6 @@
 import biom
 import skbio
+import qiime2
 import pandas as pd
 import numpy as np
 import tensorflow as tf
@@ -41,7 +42,7 @@ def multinomial(table: biom.Table,
                 min_sample_count: int = 10,
                 min_feature_count: int = 10,
                 summary_interval: int = 60) -> (
-                    pd.DataFrame, pd.DataFrame
+                    pd.DataFrame, qiime2.Metadata
                 ):
 
     # load metadata and tables
@@ -70,7 +71,7 @@ def multinomial(table: biom.Table,
     with tf.Graph().as_default(), tf.Session() as session:
         model(session, trainX, trainY, testX, testY)
 
-        loss, cv = model.fit(
+        loss, cv, its = model.fit(
             epoch=epoch,
             summary_interval=summary_interval,
             checkpoint_interval=None)
@@ -83,6 +84,24 @@ def multinomial(table: biom.Table,
     beta_ = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
     )
-    convergence_stats = pd.DataFrame({'loglikehood': loss,
-                                      'cross-validation': cv})
-    return beta_, convergence_stats
+    convergence_stats = pd.DataFrame(
+        {
+            'loglikehood': loss,
+            'cross-validation': cv,
+            'iteration': its
+        }
+    )
+
+    convergence_stats.index.name = 'id'
+    convergence_stats.index = convergence_stats.index.astype(np.str)
+
+    c = convergence_stats['loglikehood'].astype(np.float)
+    convergence_stats['loglikehood'] = c
+
+    c = convergence_stats['cross-validation'].astype(np.float)
+    convergence_stats['cross-validation'] = c
+
+    c = convergence_stats['iteration'].astype(np.int)
+    convergence_stats['iteration'] = c
+
+    return beta_, qiime2.Metadata(convergence_stats)

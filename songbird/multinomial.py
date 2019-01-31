@@ -149,10 +149,12 @@ class MultRegression(object):
 
         Returns
         -------
-        loss: float
+        loss: np.array
             log likelihood loss.
-        cv : float
+        cv : np.array
             cross validation loss
+        iter_n : np.array
+            iterations
         """
         num_iter = (self.N // self.batch_size) * epoch
         cv = None
@@ -161,6 +163,7 @@ class MultRegression(object):
         saver = tf.train.Saver()
         loss = []
         cv = []
+        iter_n = []
 
         for i in tqdm(range(0, num_iter)):
             now = time.time()
@@ -177,6 +180,7 @@ class MultRegression(object):
                 )
                 cv.append(test_cv)
                 loss.append(train_loss)
+                iter_n.append(i)
 
                 if self.writer is not None:
                     self.writer.add_run_metadata(run_metadata, 'step%d' % i)
@@ -201,6 +205,7 @@ class MultRegression(object):
         )
         cv.append(test_cv)
         loss.append(train_loss)
+        iter_n.append(i)
 
         self.B = B
-        return np.array(loss), np.array(cv)
+        return np.array(loss), np.array(cv), np.array(iter_n)

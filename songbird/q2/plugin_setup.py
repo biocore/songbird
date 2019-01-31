@@ -5,6 +5,7 @@
 #
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
+import importlib
 import qiime2.plugin
 import qiime2.sdk
 from songbird import __version__
@@ -14,7 +15,7 @@ from q2_types.feature_table import FeatureTable, Composition, Frequency
 from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
 from songbird.q2 import (
-    SongbirdStats,
+    SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
     multinomial, regression_biplot,
     summarize_single, summarize_paired)
 
@@ -150,3 +151,9 @@ plugin.visualizers.register_function(
                  "including cross validation accuracy, loglikehood over the "
                  "iterations and the R2.")
 )
+
+plugin.register_formats(SongbirdStatsFormat, SongbirdStatsDirFmt)
+plugin.register_semantic_types(SongbirdStats)
+plugin.register_semantic_type_to_format(
+    SampleData[SongbirdStats], SongbirdStatsDirFmt)
+importlib.import_module('songbird.q2._transformer')
