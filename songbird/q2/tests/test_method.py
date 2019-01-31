@@ -4,6 +4,7 @@ import numpy as np
 import tensorflow as tf
 from songbird.q2._method import multinomial, regression_biplot
 from songbird.util import random_multinomial_model
+
 from skbio import OrdinationResults
 from skbio.stats.composition import clr, clr_inv, centralize
 import numpy.testing as npt
@@ -30,9 +31,10 @@ class TestMultinomial(unittest.TestCase):
         md.name = 'sampleid'
         md = qiime2.Metadata(md)
         exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
-        res_beta = multinomial(table=self.table, metadata=md,
-                               formula="X", epoch=50000)
+        res_beta, res_stats = multinomial(table=self.table, metadata=md,
+                                          formula="X", epoch=50000)
         npt.assert_allclose(exp_beta, res_beta.T, atol=0.5, rtol=0.5)
+        self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
 
 class TestRegressionBiplot(unittest.TestCase):

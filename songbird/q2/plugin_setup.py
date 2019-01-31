@@ -5,13 +5,19 @@
 #
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
+import importlib
 import qiime2.plugin
 import qiime2.sdk
 from songbird import __version__
-from ._method import multinomial, regression_biplot
+
 from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
 from q2_types.feature_table import FeatureTable, Composition, Frequency
 from q2_types.ordination import PCoAResults
+from q2_types.sample_data import SampleData
+from songbird.q2 import (
+    SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
+    multinomial, regression_biplot,
+    summarize_single, summarize_paired)
 
 
 # citations = qiime2.plugin.Citations.load(
@@ -47,7 +53,9 @@ plugin.methods.register_function(
     },
     outputs=[
         ('coefficients',
-         FeatureTable[Composition % Properties('coefficients')])
+         FeatureTable[Composition % Properties('coefficients')]),
+        ('regression_stats',
+         SampleData[SongbirdStats])
     ],
     input_descriptions={
         'table': 'Input table of counts.',
@@ -98,3 +106,54 @@ plugin.methods.register_function(
                  "covariates of interest."),
     citations=[]
 )
+
+plugin.visualizers.register_function(
+    function=summarize_single,
+    inputs={
+        'feature_table': FeatureTable[Frequency],
+        'regression_stats': SampleData[SongbirdStats]
+    },
+    parameters={},
+    input_descriptions={
+        'feature_table': ('Input biom table that was used for the '
+                          'regression analysis.'),
+        'regression_stats': ('results from multinomial regression '
+                             'for reference model')
+    },
+    parameter_descriptions={
+    },
+    name='Regression summary statistics',
+    description=("Visualize the convergence statistics of regression fit "
+                 "including cross validation accuracy and the loglikehood "
+                 "over the iterations")
+)
+
+plugin.visualizers.register_function(
+    function=summarize_paired,
+    inputs={
+        'feature_table': FeatureTable[Frequency],
+        'regression_stats': SampleData[SongbirdStats],
+        'baseline_stats': SampleData[SongbirdStats]
+    },
+    parameters={},
+    input_descriptions={
+        'feature_table': ('Input biom table that was used for the '
+                          'regression analysis.'),
+        'regression_stats': ('results from multinomial regression '
+                             'for reference model'),
+        'baseline_stats': ('results from multinomial regression '
+                           'for baseline model')
+    },
+    parameter_descriptions={
+    },
+    name='Paired regression summary statistics',
+    description=("Visualize the convergence statistics of regression fit "
+                 "including cross validation accuracy, loglikehood over the "
+                 "iterations and the R2.")
+)
+
+plugin.register_formats(SongbirdStatsFormat, SongbirdStatsDirFmt)
+plugin.register_semantic_types(SongbirdStats)
+plugin.register_semantic_type_to_format(
+    SampleData[SongbirdStats], SongbirdStatsDirFmt)
+importlib.import_module('songbird.q2._transformer')
