@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 
 
 def _convergence_plot(regression, baseline, ax0, ax1):
-    print(regression)
     iterations = np.array(regression['iteration'])
     ax0.plot(iterations[1:],
              np.array(regression['loglikehood'])[1:])
