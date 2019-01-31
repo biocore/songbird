@@ -71,7 +71,7 @@ def _summarize(output_dir: str, n: int,
         # trim only the last 10 numbers
         l0 = np.mean(baseline['loglikehood'][-end:])
         lm = np.mean(regression['loglikehood'][-end:])
-        D =  lm - l0
+        D = lm - l0
         # need to normalize so that the max is 1.
         r2 = np.exp(2 * D / n)
 
