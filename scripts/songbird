@@ -50,8 +50,8 @@ def songbird():
                     "for it to be included in the analysis"),
               default=1000)
 @click.option('--min-feature-count',
-              help=("The minimum number of counts a feature needs for "
-                    "it to be included in the analysis"),
+              help=("The minimum number of samples a feature must be"
+                    "present in to be included in the analysis"),
               default=5)
 @click.option('--checkpoint-interval',
               help=('Number of seconds before a saving a checkpoint'),
