@@ -170,7 +170,7 @@ as an example.  Starting from the songbird root folder, you can import this data
 
 ```
 qiime tools import \
-	--input-path data/redredsea.biom \
+	--input-path data/redsea/redsea.biom \
 	--output-path redsea.biom.qza \
 	--type FeatureTable[Frequency]
 ```
