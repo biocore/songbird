@@ -134,13 +134,13 @@ class MultRegression(object):
             self.writer = None
         tf.global_variables_initializer().run()
 
-    def fit(self, epoch=10, summary_interval=100, checkpoint_interval=3600):
+    def fit(self, epochs=10, summary_interval=100, checkpoint_interval=3600):
         """ Fits the model.
 
         Parameters
         ----------
-        epoch : int
-           Number of epochs to train
+        epochs : int
+           Number of epochss to train
         summary_interval : int
            Number of seconds until a summary is recorded
         checkpoint_interval : int
@@ -153,7 +153,7 @@ class MultRegression(object):
         cv : float
             cross validation loss
         """
-        num_iter = (self.N // self.batch_size) * epoch
+        num_iter = (self.N // self.batch_size) * epochs
         cv = None
         last_checkpoint_time = 0
         last_summary_time = 0

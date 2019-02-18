@@ -36,9 +36,9 @@ plugin.methods.register_function(
         'formula': Str,
         'training_column': Str,
         'num_random_test_examples': Int,
-        'epoch': Int,
+        'epochs': Int,
         'batch_size': Int,
-        'beta_prior': Float,
+        'differential_prior': Float,
         'learning_rate': Float,
         'clipnorm': Float,
         'min_sample_count': Int,
@@ -58,15 +58,16 @@ plugin.methods.register_function(
                     'included in the model and their interactions'),
         'num_random_test_examples': ("The number of random examples to select "
                                      "if `training_column` isn't specified"),
-        'epoch': ('The number of total number of iterations '
-                  'over the entire dataset'),
+        'epochs': ( 'The number of total number of iterations '
+                    'over the entire dataset'),
         'batch_size': ('The number of samples to be evaluated per '
                        'training iteration'),
-        'beta_prior': ('Width of normal prior for the coefficients '
-                       'Smaller values will regularize parameters towards '
-                       'zero. Values must be greater than 0.'),
+        'differential_prior': (
+            'Width of normal prior for the `differentials`, or '
+            'the coefficients of the multinomial regression. '
+            'Smaller values will force the coefficients towards zero. '
+            'Values must be greater than 0.'),
         'learning_rate': ('Gradient descent decay rate.'),
-
     },
     name='Multinomial regression',
     description=("Performs multinomial regression and calculates "

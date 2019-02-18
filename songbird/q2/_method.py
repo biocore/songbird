@@ -32,14 +32,14 @@ def multinomial(table: biom.Table,
                 metadata: Metadata,
                 formula: str,
                 training_column: str = None,
-                num_random_test_examples: int = 10,
-                epoch: int = 1000,
+                num_random_test_examples: int = 5,
+                epochs: int = 1000,
                 batch_size: int = 5,
-                beta_prior: float = 1,
+                differential_prior: float = 1,
                 learning_rate: float = 1e-3,
                 clipnorm: float = 10,
                 min_sample_count: int = 10,
-                min_feature_count: int = 10,
+                min_feature_count: int = 5,
                 summary_interval: int = 60) -> (
                     pd.DataFrame
                 ):
@@ -71,7 +71,7 @@ def multinomial(table: biom.Table,
         model(session, trainX, trainY, testX, testY)
 
         model.fit(
-            epoch=epoch,
+            epochs=epochs,
             summary_interval=summary_interval,
             checkpoint_interval=None)
 
