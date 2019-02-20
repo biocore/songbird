@@ -58,8 +58,8 @@ plugin.methods.register_function(
                     'included in the model and their interactions'),
         'num_random_test_examples': ("The number of random examples to select "
                                      "if `training_column` isn't specified"),
-        'epochs': ( 'The number of total number of iterations '
-                    'over the entire dataset'),
+        'epochs': ('The number of total number of iterations '
+                   'over the entire dataset'),
         'batch_size': ('The number of samples to be evaluated per '
                        'training iteration'),
         'differential_prior': (
