@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mortonjt/songbird.svg?branch=master)](https://travis-ci.org/mortonjt/songbird)
+
 # Installation
 First make sure to install Tensorflow, namely
 ```
