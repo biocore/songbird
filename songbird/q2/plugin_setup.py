@@ -16,6 +16,7 @@ from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
 from songbird.q2 import (
     SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
+    Differential, DifferentialFormat, DifferentialDirFmt,
     multinomial, regression_biplot,
     summarize_single, summarize_paired)
 
@@ -52,14 +53,19 @@ plugin.methods.register_function(
         'summary_interval': Int
     },
     outputs=[
-        ('coefficients',
-         FeatureTable[Composition % Properties('coefficients')]),
-        ('regression_stats',
-         SampleData[SongbirdStats])
+        ('differential', FeatureData[Differential]),
+        ('regression_stats', SampleData[SongbirdStats])
     ],
     input_descriptions={
         'table': 'Input table of counts.',
     },
+    output_descriptions={
+        'differential': ('Output differentials learned from the '
+                         'multinomial regression.'),
+        'regression_stats': ('Summary information about the loss '
+                             'and cross validation error over iterations.'),
+        'regression-biplot': ('A biplot of the regression coefficients')
+    }
     parameter_descriptions={
         'metadata': 'Sample metadata table with covariates of interest.',
         'formula': ('The statistical formula specifying covariates to be '
@@ -78,30 +84,6 @@ plugin.methods.register_function(
         'learning_rate': ('Gradient descent decay rate.'),
     },
     name='Multinomial regression',
-    description=("Performs multinomial regression and calculates "
-                 "rank differentials for organisms with respect to the "
-                 "covariates of interest."),
-    citations=[]
-)
-
-
-plugin.methods.register_function(
-    function=regression_biplot,
-    inputs={
-        'coefficients': FeatureTable[Composition % Properties('coefficients')]
-    },
-    parameters={},
-    outputs=[
-        ('biplot', PCoAResults % Properties("biplot"))
-    ],
-    input_descriptions={
-        'coefficients': 'Input table of coefficients',
-    },
-    parameter_descriptions={},
-    output_descriptions={
-        'biplot': ('A biplot of the regression coefficients')
-    },
-    name='Builds Multinomial regression biplot',
     description=("Performs multinomial regression and calculates "
                  "rank differentials for organisms with respect to the "
                  "covariates of interest."),

@@ -11,24 +11,6 @@ from songbird.util import match_and_filter, split_training
 from qiime2.plugin import Metadata
 
 
-def regression_biplot(coefficients: pd.DataFrame) -> skbio.OrdinationResults:
-    coefs = clr(centralize(clr_inv(coefficients)))
-    u, s, v = np.linalg.svd(coefs)
-    pc_ids = ['PC%d' % i for i in range(len(s))]
-    samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
-                           columns=pc_ids, index=coefficients.index)
-    features = pd.DataFrame(v.T[:, :len(s)],
-                            columns=pc_ids, index=coefficients.columns)
-    short_method_name = 'regression_biplot'
-    long_method_name = 'Multinomial regression biplot'
-    eigvals = pd.Series(s, index=pc_ids)
-    proportion_explained = eigvals / eigvals.sum()
-    res = OrdinationResults(short_method_name, long_method_name, eigvals,
-                            samples=samples, features=features,
-                            proportion_explained=proportion_explained)
-    return res
-
-
 def multinomial(table: biom.Table,
                 metadata: Metadata,
                 formula: str,
@@ -42,7 +24,7 @@ def multinomial(table: biom.Table,
                 min_sample_count: int = 10,
                 min_feature_count: int = 5,
                 summary_interval: int = 60) -> (
-                    pd.DataFrame, qiime2.Metadata
+                    pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
 
     # load metadata and tables
@@ -71,13 +53,8 @@ def multinomial(table: biom.Table,
     with tf.Graph().as_default(), tf.Session() as session:
         model(session, trainX, trainY, testX, testY)
 
-<<<<<<< HEAD
         loss, cv, its = model.fit(
-            epoch=epoch,
-=======
-        model.fit(
             epochs=epochs,
->>>>>>> 2c3bc52d10a09f92b496bb9d6475fb00d68de03d
             summary_interval=summary_interval,
             checkpoint_interval=None)
 
@@ -86,7 +63,7 @@ def multinomial(table: biom.Table,
 
     beta_ = clr(clr_inv(np.hstack((np.zeros((model.p, 1)), model.B))))
 
-    beta_ = pd.DataFrame(
+    differential = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
     )
     convergence_stats = pd.DataFrame(
@@ -109,4 +86,21 @@ def multinomial(table: biom.Table,
     c = convergence_stats['iteration'].astype(np.int)
     convergence_stats['iteration'] = c
 
-    return beta_, qiime2.Metadata(convergence_stats)
+    # regression biplot
+    coefs = clr(centralize(clr_inv(differential)))
+    u, s, v = np.linalg.svd(coefs)
+    pc_ids = ['PC%d' % i for i in range(len(s))]
+    samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
+                           columns=pc_ids, index=differential.index)
+    features = pd.DataFrame(v.T[:, :len(s)],
+                            columns=pc_ids, index=differential.columns)
+    short_method_name = 'regression_biplot'
+    long_method_name = 'Multinomial regression biplot'
+    eigvals = pd.Series(s, index=pc_ids)
+    proportion_explained = eigvals / eigvals.sum()
+    biplot = OrdinationResults(
+        short_method_name, long_method_name, eigvals,
+        samples=samples, features=features,
+        proportion_explained=proportion_explained)
+
+    return differential, qiime2.Metadata(convergence_stats), biplot
