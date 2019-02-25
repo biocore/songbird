@@ -6,7 +6,7 @@ from songbird.q2._method import multinomial
 from songbird.util import random_multinomial_model
 
 from skbio import OrdinationResults
-from skbio.stats.composition import clr, clr_inv, centralize
+from skbio.stats.composition import clr, clr_inv
 import numpy.testing as npt
 
 
@@ -40,11 +40,10 @@ class TestMultinomial(unittest.TestCase):
         self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
         # test biplot
-        self.assertIsInstance(res, OrdinationResults)
-        self.assertIsInstance(res, OrdinationResults)
-        u = res.samples.values
-        v = res.features.values.T
-        npt.assert_allclose(u @ v, np.array(exp), atol=0.5, rtol=0.5)
+        self.assertIsInstance(res_biplot, OrdinationResults)
+        u = res_biplot.samples.values
+        v = res_biplot.features.values.T
+        npt.assert_allclose(u @ v, np.array(exp_beta), atol=0.5, rtol=0.5)
 
 
 if __name__ == "__main__":
