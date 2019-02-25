@@ -71,13 +71,8 @@ def multinomial(table: biom.Table,
     with tf.Graph().as_default(), tf.Session() as session:
         model(session, trainX, trainY, testX, testY)
 
-<<<<<<< HEAD
         loss, cv, its = model.fit(
             epoch=epoch,
-=======
-        model.fit(
-            epochs=epochs,
->>>>>>> 2c3bc52d10a09f92b496bb9d6475fb00d68de03d
             summary_interval=summary_interval,
             checkpoint_interval=None)
 
