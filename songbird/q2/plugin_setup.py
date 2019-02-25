@@ -14,11 +14,12 @@ from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
 from q2_types.feature_table import FeatureTable, Composition, Frequency
 from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
+from q2_types.feature_data import FeatureData
 from songbird.q2 import (
     SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
     Differential, DifferentialFormat, DifferentialDirFmt,
-    multinomial, regression_biplot,
-    summarize_single, summarize_paired)
+    multinomial, summarize_single, summarize_paired
+)
 
 
 # citations = qiime2.plugin.Citations.load(
@@ -54,7 +55,8 @@ plugin.methods.register_function(
     },
     outputs=[
         ('differential', FeatureData[Differential]),
-        ('regression_stats', SampleData[SongbirdStats])
+        ('regression_stats', SampleData[SongbirdStats]),
+        ('regression_biplot', PCoAResults % Properties('biplot'))
     ],
     input_descriptions={
         'table': 'Input table of counts.',
@@ -65,7 +67,7 @@ plugin.methods.register_function(
         'regression_stats': ('Summary information about the loss '
                              'and cross validation error over iterations.'),
         'regression-biplot': ('A biplot of the regression coefficients')
-    }
+    },
     parameter_descriptions={
         'metadata': 'Sample metadata table with covariates of interest.',
         'formula': ('The statistical formula specifying covariates to be '
