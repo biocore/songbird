@@ -72,7 +72,7 @@ def multinomial(table: biom.Table,
         model(session, trainX, trainY, testX, testY)
 
         loss, cv, its = model.fit(
-            epoch=epoch,
+            epochs=epochs,
             summary_interval=summary_interval,
             checkpoint_interval=None)
 
