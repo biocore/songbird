@@ -31,9 +31,10 @@ class TestMultinomial(unittest.TestCase):
         md.name = 'sampleid'
         md = qiime2.Metadata(md)
         exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
+
         res_beta, res_stats = multinomial(table=self.table, metadata=md,
-                                          formula="X", epoch=50000)
-        npt.assert_allclose(exp_beta, res_beta.T, atol=0.5, rtol=0.5)
+                                          formula="X", epochs=100000)
+        npt.assert_allclose(exp_beta, res_beta.T, atol=0.6, rtol=0.6)
         self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
 
