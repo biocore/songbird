@@ -66,7 +66,7 @@ plugin.methods.register_function(
                          'multinomial regression.'),
         'regression_stats': ('Summary information about the loss '
                              'and cross validation error over iterations.'),
-        'regression-biplot': ('A biplot of the regression coefficients')
+        'regression_biplot': ('A biplot of the regression coefficients')
     },
     parameter_descriptions={
         'metadata': 'Sample metadata table with covariates of interest.',
