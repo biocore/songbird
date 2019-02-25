@@ -1,4 +1,5 @@
 import qiime2
+import pandas as pd
 
 from songbird.q2 import SongbirdStatsFormat, DifferentialFormat
 from songbird.q2.plugin_setup import plugin
@@ -15,11 +16,13 @@ def _2(obj: qiime2.Metadata) -> SongbirdStatsFormat:
     return ff
 
 @plugin.register_transformer
-def _3(ff: DifferentialFormat) -> qiime2.Metadata:
-    return qiime2.Metadata.load(str(ff))
+def _3(ff: DifferentialFormat) -> pd.DataFrame:
+    df = pd.read_csv(str(ff), sep='\t', comment='#', skip_blank_lines=True,
+                     header=True, dtype=object)
+    return df
 
 @plugin.register_transformer
-def _4(obj: qiime2.Metadata) -> DifferentialFormat:
-    ff = SongbirdStatsFormat()
-    obj.save(str(ff))
+def _4(df: pd.DataFrame) -> DifferentialFormat:
+    ff = DifferentialFormat()
+    df.to_csv(str(ff), sep='\t', header=True, index=True)
     return ff

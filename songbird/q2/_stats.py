@@ -25,4 +25,4 @@ class DifferentialFormat(model.TextFileFormat):
         pass
 
 DifferentialDirFmt = model.SingleFileDirectoryFormat(
-    'DifferentialDirFmt', 'differential.tsv', SongbirdStatsFormat)
+    'DifferentialDirFmt', 'differential.tsv', DifferentialFormat)

@@ -137,8 +137,15 @@ plugin.visualizers.register_function(
                  "iterations and the R2.")
 )
 
+# Register types
 plugin.register_formats(SongbirdStatsFormat, SongbirdStatsDirFmt)
 plugin.register_semantic_types(SongbirdStats)
 plugin.register_semantic_type_to_format(
     SampleData[SongbirdStats], SongbirdStatsDirFmt)
+
+plugin.register_formats(DifferentialFormat, DifferentialDirFmt)
+plugin.register_semantic_types(Differential)
+plugin.register_semantic_type_to_format(
+    FeatureData[Differential], DifferentialDirFmt)
+
 importlib.import_module('songbird.q2._transformer')
