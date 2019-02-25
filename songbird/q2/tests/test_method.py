@@ -43,7 +43,7 @@ class TestMultinomial(unittest.TestCase):
         self.assertIsInstance(res_biplot, OrdinationResults)
         u = res_biplot.samples.values
         v = res_biplot.features.values.T
-        npt.assert_allclose(u @ v, np.array(exp_beta), atol=0.5, rtol=0.5)
+        npt.assert_allclose(u @ v, np.array(res_beta), atol=0.5, rtol=0.5)
 
 
 if __name__ == "__main__":

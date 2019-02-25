@@ -87,20 +87,24 @@ def multinomial(table: biom.Table,
     convergence_stats['iteration'] = c
 
     # regression biplot
-    coefs = clr(centralize(clr_inv(differential)))
-    u, s, v = np.linalg.svd(coefs)
-    pc_ids = ['PC%d' % i for i in range(len(s))]
-    samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
-                           columns=pc_ids, index=differential.index)
-    features = pd.DataFrame(v.T[:, :len(s)],
-                            columns=pc_ids, index=differential.columns)
-    short_method_name = 'regression_biplot'
-    long_method_name = 'Multinomial regression biplot'
-    eigvals = pd.Series(s, index=pc_ids)
-    proportion_explained = eigvals / eigvals.sum()
-    biplot = OrdinationResults(
-        short_method_name, long_method_name, eigvals,
-        samples=samples, features=features,
-        proportion_explained=proportion_explained)
+    if differential.shape[-1] > 1:
+        coefs = clr(centralize(clr_inv(differential)))
+        u, s, v = np.linalg.svd(coefs)
+        pc_ids = ['PC%d' % i for i in range(len(s))]
+        samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
+                               columns=pc_ids, index=differential.index)
+        features = pd.DataFrame(v.T[:, :len(s)],
+                                columns=pc_ids, index=differential.columns)
+        short_method_name = 'regression_biplot'
+        long_method_name = 'Multinomial regression biplot'
+        eigvals = pd.Series(s, index=pc_ids)
+        proportion_explained = eigvals / eigvals.sum()
+        biplot = OrdinationResults(
+            short_method_name, long_method_name, eigvals,
+            samples=samples, features=features,
+            proportion_explained=proportion_explained)
+    else:
+        # this is to handle the edge case with only intercepts
+        biplot = OrdinationResults('', '', pd.Series(), pd.DataFrame())
 
     return differential, qiime2.Metadata(convergence_stats), biplot
