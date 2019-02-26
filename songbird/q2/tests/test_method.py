@@ -6,7 +6,7 @@ from songbird.q2._method import multinomial
 from songbird.util import random_multinomial_model
 
 from skbio import OrdinationResults
-from skbio.stats.composition import clr, clr_inv, centralize
+from skbio.stats.composition import clr, clr_inv
 import numpy.testing as npt
 
 
@@ -40,7 +40,6 @@ class TestMultinomial(unittest.TestCase):
         self.assertIsInstance(res_biplot, OrdinationResults)
         u = res_biplot.samples.values
         v = res_biplot.features.values.T
-        s = res_biplot.eigvals
         npt.assert_allclose(u @ v, res_beta.values,
                             atol=0.5, rtol=0.5)
 
