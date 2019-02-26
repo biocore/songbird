@@ -88,8 +88,7 @@ def multinomial(table: biom.Table,
 
     # regression biplot
     if differential.shape[-1] > 1:
-        coefs = clr(centralize(clr_inv(differential)))
-        u, s, v = np.linalg.svd(coefs)
+        u, s, v = np.linalg.svd(differential)
         pc_ids = ['PC%d' % i for i in range(len(s))]
         samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
                                columns=pc_ids, index=differential.index)
@@ -98,7 +97,7 @@ def multinomial(table: biom.Table,
         short_method_name = 'regression_biplot'
         long_method_name = 'Multinomial regression biplot'
         eigvals = pd.Series(s, index=pc_ids)
-        proportion_explained = eigvals / eigvals.sum()
+        proportion_explained = eigvals**2 / (eigvals**2).sum()
         biplot = OrdinationResults(
             short_method_name, long_method_name, eigvals,
             samples=samples, features=features,
