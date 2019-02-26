@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from skbio import OrdinationResults
-from skbio.stats.composition import clr, clr_inv, centralize
+from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
 from songbird.util import match_and_filter, split_training
 from qiime2.plugin import Metadata
