@@ -5,28 +5,10 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from skbio import OrdinationResults
-from skbio.stats.composition import clr, clr_inv, centralize
+from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
 from songbird.util import match_and_filter, split_training
 from qiime2.plugin import Metadata
-
-
-def regression_biplot(coefficients: pd.DataFrame) -> skbio.OrdinationResults:
-    coefs = clr(centralize(clr_inv(coefficients)))
-    u, s, v = np.linalg.svd(coefs)
-    pc_ids = ['PC%d' % i for i in range(len(s))]
-    samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
-                           columns=pc_ids, index=coefficients.index)
-    features = pd.DataFrame(v.T[:, :len(s)],
-                            columns=pc_ids, index=coefficients.columns)
-    short_method_name = 'regression_biplot'
-    long_method_name = 'Multinomial regression biplot'
-    eigvals = pd.Series(s, index=pc_ids)
-    proportion_explained = eigvals / eigvals.sum()
-    res = OrdinationResults(short_method_name, long_method_name, eigvals,
-                            samples=samples, features=features,
-                            proportion_explained=proportion_explained)
-    return res
 
 
 def multinomial(table: biom.Table,
@@ -42,7 +24,7 @@ def multinomial(table: biom.Table,
                 min_sample_count: int = 10,
                 min_feature_count: int = 5,
                 summary_interval: int = 60) -> (
-                    pd.DataFrame, qiime2.Metadata
+                    pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
 
     # load metadata and tables
@@ -81,7 +63,7 @@ def multinomial(table: biom.Table,
 
     beta_ = clr(clr_inv(np.hstack((np.zeros((model.p, 1)), model.B))))
 
-    beta_ = pd.DataFrame(
+    differential = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
     )
     convergence_stats = pd.DataFrame(
@@ -104,4 +86,24 @@ def multinomial(table: biom.Table,
     c = convergence_stats['iteration'].astype(np.int)
     convergence_stats['iteration'] = c
 
-    return beta_, qiime2.Metadata(convergence_stats)
+    # regression biplot
+    if differential.shape[-1] > 1:
+        u, s, v = np.linalg.svd(differential)
+        pc_ids = ['PC%d' % i for i in range(len(s))]
+        samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
+                               columns=pc_ids, index=differential.index)
+        features = pd.DataFrame(v.T[:, :len(s)],
+                                columns=pc_ids, index=differential.columns)
+        short_method_name = 'regression_biplot'
+        long_method_name = 'Multinomial regression biplot'
+        eigvals = pd.Series(s, index=pc_ids)
+        proportion_explained = eigvals**2 / (eigvals**2).sum()
+        biplot = OrdinationResults(
+            short_method_name, long_method_name, eigvals,
+            samples=samples, features=features,
+            proportion_explained=proportion_explained)
+    else:
+        # this is to handle the edge case with only intercepts
+        biplot = OrdinationResults('', '', pd.Series(), pd.DataFrame())
+
+    return differential, qiime2.Metadata(convergence_stats), biplot

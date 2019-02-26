@@ -26,12 +26,12 @@ class TestSummary(unittest.TestCase):
         md = self.md
         md.name = 'sampleid'
         md = qiime2.Metadata(md)
-        self.ref_beta, self.ref_stats = multinomial(
+        self.ref_beta, self.ref_stats, _ = multinomial(
             table=self.table, metadata=md,
             summary_interval=1,
             formula="X", epochs=50000)
 
-        self.base_beta, self.base_stats = multinomial(
+        self.base_beta, self.base_stats, _ = multinomial(
             table=self.table, metadata=md,
             summary_interval=1,
             formula="1", epochs=50000)

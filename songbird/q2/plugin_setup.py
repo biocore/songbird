@@ -11,13 +11,15 @@ import qiime2.sdk
 from songbird import __version__
 
 from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
-from q2_types.feature_table import FeatureTable, Composition, Frequency
+from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
+from q2_types.feature_data import FeatureData
 from songbird.q2 import (
     SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
-    multinomial, regression_biplot,
-    summarize_single, summarize_paired)
+    Differential, DifferentialFormat, DifferentialDirFmt,
+    multinomial, summarize_single, summarize_paired
+)
 
 
 # citations = qiime2.plugin.Citations.load(
@@ -52,13 +54,19 @@ plugin.methods.register_function(
         'summary_interval': Int
     },
     outputs=[
-        ('coefficients',
-         FeatureTable[Composition % Properties('coefficients')]),
-        ('regression_stats',
-         SampleData[SongbirdStats])
+        ('differential', FeatureData[Differential]),
+        ('regression_stats', SampleData[SongbirdStats]),
+        ('regression_biplot', PCoAResults % Properties('biplot'))
     ],
     input_descriptions={
         'table': 'Input table of counts.',
+    },
+    output_descriptions={
+        'differential': ('Output differentials learned from the '
+                         'multinomial regression.'),
+        'regression_stats': ('Summary information about the loss '
+                             'and cross validation error over iterations.'),
+        'regression_biplot': ('A biplot of the regression coefficients')
     },
     parameter_descriptions={
         'metadata': 'Sample metadata table with covariates of interest.',
@@ -78,30 +86,6 @@ plugin.methods.register_function(
         'learning_rate': ('Gradient descent decay rate.'),
     },
     name='Multinomial regression',
-    description=("Performs multinomial regression and calculates "
-                 "rank differentials for organisms with respect to the "
-                 "covariates of interest."),
-    citations=[]
-)
-
-
-plugin.methods.register_function(
-    function=regression_biplot,
-    inputs={
-        'coefficients': FeatureTable[Composition % Properties('coefficients')]
-    },
-    parameters={},
-    outputs=[
-        ('biplot', PCoAResults % Properties("biplot"))
-    ],
-    input_descriptions={
-        'coefficients': 'Input table of coefficients',
-    },
-    parameter_descriptions={},
-    output_descriptions={
-        'biplot': ('A biplot of the regression coefficients')
-    },
-    name='Builds Multinomial regression biplot',
     description=("Performs multinomial regression and calculates "
                  "rank differentials for organisms with respect to the "
                  "covariates of interest."),
@@ -153,8 +137,15 @@ plugin.visualizers.register_function(
                  "iterations and the R2.")
 )
 
+# Register types
 plugin.register_formats(SongbirdStatsFormat, SongbirdStatsDirFmt)
 plugin.register_semantic_types(SongbirdStats)
 plugin.register_semantic_type_to_format(
     SampleData[SongbirdStats], SongbirdStatsDirFmt)
+
+plugin.register_formats(DifferentialFormat, DifferentialDirFmt)
+plugin.register_semantic_types(Differential)
+plugin.register_semantic_type_to_format(
+    FeatureData[Differential], DifferentialDirFmt)
+
 importlib.import_module('songbird.q2._transformer')
