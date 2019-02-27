@@ -170,7 +170,7 @@ qiime dev refresh-cache
 ```
 
 Once qiime2 is properly interfaced with songbird, you can import your biom tables
-into Artifacts.  Here we will be using the [Redsea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/)
+into Artifacts.  Here we will be using a subset of the [Redsea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/)
 as an example.  Starting from the songbird root folder, you can import this dataset as follows
 
 ```
@@ -200,26 +200,31 @@ qiime songbird summarize-single \
     --i-regression-stats regression-stats.qza \
     --o-visualization regression-summary
 ```
+Are you able to see anything in your summary?  It is possible that your summary interval is not set correctly!
+By default, it is set to 1 minute, so that it can take a measure every minute - but here you ran for just a few seconds!
+Try setting `--p-summary-interval 1` to record the loss at every second and set `--p-epochs 5000` to make it run longer in the `multinomial` command.  Now try to summarize these new results.
+
 One can also generate Rsquared values by comparing it to a baseline model as follows
 ```
 qiime songbird multinomial \
-	--i-table redsea.biom.qza \
-	--m-metadata-file data/redsea/redsea_metadata.txt \
-	--p-formula "1" \
-	--o-differential baseline-diff.qza \
-	--o-regression-stats baseline-stats.qza \
-	--o-regression-biplot baseline-biplot.qza
+    --i-table redsea.biom.qza \
+    --m-metadata-file data/redsea/redsea_metadata.txt \
+    --p-formula "1" \
+    --p-epochs 5000 \
+    --p-summary-interval 1 \
+    --o-differential baseline-diff.qza \
+    --o-regression-stats baseline-stats.qza \
+    --o-regression-biplot baseline-biplot.qza
 
 qiime songbird summarize-paired \
     --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
     --i-baseline-stats baseline-stats.qza \
-    --o-visualization regression-summary
+    --o-visualization paired-summary
 ```
 
 The baseline model above just looks at the means (i.e. intercept), to determine how much better the first model can perform compared to the baseline model.
 But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The Qsquared value is the predictive accuracy estimated from the samples left out of the regression fit.
-
 
 The resulting differentials learned from the regression model can be visualized as a biplot, given from `regression-biplot.qza`.  You can directly visualize this in emperor
 
@@ -234,6 +239,5 @@ qiime emperor biplot \
 
 You can view the resulting visualization at https://view.qiime2.org
 
-It should look as follows
+Running these models on the full dataset can yield something similar to as follows
 ![biplot](https://github.com/mortonjt/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
-
