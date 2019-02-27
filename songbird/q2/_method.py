@@ -21,8 +21,8 @@ def multinomial(table: biom.Table,
                 differential_prior: float = 1,
                 learning_rate: float = 1e-3,
                 clipnorm: float = 10,
-                min_sample_count: int = 10,
-                min_feature_count: int = 5,
+                min_sample_count: int = 1000,
+                min_feature_count: int = 10,
                 summary_interval: int = 60) -> (
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
@@ -89,6 +89,7 @@ def multinomial(table: biom.Table,
     # regression biplot
     if differential.shape[-1] > 1:
         u, s, v = np.linalg.svd(differential)
+        N = u.shape[0] - 1
         pc_ids = ['PC%d' % i for i in range(len(s))]
         samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
                                columns=pc_ids, index=differential.index)

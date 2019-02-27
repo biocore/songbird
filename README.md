@@ -118,14 +118,14 @@ FIRST graph in Tensorflow; 'Prediction accuracy'. Labelled  ‘accuracy/mean_abs
 
 This is a graph of the prediction accuracy of the model; the model will try to guess the count values for the training samples that were set aside in the script above, using only the metadata categories it has. Then it looks at the real values and sees how close it was.
 
-The x-axis is the number of iterations (meaning times the model is training across the entire dataset). Every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis. 
+The x-axis is the number of iterations (meaning times the model is training across the entire dataset). Every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis.
 
 **Number of iterations = `--epoch #` multiplied by the `--batch-size` parameter**
 
 The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the graph above it means that, on average, the model is off by ~16 counts, which is low. However, this is ABSOLUTE error not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets)
 
 
-**Q**. So how can you tell if this graph ‘looks good’?? 
+**Q**. So how can you tell if this graph ‘looks good’??
 
 **A**. The raw numbers will be variable, so it is difficult to make a blanket statement, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau (further discussion below)
 
@@ -186,28 +186,50 @@ You can then run the qiime2 songbird multinomial commmand as follows.
 qiime songbird multinomial \
 	--i-table redsea.biom.qza \
 	--m-metadata-file data/redsea/redsea_metadata.txt \
-	--p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Turbidity+Nitrate+Phosphate" \
-	--p-min-feature-count 10 \
-	--p-batch-size 3 \
-	--p-epoch 10000 \
-	--p-num-random-test-examples 5 \
-	--o-coefficients coefficients.qza
+	--p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
+	--o-differential differentials.qza \
+	--o-regression-stats regression-stats.qza \
+	--o-regression-biplot regression-biplot.qza
+```
+Don't forget to try out the `--verbose` option.
+
+Diagnostic plots can also be drawn from the qiime2 interface as follows
+```
+qiime songbird summarize-single \
+    --i-feature-table redsea.biom.qza \
+    --i-regression-stats regression-stats.qza \
+    --o-visualization regression-summary
+```
+One can also generate Rsquared values by comparing it to a baseline model as follows
+```
+qiime songbird multinomial \
+	--i-table redsea.biom.qza \
+	--m-metadata-file data/redsea/redsea_metadata.txt \
+	--p-formula "1" \
+	--o-differential baseline-diff.qza \
+	--o-regression-stats baseline-stats.qza \
+	--o-regression-biplot baseline-biplot.qza
+
+qiime songbird summarize-paired \
+    --i-feature-table redsea.biom.qza \
+    --i-regression-stats regression-stats.qza \
+    --i-baseline-stats baseline-stats.qza \
+    --o-visualization regression-summary
 ```
 
-The resulting coefficients learned from the regression model can be visualized as a biplot.
-The command to construct the resulting ordination is as follows
-```
-qiime songbird regression-biplot --i-coefficients coefficients.qza --o-biplot ordination.qza
-```
+The baseline model above just looks at the means (i.e. intercept), to determine how much better the first model can perform compared to the baseline model.
+But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The Qsquared value is the predictive accuracy estimated from the samples left out of the regression fit.
 
-Once you have this, you can directly visualize this in emperor
+
+The resulting differentials learned from the regression model can be visualized as a biplot, given from `regression-biplot.qza`.  You can directly visualize this in emperor
 
 ```
 qiime emperor biplot \
-	--i-biplot ordination.qza \
+	--i-biplot regression-biplot.qza \
 	--m-sample-metadata-file data/redsea/feature_metadata.txt \
-	--o-visualization emperor-biplot \
-	--p-number-of-features 8
+	--p-ignore-missing-samples \
+	--p-number-of-features 7 \
+	--o-visualization emperor-biplot
 ```
 
 You can view the resulting visualization at https://view.qiime2.org

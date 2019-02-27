@@ -10,7 +10,7 @@ import numpy as np
 class MultRegression(object):
 
     def __init__(self, beta_mean=0, beta_scale=1,
-                 batch_size=50, learning_rate=0.1, beta_1=0.9, beta_2=0.99,
+                 batch_size=5, learning_rate=0.001, beta_1=0.9, beta_2=0.99,
                  clipnorm=10., save_path=""):
         """ Build a tensorflow model
 
@@ -164,6 +164,7 @@ class MultRegression(object):
         loss = []
         cv = []
         iter_n = []
+        print(self.N, self.batch_size)
 
         for i in tqdm(range(0, num_iter)):
             now = time.time()

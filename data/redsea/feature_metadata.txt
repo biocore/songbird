@@ -1,4 +1,4 @@
-featureid	Cluster	Description
+sampleid	Cluster	Description
 K01407	1	K01407: protease III
 K05844	1	K05844: ribosomal protein S6 modification protein
 K00500	1	K00500: phenylalanine-4-hydroxylase

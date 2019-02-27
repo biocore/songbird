@@ -189,7 +189,7 @@ def split_training(dense_table, metadata, design, training_column=None,
 
         i = np.argsort(idx)[num_random_test_examples]
         threshold = idx[i]
-        train_idx = idx < threshold
+        train_idx = idx > threshold
     else:
         train_idx = metadata.loc[design.index, training_column] == "Train"
 
