@@ -28,12 +28,15 @@ class TestMultinomial(unittest.TestCase):
     def test_fit(self):
         tf.set_random_seed(0)
         md = self.md
+
         md.name = 'sampleid'
         md = qiime2.Metadata(md)
+
         exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
 
         res_beta, res_stats, res_biplot = multinomial(
             table=self.table, metadata=md,
+            min_sample_count=0, min_feature_count=0,
             formula="X", epochs=100000)
 
         # test biplot

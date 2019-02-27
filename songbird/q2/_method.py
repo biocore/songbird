@@ -29,7 +29,6 @@ def multinomial(table: biom.Table,
 
     # load metadata and tables
     metadata = metadata.to_dataframe()
-
     # match them
     table, metadata, design = match_and_filter(
         table, metadata,

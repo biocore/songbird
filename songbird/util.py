@@ -185,8 +185,8 @@ def split_training(dense_table, metadata, design, training_column=None,
 
     if training_column is None:
         idx = np.random.random(design.shape[0])
-
         i = np.argsort(idx)[num_random_test_examples]
+
         threshold = idx[i]
         train_idx = ~(idx < threshold)
     else:
