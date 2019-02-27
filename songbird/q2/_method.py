@@ -33,8 +33,7 @@ def multinomial(table: biom.Table,
     # match them
     table, metadata, design = match_and_filter(
         table, metadata,
-        formula, training_column, num_random_test_examples,
-        min_sample_count, min_feature_count
+        formula, min_sample_count, min_feature_count
     )
 
     # convert to dense representation
@@ -89,7 +88,6 @@ def multinomial(table: biom.Table,
     # regression biplot
     if differential.shape[-1] > 1:
         u, s, v = np.linalg.svd(differential)
-        N = u.shape[0] - 1
         pc_ids = ['PC%d' % i for i in range(len(s))]
         samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
                                columns=pc_ids, index=differential.index)
