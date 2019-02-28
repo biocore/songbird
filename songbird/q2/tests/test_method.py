@@ -37,7 +37,7 @@ class TestMultinomial(unittest.TestCase):
         res_beta, res_stats, res_biplot = multinomial(
             table=self.table, metadata=md,
             min_sample_count=0, min_feature_count=0,
-            formula="X", epochs=100000)
+            formula="X", epochs=1000)
 
         # test biplot
         self.assertIsInstance(res_biplot, OrdinationResults)
