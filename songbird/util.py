@@ -127,8 +127,7 @@ def read_metadata(filepath):
     return metadata
 
 
-def match_and_filter(table, metadata,
-                     formula, training_column, num_random_test_examples,
+def match_and_filter(table, metadata, formula,
                      min_sample_count, min_feature_count):
     """ Matches and aligns biom and metadata tables.
 
@@ -136,7 +135,7 @@ def match_and_filter(table, metadata,
 
     Parameters
     ----------
-    table : biom.Table or pd.DataFrame
+    table : biom.Table
         Table of abundances
     metadata : pd.DataFrame
         Sample metadata
@@ -186,10 +185,10 @@ def split_training(dense_table, metadata, design, training_column=None,
 
     if training_column is None:
         idx = np.random.random(design.shape[0])
-
         i = np.argsort(idx)[num_random_test_examples]
+
         threshold = idx[i]
-        train_idx = idx < threshold
+        train_idx = ~(idx < threshold)
     else:
         train_idx = metadata.loc[design.index, training_column] == "Train"
 

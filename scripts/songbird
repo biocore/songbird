@@ -71,8 +71,7 @@ def multinomial(input_biom, metadata_file, formula, training_column,
 
     # match them
     table, metadata, design = match_and_filter(
-        table, metadata,
-        formula, training_column, num_random_test_examples,
+        table, metadata, formula,
         min_sample_count, min_feature_count)
 
     # convert to dense representation

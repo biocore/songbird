@@ -21,20 +21,18 @@ def multinomial(table: biom.Table,
                 differential_prior: float = 1,
                 learning_rate: float = 1e-3,
                 clipnorm: float = 10,
-                min_sample_count: int = 10,
-                min_feature_count: int = 5,
+                min_sample_count: int = 1000,
+                min_feature_count: int = 10,
                 summary_interval: int = 60) -> (
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
 
     # load metadata and tables
     metadata = metadata.to_dataframe()
-
     # match them
     table, metadata, design = match_and_filter(
         table, metadata,
-        formula, training_column, num_random_test_examples,
-        min_sample_count, min_feature_count
+        formula, min_sample_count, min_feature_count
     )
 
     # convert to dense representation

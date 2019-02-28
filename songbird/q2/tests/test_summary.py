@@ -28,13 +28,15 @@ class TestSummary(unittest.TestCase):
         md = qiime2.Metadata(md)
         self.ref_beta, self.ref_stats, _ = multinomial(
             table=self.table, metadata=md,
+            min_sample_count=0, min_feature_count=0,
             summary_interval=1,
-            formula="X", epochs=50000)
+            formula="X", epochs=1000)
 
         self.base_beta, self.base_stats, _ = multinomial(
             table=self.table, metadata=md,
+            min_sample_count=0, min_feature_count=0,
             summary_interval=1,
-            formula="1", epochs=50000)
+            formula="1", epochs=1000)
         self.results = "results"
         if not os.path.exists(self.results):
             os.mkdir(self.results)
