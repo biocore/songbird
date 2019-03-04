@@ -24,7 +24,7 @@ songbird multinomial \
 	--metadata-file <your-training-metadata>.txt \
 	--summary-dir <results>
 ```
-All of the coefficients are stored under `<results>/beta.csv`.
+All of the coefficients are stored under `<results>/differentials.tsv`.
 
 The most important aspect of the coefficients are the rankings, or the ordering of the coefficients within a covariate.
 
@@ -51,17 +51,17 @@ https://github.com/knightlab-analyses/reference-frames
 
 **A** There are 3 major types of files to note
 
-`beta.csv`: This contains the ranks of the microbes for a given metadata categories.  The higher the rank, the more associated it is with that category.  The lower the rank, the more negatively associated it is with a category.  The recommended way to view these files is to sort the microbes within a given column in this file and investigate the top/bottom microbes with the highest/lowest ranks.
+`differentials.tsv`: This contains the ranks of the microbes for a given metadata categories.  The higher the rank, the more associated it is with that category.  The lower the rank, the more negatively associated it is with a category.  The recommended way to view these files is to sort the microbes within a given column in this file and investigate the top/bottom microbes with the highest/lowest ranks.
 
 The first column is the features (if you plugged in a q2 table, then you can look up the sequence or bacterial name by merging with rep-seqs or taxonomy, respectively).  Once you have identified the microbes that change the most and least (have the highest and lowest coefficients) you can plot the log ratio of these microbes across metadata categories or gradients!
 
-note: continuous variables should only produce ONE column in the beta.csv file, if not, something is wrong with the metadata (maybe not all numbers or something)
+note: continuous variables should only produce ONE column in the differentials.tsv file, if not, something is wrong with the metadata (maybe not all numbers or something)
 
-`checkpoint` : this points to checkpoint files -- this can be used for saving intermediate results.  This is more important for jobs that will take days to run, where the models parameter can be investigated while the program is running, rather than waiting for `beta.csv` to be written.
+`checkpoint` : this points to checkpoint files -- this can be used for saving intermediate results.  This is more important for jobs that will take days to run, where the models parameter can be investigated while the program is running, rather than waiting for `differentials.tsv` to be written.
 
 `events.out.tfevents.*` : These files are what is being read into Tensorboard - more discussion on this later.
 
-**Q**. Why do I have so many columns in my beta.csv even when I'm only using one continuous variable?
+**Q**. Why do I have so many columns in my differentials.tsv even when I'm only using one continuous variable?
 
 **A**. A couple things could be happening.  First, the standalone songbird script assumes that the mapping files only have 1 line for the header, so you need to reformat.  In addition, it could be that there are other values in that column (i.e. Not Applicable, NA, nan, ...), and these sorts of values need to be removed in order to properly perform songbird regression on continuous variables. For continuous variables, only numeric characters are accepted otherwise songbird assumes this is a categorical value.
 
@@ -87,7 +87,7 @@ So if you have 100 samples, you should not have a formula with more than 10 vari
 **A**. When I mean overfitting, I'm referring to scenarios when the models attempts to memorize data points rather than
 building predictive models to undercover biological patterns.  See https://xkcd.com/1725/
 
-The `--beta-prior` command specifies the width of the prior distribution of the coefficients. For `--beta-prior 1`, this means 99% of rankings (given in beta.csv) are within -3 and +3 (log fold change). The higher beta-prior is, the more parameters can have bigger changes, so you want to keep this relatively small.  If you see overfitting (accuracy and fit increasing over iterations in tensorboard) you may consider reducing the beta-prior in order to reduce the parameter space.
+The `--beta-prior` command specifies the width of the prior distribution of the coefficients. For `--beta-prior 1`, this means 99% of rankings (given in differentials.tsv) are within -3 and +3 (log fold change). The higher beta-prior is, the more parameters can have bigger changes, so you want to keep this relatively small.  If you see overfitting (accuracy and fit increasing over iterations in tensorboard) you may consider reducing the beta-prior in order to reduce the parameter space.
 
 **Q**. What's up with the `--training-column` argument?
 
@@ -151,7 +151,7 @@ It's recommended to start with a small formula (few variables in the model) and 
 If your graphs are going down but then going back up, this suggests overfitting; try reducing the number of variables in your formula, or reducing beta prior. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
 So basically we want to futz around with the parameters until we see two nice exponential decay graphs.
-Once you have that, we can view the beta.csv output to look at the ranks.
+Once you have that, we can view the differentials.tsv output to look at the ranks.
 
 
 

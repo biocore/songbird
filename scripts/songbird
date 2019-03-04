@@ -57,7 +57,7 @@ def songbird():
 @click.option('--summary-dir', default='summarydir', show_default=True,
               help='Summary directory to save regression results. '
               'This will include a table of differentials under '
-              '`differentials.csv` that can be ranked, in addition '
+              '`differentials.tsv` that can be ranked, in addition '
               'to summaries that can be loaded into Tensorboard and '
               'checkpoints for recovering parameters during runtime.')
 def multinomial(input_biom, metadata_file, formula, training_column,
@@ -103,7 +103,7 @@ def multinomial(input_biom, metadata_file, formula, training_column,
 
     pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
-    ).to_csv(os.path.join(summary_dir, 'differentials.csv'))
+    ).to_csv(os.path.join(summary_dir, 'differentials.tsv'), sep='\t')
 
 
 if __name__ == '__main__':
