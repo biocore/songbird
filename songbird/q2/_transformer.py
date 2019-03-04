@@ -20,7 +20,7 @@ def _2(obj: qiime2.Metadata) -> SongbirdStatsFormat:
 @plugin.register_transformer
 def _3(ff: DifferentialFormat) -> pd.DataFrame:
     df = pd.read_csv(str(ff), sep='\t', comment='#', skip_blank_lines=True,
-                     header=0, dtype=object)
+                     header=0, dtype=object, index_col=0)
     return df
 
 
