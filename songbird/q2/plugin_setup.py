@@ -63,7 +63,7 @@ plugin.methods.register_function(
     },
     output_descriptions={
         'differentials': ('Output differentials learned from the '
-                         'multinomial regression.'),
+                          'multinomial regression.'),
         'regression_stats': ('Summary information about the loss '
                              'and cross validation error over iterations.'),
         'regression_biplot': ('A biplot of the regression coefficients')
