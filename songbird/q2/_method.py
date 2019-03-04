@@ -61,7 +61,7 @@ def multinomial(table: biom.Table,
 
     beta_ = clr(clr_inv(np.hstack((np.zeros((model.p, 1)), model.B))))
 
-    differential = pd.DataFrame(
+    differentials = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
     )
     convergence_stats = pd.DataFrame(
@@ -85,13 +85,13 @@ def multinomial(table: biom.Table,
     convergence_stats['iteration'] = c
 
     # regression biplot
-    if differential.shape[-1] > 1:
-        u, s, v = np.linalg.svd(differential)
+    if differentials.shape[-1] > 1:
+        u, s, v = np.linalg.svd(differentials)
         pc_ids = ['PC%d' % i for i in range(len(s))]
         samples = pd.DataFrame(u[:, :len(s)] @ np.diag(s),
-                               columns=pc_ids, index=differential.index)
+                               columns=pc_ids, index=differentials.index)
         features = pd.DataFrame(v.T[:, :len(s)],
-                                columns=pc_ids, index=differential.columns)
+                                columns=pc_ids, index=differentials.columns)
         short_method_name = 'regression_biplot'
         long_method_name = 'Multinomial regression biplot'
         eigvals = pd.Series(s, index=pc_ids)
@@ -104,4 +104,4 @@ def multinomial(table: biom.Table,
         # this is to handle the edge case with only intercepts
         biplot = OrdinationResults('', '', pd.Series(), pd.DataFrame())
 
-    return differential, qiime2.Metadata(convergence_stats), biplot
+    return differentials, qiime2.Metadata(convergence_stats), biplot

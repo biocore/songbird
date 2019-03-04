@@ -187,7 +187,7 @@ qiime songbird multinomial \
 	--i-table redsea.biom.qza \
 	--m-metadata-file data/redsea/redsea_metadata.txt \
 	--p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
-	--o-differential differentials.qza \
+	--o-differentials differentials.qza \
 	--o-regression-stats regression-stats.qza \
 	--o-regression-biplot regression-biplot.qza
 ```
@@ -212,7 +212,7 @@ qiime songbird multinomial \
     --p-formula "1" \
     --p-epochs 5000 \
     --p-summary-interval 1 \
-    --o-differential baseline-diff.qza \
+    --o-differentials baseline-diff.qza \
     --o-regression-stats baseline-stats.qza \
     --o-regression-biplot baseline-biplot.qza
 

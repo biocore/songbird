@@ -27,4 +27,4 @@ class DifferentialFormat(model.TextFileFormat):
 
 
 DifferentialDirFmt = model.SingleFileDirectoryFormat(
-    'DifferentialDirFmt', 'differential.tsv', DifferentialFormat)
+    'DifferentialDirFmt', 'differentials.tsv', DifferentialFormat)
