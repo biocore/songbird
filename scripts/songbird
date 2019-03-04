@@ -16,11 +16,11 @@ def songbird():
 
 
 @songbird.command()
-@click.option('--input-biom', show_default=True,
+@click.option('--input-biom', show_default=True, required=True,
               help='Input abundances')
-@click.option('--metadata-file', show_default=True,
+@click.option('--metadata-file', show_default=True, required=True,
               help='Sample metadata table with covariates of interest.')
-@click.option('--formula', show_default=True,
+@click.option('--formula', show_default=True, required=True,
               help=('Statistical formula specifying the covariates '
                     'to test for.'))
 @click.option('--training-column', default=None, show_default=True,
