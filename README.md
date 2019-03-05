@@ -161,7 +161,7 @@ Credits to Lisa Marotz ([@lisa55asil](https://github.com/lisa55asil)) for the FA
 
 
 
-# QIIME2 tutorial (In Progress)
+# QIIME2 tutorial
 
 First make sure that qiime2 is installed before installing songbird.  Then run
 
@@ -241,3 +241,8 @@ You can view the resulting visualization at https://view.qiime2.org
 
 Running these models on the full dataset can yield something similar to as follows
 ![biplot](https://github.com/mortonjt/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
+
+# Related packages
+
+For interactively visualizing the differentials coming from songbird, definitely check out [rankratioviz](https://github.com/fedarko/rankratioviz)
+
