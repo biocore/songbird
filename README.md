@@ -80,14 +80,14 @@ More details can be found here: https://patsy.readthedocs.io/en/latest/formulas.
 **Q**. That's cool!  How many variables can be pass into the formula?
 
 **A**. That depends on the number of samples you have -- the rule of thumb is to only have about 10% of your samples.
-So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  You can sometime migitate this risk with the `--beta-prior` parameter.
+So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  You can sometime migitate this risk with the `--differential-prior` parameter.
 
-**Q**. Wait a minute, what do you mean that I can migitate overfitting with the `--beta-prior`?
+**Q**. Wait a minute, what do you mean that I can migitate overfitting with the `--differential-prior`?
 
 **A**. When I mean overfitting, I'm referring to scenarios when the models attempts to memorize data points rather than
 building predictive models to undercover biological patterns.  See https://xkcd.com/1725/
 
-The `--beta-prior` command specifies the width of the prior distribution of the coefficients. For `--beta-prior 1`, this means 99% of rankings (given in differentials.tsv) are within -3 and +3 (log fold change). The higher beta-prior is, the more parameters can have bigger changes, so you want to keep this relatively small.  If you see overfitting (accuracy and fit increasing over iterations in tensorboard) you may consider reducing the beta-prior in order to reduce the parameter space.
+The `--differential-prior` command specifies the width of the prior distribution of the coefficients. For `--differential-prior 1`, this means 99% of rankings (given in differentials.tsv) are within -3 and +3 (log fold change). The higher differential-prior is, the more parameters can have bigger changes, so you want to keep this relatively small.  If you see overfitting (accuracy and fit increasing over iterations in tensorboard) you may consider reducing the differential-prior in order to reduce the parameter space.
 
 **Q**. What's up with the `--training-column` argument?
 
@@ -148,7 +148,7 @@ The y-axis is MINUS log probability of the model actually fitting - so LOWER is 
 
 It's recommended to start with a small formula (few variables in the model) and increase from there, because it makes debuggin easier. If your graphs are going down but not exponentially and not plateauing, you should consider increasing the number of iterations by increasing `--epoch`
 
-If your graphs are going down but then going back up, this suggests overfitting; try reducing the number of variables in your formula, or reducing beta prior. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
+If your graphs are going down but then going back up, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
 So basically we want to futz around with the parameters until we see two nice exponential decay graphs.
 Once you have that, we can view the differentials.tsv output to look at the ranks.
