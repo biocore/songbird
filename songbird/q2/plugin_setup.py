@@ -54,7 +54,7 @@ plugin.methods.register_function(
         'summary_interval': Int
     },
     outputs=[
-        ('differential', FeatureData[Differential]),
+        ('differentials', FeatureData[Differential]),
         ('regression_stats', SampleData[SongbirdStats]),
         ('regression_biplot', PCoAResults % Properties('biplot'))
     ],
@@ -62,8 +62,8 @@ plugin.methods.register_function(
         'table': 'Input table of counts.',
     },
     output_descriptions={
-        'differential': ('Output differentials learned from the '
-                         'multinomial regression.'),
+        'differentials': ('Output differentials learned from the '
+                          'multinomial regression.'),
         'regression_stats': ('Summary information about the loss '
                              'and cross validation error over iterations.'),
         'regression_biplot': ('A biplot of the regression coefficients')
