@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mortonjt/songbird.svg?branch=master)](https://travis-ci.org/mortonjt/songbird)
+[![Build Status](https://travis-ci.org/biocore/songbird.svg?branch=master)](https://travis-ci.org/biocore/songbird)
 
 # Installation
 First make sure to install Tensorflow, namely
@@ -9,7 +9,7 @@ source activate regression
 ```
 Then install this package from source
 ```
-pip install h5py git+https://github.com/mortonjt/songbird.git
+pip install h5py git+https://github.com/biocore/songbird.git
 ```
 
 If you are getting errors, it is likely because you have garbage channels under your .condarc.  Make sure to delete your .condarc -- you shouldn't need it.
@@ -111,7 +111,7 @@ TensorBoard 1.9.0 at http://Lisas-MacBook-Pro-2.local:6006 (Press CTRL+C to quit
 Open the website (highlighted in red) in a browser. (Hint; if that doesn’t work try putting only the port number (here it is 6006), adding `localhost`, localhost:6006). Leave this tab alone. Now any songbird output directories that you add to the folder that tensorflow is running in will be added to the webpage.
 
 This should produce a website with 2 graphs, which tensorflow actively updates as songbird is running.
-![tensorboard](https://github.com/mortonjt/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
+![tensorboard](https://github.com/biocore/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
 A description of these two graphs is outlined below.
 
 FIRST graph in Tensorflow; 'Prediction accuracy'. Labelled  ‘accuracy/mean_absolute_error’
@@ -240,4 +240,4 @@ qiime emperor biplot \
 You can view the resulting visualization at https://view.qiime2.org
 
 Running these models on the full dataset can yield something similar to as follows
-![biplot](https://github.com/mortonjt/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
+![biplot](https://github.com/biocore/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
