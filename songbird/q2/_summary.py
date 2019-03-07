@@ -67,11 +67,6 @@ def _summarize(output_dir: str, n: int,
         # of logistic / multinomail regression (proposed by Cox & Snell)
         # http://www3.stat.sinica.edu.tw/statistica/oldpdf/a16n39.pdf
         end = min(10, len(regression.index))
-        # trim only the last 10 numbers
-        l0 = np.mean(baseline['loglikehood'][-end:])
-        lm = np.mean(regression['loglikehood'][-end:])
-        D = lm - l0
-        r2 = np.exp(2 * D / n)
 
         # compute a q2 score, which is commonly used in
         # partial least squares for cross validation
@@ -91,9 +86,6 @@ def _summarize(output_dir: str, n: int,
         if r2 is not None:
             index_f.write(
                 'Pseudo Q-squared: %f\n' % q2
-            )
-            index_f.write(
-                'Pseudo R-squared: %f\n' % r2
             )
         index_f.write(
             '<img src="convergence-plot.svg" alt="convergence_plots">'

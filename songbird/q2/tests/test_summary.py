@@ -71,7 +71,6 @@ class TestSummary(unittest.TestCase):
         with open(index_fp, 'r') as fh:
             html = fh.read()
             self.assertIn('<h1>Convergence summary</h1>', html)
-            self.assertIn('Pseudo R-squared', html)
             self.assertIn('Pseudo Q-squared', html)
 
             self.assertIn(

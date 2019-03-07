@@ -164,7 +164,6 @@ class MultRegression(object):
         loss = []
         cv = []
         iter_n = []
-        print(self.N, self.batch_size)
 
         for i in tqdm(range(0, num_iter)):
             now = time.time()
