@@ -204,7 +204,7 @@ Are you able to see anything in your summary?  It is possible that your summary 
 By default, it is set to 1 minute, so that it can take a measure every minute - but here you ran for just a few seconds!
 Try setting `--p-summary-interval 1` to record the loss at every second and set `--p-epochs 5000` to make it run longer in the `multinomial` command.  Now try to summarize these new results.
 
-One can also generate Rsquared values by comparing it to a baseline model as follows
+One can also generate Qsquared values by comparing it to a baseline model as follows
 ```
 qiime songbird multinomial \
     --i-table redsea.biom.qza \
@@ -245,4 +245,3 @@ Running these models on the full dataset can yield something similar to as follo
 # Related packages
 
 For interactively visualizing the differentials coming from songbird, definitely check out [rankratioviz](https://github.com/fedarko/rankratioviz)
-
