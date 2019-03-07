@@ -59,7 +59,7 @@ def _summarize(output_dir: str, n: int,
     fig, ax = plt.subplots(2, 1, figsize=(10, 10))
     if baseline is None:
         _convergence_plot(regression, None, ax[0], ax[1])
-        r2 = None
+        q2 = None
     else:
         _convergence_plot(regression, baseline, ax[0], ax[1])
 
@@ -67,6 +67,7 @@ def _summarize(output_dir: str, n: int,
         # of logistic / multinomail regression (proposed by Cox & Snell)
         # http://www3.stat.sinica.edu.tw/statistica/oldpdf/a16n39.pdf
         end = min(10, len(regression.index))
+        # trim only the last 10 numbers
 
         # compute a q2 score, which is commonly used in
         # partial least squares for cross validation
@@ -83,7 +84,7 @@ def _summarize(output_dir: str, n: int,
     with open(index_fp, 'w') as index_f:
         index_f.write('<html><body>\n')
         index_f.write('<h1>Convergence summary</h1>\n')
-        if r2 is not None:
+        if q2 is not None:
             index_f.write(
                 'Pseudo Q-squared: %f\n' % q2
             )
