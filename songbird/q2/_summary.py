@@ -9,25 +9,27 @@ import matplotlib.pyplot as plt
 def _convergence_plot(regression, baseline, ax0, ax1):
     iterations = np.array(regression['iteration'])
     ax0.plot(iterations[1:],
-             np.array(regression['loglikehood'])[1:])
+             np.array(regression['loglikehood'])[1:], label='model')
     ax0.set_ylabel('Loglikehood', fontsize=14)
     ax0.set_xlabel('# Iterations', fontsize=14)
 
     ax1.plot(iterations[1:],
-             np.array(regression['cross-validation'].values)[1:])
+             np.array(regression['cross-validation'].values)[1:],
+             label='model')
     ax1.set_ylabel('Cross validation score', fontsize=14)
     ax1.set_xlabel('# Iterations', fontsize=14)
 
     if baseline is not None:
         iterations = baseline['iteration']
         ax0.plot(iterations[1:],
-                 np.array(baseline['loglikehood'])[1:])
+                 np.array(baseline['loglikehood'])[1:], label='baseline')
         ax0.set_ylabel('Loglikehood', fontsize=14)
         ax0.set_xlabel('# Iterations', fontsize=14)
         ax0.legend()
 
         ax1.plot(iterations[1:],
-                 np.array(baseline['cross-validation'].values)[1:])
+                 np.array(baseline['cross-validation'].values)[1:],
+                 label='baseline')
         ax1.set_ylabel('Cross validation score', fontsize=14)
         ax1.set_xlabel('# Iterations', fontsize=14)
 
@@ -59,7 +61,7 @@ def _summarize(output_dir: str, n: int,
     fig, ax = plt.subplots(2, 1, figsize=(10, 10))
     if baseline is None:
         _convergence_plot(regression, None, ax[0], ax[1])
-        r2 = None
+        q2 = None
     else:
         _convergence_plot(regression, baseline, ax[0], ax[1])
 
@@ -68,10 +70,6 @@ def _summarize(output_dir: str, n: int,
         # http://www3.stat.sinica.edu.tw/statistica/oldpdf/a16n39.pdf
         end = min(10, len(regression.index))
         # trim only the last 10 numbers
-        l0 = np.mean(baseline['loglikehood'][-end:])
-        lm = np.mean(regression['loglikehood'][-end:])
-        D = lm - l0
-        r2 = np.exp(2 * D / n)
 
         # compute a q2 score, which is commonly used in
         # partial least squares for cross validation
@@ -88,12 +86,9 @@ def _summarize(output_dir: str, n: int,
     with open(index_fp, 'w') as index_f:
         index_f.write('<html><body>\n')
         index_f.write('<h1>Convergence summary</h1>\n')
-        if r2 is not None:
+        if q2 is not None:
             index_f.write(
                 'Pseudo Q-squared: %f\n' % q2
-            )
-            index_f.write(
-                'Pseudo R-squared: %f\n' % r2
             )
         index_f.write(
             '<img src="convergence-plot.svg" alt="convergence_plots">'
