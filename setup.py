@@ -30,6 +30,10 @@ classifiers = [s.strip() for s in classes.split('\n') if s]
 description = ('Vanilla regression methods for microbiome'
                'differential abundance analysis')
 
+
+with open('README.md') as f:
+    long_description = f.read()
+
 # version parsing from __init__ pulled from Flask's setup.py
 # https://github.com/mitsuhiko/flask/blob/master/setup.py
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
@@ -40,8 +44,8 @@ with open('songbird/__init__.py', 'rb') as f:
 
 setup(name='songbird',
       version=version,
-      description='',
-      long_description='',
+      description=description,
+      long_description=long_description,
       author="gneiss development team",
       author_email="jamietmorton@gmail.com",
       maintainer="gneiss development team",
