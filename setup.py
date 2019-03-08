@@ -27,7 +27,7 @@ classes = """
 """
 classifiers = [s.strip() for s in classes.split('\n') if s]
 
-description = ('Vanilla regression methods for microbiome'
+description = ('Vanilla regression methods for microbiome '
                'differential abundance analysis')
 
 
