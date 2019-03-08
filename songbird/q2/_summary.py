@@ -9,25 +9,25 @@ import matplotlib.pyplot as plt
 def _convergence_plot(regression, baseline, ax0, ax1):
     iterations = np.array(regression['iteration'])
     ax0.plot(iterations[1:],
-             np.array(regression['loglikehood'])[1:])
+             np.array(regression['loglikehood'])[1:], label='model')
     ax0.set_ylabel('Loglikehood', fontsize=14)
     ax0.set_xlabel('# Iterations', fontsize=14)
 
     ax1.plot(iterations[1:],
-             np.array(regression['cross-validation'].values)[1:])
+             np.array(regression['cross-validation'].values)[1:], label='model')
     ax1.set_ylabel('Cross validation score', fontsize=14)
     ax1.set_xlabel('# Iterations', fontsize=14)
 
     if baseline is not None:
         iterations = baseline['iteration']
         ax0.plot(iterations[1:],
-                 np.array(baseline['loglikehood'])[1:])
+                 np.array(baseline['loglikehood'])[1:], label='baseline')
         ax0.set_ylabel('Loglikehood', fontsize=14)
         ax0.set_xlabel('# Iterations', fontsize=14)
         ax0.legend()
 
         ax1.plot(iterations[1:],
-                 np.array(baseline['cross-validation'].values)[1:])
+                 np.array(baseline['cross-validation'].values)[1:], label='baseline')
         ax1.set_ylabel('Cross validation score', fontsize=14)
         ax1.set_xlabel('# Iterations', fontsize=14)
 
