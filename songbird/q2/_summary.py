@@ -14,7 +14,8 @@ def _convergence_plot(regression, baseline, ax0, ax1):
     ax0.set_xlabel('# Iterations', fontsize=14)
 
     ax1.plot(iterations[1:],
-             np.array(regression['cross-validation'].values)[1:], label='model')
+             np.array(regression['cross-validation'].values)[1:],
+             label='model')
     ax1.set_ylabel('Cross validation score', fontsize=14)
     ax1.set_xlabel('# Iterations', fontsize=14)
 
@@ -27,7 +28,8 @@ def _convergence_plot(regression, baseline, ax0, ax1):
         ax0.legend()
 
         ax1.plot(iterations[1:],
-                 np.array(baseline['cross-validation'].values)[1:], label='baseline')
+                 np.array(baseline['cross-validation'].values)[1:],
+                 label='baseline')
         ax1.set_ylabel('Cross validation score', fontsize=14)
         ax1.set_xlabel('# Iterations', fontsize=14)
 
