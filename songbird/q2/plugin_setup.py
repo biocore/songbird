@@ -72,8 +72,9 @@ plugin.methods.register_function(
         'metadata': 'Sample metadata table with covariates of interest.',
         'formula': ('The statistical formula specifying covariates to be '
                     'included in the model and their interactions'),
-        'num_random_test_examples': ("The number of random examples to select "
-                                     "if `training_column` isn't specified"),
+        'num_random_test_examples': (
+            'Number of random samples to hold out for cross-validation '
+            'if `training_column` is not specified'),
         'epochs': ('The number of total number of iterations '
                    'over the entire dataset'),
         'batch_size': ('The number of samples to be evaluated per '
