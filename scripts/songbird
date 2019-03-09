@@ -28,7 +28,8 @@ def songbird():
                     'specify training and testing. These columns '
                     'should be specifically labeled (Train) and (Test)'))
 @click.option('--num-random-test-examples', default=5, show_default=True,
-              help=('Number of random training examples if '
+              help=('Number of random samples to hold out '
+                    'for cross-validation if '
                     '--training-column is not specified'))
 @click.option('--epochs', show_default=True, default=1000,
               help= ('The number of total number of iterations '
