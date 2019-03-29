@@ -63,7 +63,9 @@ setup(name='songbird',
           'scikit-bio>=0.5.1',
           'scikit-learn',
           'biom-format',
-          'seaborn'
+          'seaborn',
+          'tqdm',
+          'tensorflow > 1.5'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
