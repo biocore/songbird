@@ -63,7 +63,6 @@ setup(name='songbird',
           'scikit-bio>=0.5.1',
           'scikit-learn',
           'biom-format',
-          'seaborn',
           'tqdm',
           'tensorflow > 1.5'
       ],
