@@ -10,7 +10,7 @@
 import re
 import ast
 from glob import glob
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 classes = """
@@ -50,7 +50,7 @@ setup(name='songbird',
       author_email="jamietmorton@gmail.com",
       maintainer="gneiss development team",
       maintainer_email="jamietmorton@gmail.com",
-      packages=['songbird'],
+      packages=find_packages(),
       scripts=glob('scripts/songbird'),
       setup_requires=['numpy >= 1.9.2'],
       install_requires=[
