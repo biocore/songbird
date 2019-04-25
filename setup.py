@@ -54,17 +54,14 @@ setup(name='songbird',
       scripts=glob('scripts/songbird'),
       setup_requires=['numpy >= 1.9.2'],
       install_requires=[
-          'IPython >= 3.2.0',
           'numpy >= 1.9.2',
           'pandas >= 0.18.0',
           'scipy >= 0.15.1',
           'nose >= 1.3.7',
           'patsy',
           'scikit-bio>=0.5.1',
-          'scikit-learn',
           'biom-format',
-          'tqdm',
-          'tensorflow > 1.5'
+          'tqdm'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
