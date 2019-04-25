@@ -31,8 +31,7 @@ description = ('Vanilla regression methods for microbiome '
                'differential abundance analysis')
 
 
-with open('README.md') as f:
-    long_description = f.read()
+long_description = description
 
 # version parsing from __init__ pulled from Flask's setup.py
 # https://github.com/mitsuhiko/flask/blob/master/setup.py
