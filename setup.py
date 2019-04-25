@@ -10,7 +10,7 @@
 import re
 import ast
 from glob import glob
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 classes = """
@@ -50,20 +50,18 @@ setup(name='songbird',
       author_email="jamietmorton@gmail.com",
       maintainer="gneiss development team",
       maintainer_email="jamietmorton@gmail.com",
-      packages=['songbird'],
+      packages=find_packages(),
       scripts=glob('scripts/songbird'),
       setup_requires=['numpy >= 1.9.2'],
       install_requires=[
-          'IPython >= 3.2.0',
           'numpy >= 1.9.2',
           'pandas >= 0.18.0',
           'scipy >= 0.15.1',
           'nose >= 1.3.7',
           'patsy',
+          'tqdm',
           'scikit-bio>=0.5.1',
-          'scikit-learn',
           'biom-format',
-          'seaborn'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
