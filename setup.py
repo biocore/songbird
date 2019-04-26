@@ -60,7 +60,8 @@ setup(name='songbird',
           'patsy',
           'scikit-bio>=0.5.1',
           'biom-format',
-          'tqdm'
+          'tqdm',
+          'tensorflow>=1.4'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
