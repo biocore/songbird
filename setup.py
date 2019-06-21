@@ -10,7 +10,9 @@
 import re
 import ast
 from glob import glob
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
+
 
 
 classes = """
@@ -31,8 +33,7 @@ description = ('Vanilla regression methods for microbiome '
                'differential abundance analysis')
 
 
-with open('README.md') as f:
-    long_description = f.read()
+long_description = description
 
 # version parsing from __init__ pulled from Flask's setup.py
 # https://github.com/mitsuhiko/flask/blob/master/setup.py
@@ -62,6 +63,8 @@ setup(name='songbird',
           'tqdm',
           'scikit-bio>=0.5.1',
           'biom-format',
+          'tqdm',
+          'tensorflow>=1.4'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
