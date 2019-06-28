@@ -1,18 +1,11 @@
 [![Build Status](https://travis-ci.org/biocore/songbird.svg?branch=master)](https://travis-ci.org/biocore/songbird)
 
 # Installation
-First make sure to install Tensorflow, namely
+Songbird can be installed on conda-forge as follows
 ```
-conda create -n regression python=3.5 tensorflow numpy scipy pandas scikit-bio tqdm pip
-conda install -n regression biom-format -c conda-forge
-source activate regression
+conda create -n songbird_env songbird -c conda-forge
+source activate songbird_env
 ```
-Then install this package from source
-```
-pip install h5py git+https://github.com/biocore/songbird.git
-```
-
-If you are getting errors, it is likely because you have garbage channels under your .condarc.  Make sure to delete your .condarc -- you shouldn't need it.
 
 # Getting started
 
