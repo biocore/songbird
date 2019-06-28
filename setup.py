@@ -14,7 +14,7 @@ from setuptools import find_packages, setup
 
 
 classes = """
-    Development Status :: 3 - Alpha
+    Development Status :: 4 - Beta
     License :: OSI Approved :: BSD License
     Topic :: Software Development :: Libraries
     Topic :: Scientific/Engineering
@@ -44,6 +44,7 @@ setup(name='songbird',
       version=version,
       description=description,
       long_description=long_description,
+      long_description_content_type='text/markdown',
       author="gneiss development team",
       author_email="jamietmorton@gmail.com",
       maintainer="gneiss development team",
