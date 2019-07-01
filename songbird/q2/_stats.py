@@ -15,16 +15,3 @@ class SongbirdStatsFormat(model.TextFileFormat):
 
 SongbirdStatsDirFmt = model.SingleFileDirectoryFormat(
     'SongbirdStatsDirFmt', 'stats.tsv', SongbirdStatsFormat)
-
-# songbird differentials
-Differential = SemanticType('Differential',
-                            variant_of=FeatureData.field['type'])
-
-
-class DifferentialFormat(model.TextFileFormat):
-    def validate(*args):
-        pass
-
-
-DifferentialDirFmt = model.SingleFileDirectoryFormat(
-    'DifferentialDirFmt', 'differentials.tsv', DifferentialFormat)

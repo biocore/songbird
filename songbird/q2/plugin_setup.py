@@ -15,7 +15,7 @@ from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
 from q2_types.feature_data import (FeatureData, Differential,
-                                   DifferentialFormat, DifferentialDirFmt)
+                                   DifferentialFormat, DifferentialDirectoryFormat)
 from songbird.q2 import (
     SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
     multinomial, summarize_single, summarize_paired
