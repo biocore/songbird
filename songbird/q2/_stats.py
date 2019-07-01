@@ -1,6 +1,5 @@
 from qiime2.plugin import SemanticType, model
 from q2_types.sample_data import SampleData
-from q2_types.feature_data import FeatureData
 
 
 # songbird stats summarizing loss and cv error
