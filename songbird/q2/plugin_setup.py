@@ -14,13 +14,11 @@ from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
-from q2_types.feature_data import FeatureData
+from q2_types.feature_data import (FeatureData, Differential)
 from songbird.q2 import (
     SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
-    Differential, DifferentialFormat, DifferentialDirFmt,
     multinomial, summarize_single, summarize_paired
 )
-
 
 # citations = qiime2.plugin.Citations.load(
 #             'citations.bib', package='songbird')
@@ -143,10 +141,5 @@ plugin.register_formats(SongbirdStatsFormat, SongbirdStatsDirFmt)
 plugin.register_semantic_types(SongbirdStats)
 plugin.register_semantic_type_to_format(
     SampleData[SongbirdStats], SongbirdStatsDirFmt)
-
-plugin.register_formats(DifferentialFormat, DifferentialDirFmt)
-plugin.register_semantic_types(Differential)
-plugin.register_semantic_type_to_format(
-    FeatureData[Differential], DifferentialDirFmt)
 
 importlib.import_module('songbird.q2._transformer')

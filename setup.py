@@ -10,11 +10,12 @@
 import re
 import ast
 from glob import glob
+
 from setuptools import find_packages, setup
 
 
 classes = """
-    Development Status :: 3 - Alpha
+    Development Status :: 4 - Beta
     License :: OSI Approved :: BSD License
     Topic :: Software Development :: Libraries
     Topic :: Scientific/Engineering
@@ -30,7 +31,6 @@ classifiers = [s.strip() for s in classes.split('\n') if s]
 description = ('Vanilla regression methods for microbiome '
                'differential abundance analysis')
 
-
 long_description = description
 
 # version parsing from __init__ pulled from Flask's setup.py
@@ -45,6 +45,7 @@ setup(name='songbird',
       version=version,
       description=description,
       long_description=long_description,
+      long_description_content_type='text/markdown',
       author="gneiss development team",
       author_email="jamietmorton@gmail.com",
       maintainer="gneiss development team",
@@ -58,6 +59,7 @@ setup(name='songbird',
           'scipy >= 0.15.1',
           'nose >= 1.3.7',
           'patsy',
+          'tqdm',
           'scikit-bio>=0.5.1',
           'biom-format',
           'tqdm',
