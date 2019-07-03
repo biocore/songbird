@@ -31,7 +31,6 @@ classifiers = [s.strip() for s in classes.split('\n') if s]
 description = ('Vanilla regression methods for microbiome '
                'differential abundance analysis')
 
-
 long_description = description
 
 # version parsing from __init__ pulled from Flask's setup.py
