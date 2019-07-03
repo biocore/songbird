@@ -1,6 +1,4 @@
 import qiime2
-import pandas as pd
-
 from songbird.q2 import SongbirdStatsFormat
 from songbird.q2.plugin_setup import plugin
 
