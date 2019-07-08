@@ -1,5 +1,9 @@
 # songbird changelog
 
+## Version 0.8.4 (2019-7-8)
+
+Minor release bump. Differential types are now inherited from q2 types.
+
 ## Version 0.8.3 (2019-4-25)
 
 Minor release bump. qiime2 snares are resolved.
