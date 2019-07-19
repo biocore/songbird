@@ -232,7 +232,7 @@ qiime emperor biplot \
 
 You can view the resulting visualization at https://view.qiime2.org
 
-Running these models on the full dataset can yield something similar to as follows
+These biplots have a different interpretation - the points correspond to microbes and the arrow correspond to covariates of interest. Running these models on the full dataset can yield something similar to as follows
 ![biplot](https://github.com/biocore/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
 
 # Related packages
