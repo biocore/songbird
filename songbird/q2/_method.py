@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from skbio import OrdinationResults
-from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
 from songbird.util import match_and_filter, split_training
 from qiime2.plugin import Metadata
@@ -59,11 +58,14 @@ def multinomial(table: biom.Table,
     md_ids = np.array(design.columns)
     obs_ids = table.ids(axis='observation')
 
-    beta_ = clr(clr_inv(np.hstack((np.zeros((model.p, 1)), model.B))))
+    beta_ = np.hstack((np.zeros((model.p, 1)), model.B))
+    beta_ = beta_ - beta_.mean(axis=1)
 
     differentials = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
     )
+    differentials.index.name = 'featureid'
+
     convergence_stats = pd.DataFrame(
         {
             'loglikehood': loss,
