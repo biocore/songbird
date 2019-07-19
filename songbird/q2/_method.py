@@ -59,7 +59,7 @@ def multinomial(table: biom.Table,
     obs_ids = table.ids(axis='observation')
 
     beta_ = np.hstack((np.zeros((model.p, 1)), model.B))
-    beta_ = beta_ - beta_.mean(axis=1)
+    beta_ = beta_ - beta_.mean(axis=1).reshape(-1, 1)
 
     differentials = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
