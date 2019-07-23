@@ -48,7 +48,7 @@ def songbird():
 @click.option('--min-sample-count', show_default=True, default=1000,
               help=("The minimum number of counts a sample needs "
                     "for it to be included in the analysis"))
-@click.option('--min-feature-count', show_default=True, default=5,
+@click.option('--min-feature-count', show_default=True, default=10,
               help=("The minimum number of counts a feature needs for "
                     "it to be included in the analysis"))
 @click.option('--checkpoint-interval', show_default=True, default=3600,
