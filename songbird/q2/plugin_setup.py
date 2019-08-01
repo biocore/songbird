@@ -20,14 +20,13 @@ from songbird.q2 import (
     multinomial, summarize_single, summarize_paired
 )
 
-# citations = qiime2.plugin.Citations.load(
-#             'citations.bib', package='songbird')
+citations = qiime2.plugin.Citations.load('citations.bib', package='songbird')
 
 plugin = qiime2.plugin.Plugin(
     name='songbird',
     version=__version__,
     website="https://github.com/mortonjt/songbird",
-    # citations=[citations['morton2017balance']],
+    citations=[citations['MortonMarotz2019']],
     short_description=('Plugin for differential abundance analysis '
                        'via count-based models.'),
     description=('This is a QIIME 2 plugin supporting statistical models on '
