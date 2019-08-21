@@ -71,5 +71,5 @@ setup(name='songbird',
       entry_points={
           'qiime2.plugins': ['q2-songbird=songbird.q2.plugin_setup:plugin']
       },
-      package_data={},
+      package_data={'songbird': ['citations.bib']},
       zip_safe=False)
