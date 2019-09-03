@@ -238,3 +238,20 @@ These biplots have a different interpretation - the points correspond to microbe
 # Related packages
 
 For interactively visualizing the differentials coming from songbird, definitely check out [rankratioviz](https://github.com/fedarko/rankratioviz)
+
+# Citations
+
+If you use this tool and you like it, feel free to cite at
+
+```
+@article{morton2019establishing,
+  title={Establishing microbial composition measurement standards with reference frames},
+  author={Morton, James T and Marotz, Clarisse and Washburne, Alex and Silverman, Justin and Zaramela, Livia S and Edlund, Anna and Zengler, Karsten and Knight, Rob},
+  journal={Nature communications},
+  volume={10},
+  number={1},
+  pages={2719},
+  year={2019},
+  publisher={Nature Publishing Group}
+}
+```
