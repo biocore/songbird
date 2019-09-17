@@ -1,5 +1,8 @@
 # songbird changelog
 
+## Version 0.9 (2019-9-5)
+Added compatibility with the new qiime2 differential type [#60](https://github.com/biocore/songbird/pull/60)
+
 ## Version 0.8.4 (2019-7-8)
 
 Minor release bump. Differential types are now inherited from q2 types.
