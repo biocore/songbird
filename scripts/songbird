@@ -102,9 +102,11 @@ def multinomial(input_biom, metadata_file, formula, training_column,
 
     beta_ = clr(clr_inv(np.hstack((np.zeros((model.p, 1)), model.B))))
 
-    pd.DataFrame(
+    df = pd.DataFrame(
         beta_.T, columns=md_ids, index=obs_ids,
-    ).to_csv(os.path.join(summary_dir, 'differentials.tsv'), sep='\t')
+    )
+    df.index.name = 'featureid'
+    df.to_csv(os.path.join(summary_dir, 'differentials.tsv'), sep='\t')
 
 
 if __name__ == '__main__':
