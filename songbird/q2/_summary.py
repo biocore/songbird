@@ -86,6 +86,12 @@ def _summarize(output_dir: str, n: int,
     with open(index_fp, 'w') as index_f:
         index_f.write('<html><body>\n')
         index_f.write('<h1>Convergence summary</h1>\n')
+        index_f.write(
+            "<p>If you don't see anything in these plots, you probably need "
+            "to decrease your <kbd>--p-summary-interval</kbd>. Try setting "
+            "<kbd>--p-summary-interval 1</kbd>, which will record the loss at "
+            "every second.</p>"
+        )
         if q2 is not None:
             index_f.write(
                 'Pseudo Q-squared: %f\n' % q2
