@@ -91,11 +91,11 @@ def _summarize(output_dir: str, n: int,
             "<p>If you don't see anything in these plots, you probably need "
             "to decrease your <kbd>--p-summary-interval</kbd>. Try setting "
             "<kbd>--p-summary-interval 1</kbd>, which will record the loss at "
-            "every second.</p>"
+            "every second.</p>\n"
         )
         if q2 is not None:
             index_f.write(
-                'Pseudo Q-squared: %f\n' % q2
+                '<p><strong>Pseudo Q-squared:</strong> %f</p>\n' % q2
             )
         index_f.write(
             '<img src="convergence-plot.svg" alt="convergence_plots">'
