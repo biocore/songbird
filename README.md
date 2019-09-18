@@ -21,13 +21,16 @@ All of the coefficients are stored under `<results>/differentials.tsv`.
 
 The most important aspect of the coefficients are the rankings, or the ordering of the coefficients within a covariate.
 
-Diagnostics can be run via Tensorboard
+**You will need to diagnose the fit of your model (e.g. to make sure it isn't
+overfitting to the data). You can do this using Tensorboard:**
 
 ```
 tensorboard --logdir <your-result-directory>
 ```
 
 This will give cross validation results and information about the loss.
+
+**See [this section](https://github.com/biocore/songbird/#using-tensorboard-to-diagnose-the-fit-of-your-model) for a description of how to use Tensorboard for this.**
 
 See more information about the multinomial regression through
 
@@ -88,7 +91,9 @@ The `--differential-prior` command specifies the width of the prior distribution
 
 **Q**. How long should I expect this program to run?
 
-**A**. That primarily depends on a few things, namely how many samples and microbes are in your dataset, and the number of `--epoch` and the `--batch-size`.  The `--batch-size` specifies the number of samples to analyze for each iteration, and the `--epoch` specifies the number of total passes through the dataset.  For example, if you have a 100 samples in your dataset and you specify `--batch-size 5` and `--epochs 200`, then you will have `(100/5)*200=4000` iterations total. The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). You will need to consult with Tensorboard to make sure that your model fit is sane.  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+**A**. That primarily depends on a few things, namely how many samples and microbes are in your dataset, and the number of `--epoch` and the `--batch-size`.  The `--batch-size` specifies the number of samples to analyze for each iteration, and the `--epoch` specifies the number of total passes through the dataset.  For example, if you have a 100 samples in your dataset and you specify `--batch-size 5` and `--epochs 200`, then you will have `(100/5)*200=4000` iterations total. The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to consult with Tensorboard to make sure that your model fit is sane.**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+
+## Using Tensorboard to diagnose the fit of your model
 
 **Q**. I'm confused, what is Tensorboard?
 
