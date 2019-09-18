@@ -156,8 +156,11 @@ Credits to Lisa Marotz ([@lisa55asil](https://github.com/lisa55asil)) for the FA
 
 # QIIME2 tutorial
 
-First make sure that qiime2 is installed before installing songbird.  Then run
-
+First make sure that qiime2 is installed before installing songbird. In your qiime2 environment install songbird:
+```
+conda install songbird -c conda-forge
+```
+Then run"
 ```
 qiime dev refresh-cache
 ```
