@@ -68,7 +68,7 @@ def multinomial(table: biom.Table,
 
     convergence_stats = pd.DataFrame(
         {
-            'loglikehood': loss,
+            'loss': loss,
             'cross-validation': cv,
             'iteration': its
         }
@@ -77,8 +77,8 @@ def multinomial(table: biom.Table,
     convergence_stats.index.name = 'id'
     convergence_stats.index = convergence_stats.index.astype(np.str)
 
-    c = convergence_stats['loglikehood'].astype(np.float)
-    convergence_stats['loglikehood'] = c
+    c = convergence_stats['loss'].astype(np.float)
+    convergence_stats['loss'] = c
 
     c = convergence_stats['cross-validation'].astype(np.float)
     convergence_stats['cross-validation'] = c

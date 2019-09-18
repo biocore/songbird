@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 def _convergence_plot(regression, baseline, ax0, ax1):
     iterations = np.array(regression['iteration'])
     ax0.plot(iterations[1:],
-             np.array(regression['loglikehood'])[1:], label='model')
-    ax0.set_ylabel('Loglikehood', fontsize=14)
+             np.array(regression['loss'])[1:], label='model')
+    ax0.set_ylabel('Loss', fontsize=14)
     ax0.set_xlabel('# Iterations', fontsize=14)
 
     ax1.plot(iterations[1:],
@@ -22,8 +22,8 @@ def _convergence_plot(regression, baseline, ax0, ax1):
     if baseline is not None:
         iterations = baseline['iteration']
         ax0.plot(iterations[1:],
-                 np.array(baseline['loglikehood'])[1:], label='baseline')
-        ax0.set_ylabel('Loglikehood', fontsize=14)
+                 np.array(baseline['loss'])[1:], label='baseline')
+        ax0.set_ylabel('Loss', fontsize=14)
         ax0.set_xlabel('# Iterations', fontsize=14)
         ax0.legend()
 
@@ -48,10 +48,10 @@ def _summarize(output_dir: str, n: int,
        Number of samples.
     regression : pd.DataFrame
        Regression summary with column names
-       ['loglikehood', 'cross-validation']
+       ['loss', 'cross-validation']
     baseline : pd.DataFrame
        Baseline regression summary with column names
-       ['loglikehood', 'cross-validation']
+       ['loss', 'cross-validation']
 
     Note
     ----
