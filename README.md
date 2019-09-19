@@ -42,9 +42,9 @@ songbird multinomial \
     --formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
     --input-biom data/redsea/redsea.biom \
     --metadata-file data/redsea/redsea_metadata.txt \
-    --summary-dir <results>
+    --summary-dir results
 ```
-The output differentials will be stored in `<results>/differentials.tsv`.
+The output differentials will be stored in `results/differentials.tsv`.
 
 ### REQUIRED: Checking the fit of your model
 
