@@ -25,10 +25,10 @@ source activate songbird_env
 Try running the following:
 ```
 songbird multinomial \
-	--formula "your_formula"
-	--input-biom <your-training-biom>.biom \
-	--metadata-file <your-training-metadata>.txt \
-	--summary-dir <results>
+    --formula "your_formula"
+    --input-biom <your-training-biom>.biom \
+    --metadata-file <your-training-metadata>.txt \
+    --summary-dir <results>
 ```
 The output differentials will be stored in `<results>/differentials.tsv`.
 
@@ -68,9 +68,9 @@ into QIIME 2 by running:
 
 ```
 qiime tools import \
-	--input-path data/redsea/redsea.biom \
-	--output-path redsea.biom.qza \
-	--type FeatureTable[Frequency]
+    --input-path data/redsea/redsea.biom \
+    --output-path redsea.biom.qza \
+    --type FeatureTable[Frequency]
 ```
 
 ### Running Songbird
@@ -78,12 +78,12 @@ After importing your feature table, you can then run Songbird through QIIME 2 as
 
 ```
 qiime songbird multinomial \
-	--i-table redsea.biom.qza \
-	--m-metadata-file data/redsea/redsea_metadata.txt \
-	--p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
-	--o-differentials differentials.qza \
-	--o-regression-stats regression-stats.qza \
-	--o-regression-biplot regression-biplot.qza
+    --i-table redsea.biom.qza \
+    --m-metadata-file data/redsea/redsea_metadata.txt \
+    --p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
+    --o-differentials differentials.qza \
+    --o-regression-stats regression-stats.qza \
+    --o-regression-biplot regression-biplot.qza
 ```
 You can add the `--verbose` option to see a progress bar while this is running.
 
@@ -250,11 +250,11 @@ But one can imagine using other baseline models to contrast - for instance, fitt
 
 ```
 qiime emperor biplot \
-	--i-biplot regression-biplot.qza \
-	--m-sample-metadata-file data/redsea/feature_metadata.txt \
-	--p-ignore-missing-samples \
-	--p-number-of-features 7 \
-	--o-visualization emperor-biplot
+    --i-biplot regression-biplot.qza \
+    --m-sample-metadata-file data/redsea/feature_metadata.txt \
+    --p-ignore-missing-samples \
+    --p-number-of-features 7 \
+    --o-visualization emperor-biplot
 ```
 
 You can view the resulting visualization at [view.qiime2.org](https://view.qiime2.org).
