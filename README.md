@@ -13,6 +13,20 @@ For more details, please see
 You can run Songbird as a standalone tool from the command-line or as a
 [QIIME 2](https://qiime2.org) plugin. Either works!
 
+### What will this README cover?
+
+The **"Getting started with Songbird"** section will briefly go over basic usage of Songbird both outside and inside of QIIME 2, using a subset of the [Redsea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/) as an example dataset.
+It will also discuss ways of checking the fit of the model Songbird creates, in
+order to validate that it looks reasonable.
+
+The next main section of the README, **FAQs**, will cover some common questions
+asked about Songbird in a variety of situations. If you have a question about
+Songbird, we highly suggest reading over this!
+
+After that, the final few sections of the README are all pretty short. These
+include links to further documentation, additional packages, how to cite
+Songbird, etc.
+
 ## Option 1: Using Songbird "standalone"
 ### Installation
 Songbird can be installed from conda-forge as follows:
@@ -25,9 +39,9 @@ source activate songbird_env
 Try running the following:
 ```
 songbird multinomial \
-    --formula "your_formula"
-    --input-biom <your-training-biom>.biom \
-    --metadata-file <your-training-metadata>.txt \
+    --formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
+    --input-biom data/redsea/redsea.biom \
+    --metadata-file data/redsea/redsea_metadata.txt \
     --summary-dir <results>
 ```
 The output differentials will be stored in `<results>/differentials.tsv`.
@@ -61,9 +75,7 @@ qiime dev refresh-cache
 
 ### Importing data into QIIME 2
 Once QIIME 2 is properly interfaced with Songbird, you can import your BIOM tables
-into QIIME 2 "Artifacts."  Here we will be using a subset of the
-[Redsea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/)
-as an example.  Starting from the Songbird root folder, you can import this dataset
+into QIIME 2 "Artifacts." Starting from the Songbird root folder, you can import this dataset
 into QIIME 2 by running:
 
 ```
