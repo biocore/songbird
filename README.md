@@ -235,7 +235,7 @@ As we've discussed, diagnostic plots can be created from the QIIME 2 interface a
 qiime songbird summarize-single \
     --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
-    --o-visualization regression-summary
+    --o-visualization regression-summary.qzv
 ```
 
 We can also generate _Q<sup>2</sup>_ values by comparing these plots to a baseline model's plots as follows:
@@ -254,7 +254,7 @@ qiime songbird summarize-paired \
     --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
     --i-baseline-stats baseline-stats.qza \
-    --o-visualization paired-summary
+    --o-visualization paired-summary.qzv
 ```
 
 The baseline model above just looks at the means (i.e. intercept), to determine how much better the first model can perform compared to the baseline model.
