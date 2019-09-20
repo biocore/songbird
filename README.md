@@ -13,13 +13,13 @@ For more details, please see
 You can run Songbird as a standalone tool from the command-line or as a
 [QIIME 2](https://qiime2.org) plugin. Either works!
 
-### The "Redsea" dataset
-This README's tutorials use a subset of the [Redsea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/) as an example dataset. This data is stored in the `data/redsea/` directory within this repository. Throughout the rest of this README, we'll just refer to this dataset as "the Redsea dataset", "Redsea", or something like that.
+### The "Red Sea" dataset
+This README's tutorials use a subset of the [Red Sea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/) as an example dataset. This data is stored in the `data/redsea/` directory within this repository. Throughout the rest of this README, we'll just refer to this dataset as "the Red Sea dataset", "Red Sea", or something like that.
 
 ### What will this README cover?
 
 The **"Getting started with Songbird"** section will briefly go over basic usage of
-Songbird both outside and inside of QIIME 2, using the Redsea dataset (see
+Songbird both outside and inside of QIIME 2, using the Red Sea dataset (see
 above) as an example.
 This section will also discuss ways of checking the fit of the model Songbird
 creates, in order to validate that it looks reasonable.
@@ -43,7 +43,7 @@ source activate songbird_env
 ```
 
 ### Running Songbird
-Let's try running Songbird on the "Redsea" example data included with this
+Let's try running Songbird on the "Red Sea" example data included with this
 repository. You can just copy-and-paste the command below into your terminal,
 assuming you've activated your `songbird_env`.
 ```
@@ -88,7 +88,7 @@ qiime dev refresh-cache
 ### Importing data into QIIME 2
 Once QIIME 2 is properly interfaced with Songbird, you can import your BIOM tables
 into QIIME 2 "Artifacts." Starting from the Songbird root folder, let's import
-the Redsea example data into QIIME 2 by running:
+the Red Sea example data into QIIME 2 by running:
 
 ```
 qiime tools import \
@@ -140,13 +140,13 @@ Regardless of whether you run Songbird standalone or through QIIME 2, **you'll n
 
 If you ran Songbird standalone, you can open up Tensorboard in your results directory (or the directory above your results directory) to see something like this:
 
-![Tensorboard shown for the standalone Songbird run on the Redsea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-tensorboard-output.png "Tensorboard shown for the standalone Songbird run on the Redsea data")
+![Tensorboard shown for the standalone Songbird run on the Red Sea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-tensorboard-output.png "Tensorboard shown for the standalone Songbird run on the Red Sea data")
 _(You may need to wait for a while for Tensorboard to fully load everything.
 Refreshing the page seems to help.)_
 
 And if you ran Songbird through QIIME 2, you can open up your `regression-summary.qzv` using `qiime tools view` or using [view.qiime2.org](https://view.qiime2.org) to see something like this:
 
-![Summary of the QIIME 2 Songbird run on the Redsea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-single-output.png "Summary of the QIIME 2 Songbird run on the Redsea data")
+![Summary of the QIIME 2 Songbird run on the Red Sea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-single-output.png "Summary of the QIIME 2 Songbird run on the Red Sea data")
 _(Note that this screenshot has been zoomed out a lot in order to show
 the full display.)_
 
@@ -190,7 +190,7 @@ Again, the numbers vary greatly by dataset. But you want to see the curve decayi
 It's worth noting that, ignoring stuff like `--output-dir`,
 **the only required parameters to Songbird** are a feature table, metadata, and a formula.
 
-In the example Songbird runs on the Redsea dataset above, the reason we
+In the example Songbird runs on the Red Sea dataset above, the reason we
 specifically set `--epochs` and `--differential-prior` to different values was
 due to consulting Tensorboard to make sure the model was properly fitting.
 
@@ -254,7 +254,7 @@ A description of how to interpret these graphs is contained in [this section](ht
 
 **Q.** What exactly does the `qiime songbird summarize-paired` command do? Why is it useful?
 
-**A.** _(This answer uses the Redsea dataset.)_
+**A.** _(This answer uses the Red Sea dataset.)_
 As we've discussed, diagnostic plots can be created from the QIIME 2 interface as follows:
 ```
 qiime songbird summarize-single \
@@ -284,7 +284,7 @@ qiime songbird summarize-paired \
 The baseline model above just looks at the means (i.e. intercept), to determine how much better the first model can perform compared to the baseline model.
 But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.
 
-**Q.**  _(This answer uses the Redsea dataset.)_ What can I do with that `regression-biplot.qza` file I get from running `qiime songbird multinomial`? Can I eat it?
+**Q.**  _(This answer uses the Red Sea dataset.)_ What can I do with that `regression-biplot.qza` file I get from running `qiime songbird multinomial`? Can I eat it?
 
 **A.** You can't eat it, unfortunately. But you can visualize it in [Emperor](https://github.com/biocore/emperor)!
 
