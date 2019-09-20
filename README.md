@@ -204,8 +204,9 @@ _If you're using Songbird standalone_, Tensorboard makes it particularly easy to
 if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
 
 ### TL;DR
-**So basically we want to futz around with the parameters until we see two
-nice exponential decay graphs. Once you have that, we can view the `differentials.tsv` output to look at the ranks!**
+Basically, you'll want to futz around with the parameters until you see two
+nice exponential decay graphs. Once you have that, you can view the
+`differentials.tsv` output to look at the differentials Songbird produced!
 
 # FAQs
 
