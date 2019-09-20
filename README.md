@@ -110,7 +110,6 @@ visualized by running:
 
 ```
 qiime songbird summarize-single \
-    --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
     --o-visualization regression-summary.qzv
 ```
@@ -233,7 +232,6 @@ A description of how to interpret these graphs is contained in [this section](ht
 As we've discussed, diagnostic plots can be created from the QIIME 2 interface as follows:
 ```
 qiime songbird summarize-single \
-    --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
     --o-visualization regression-summary.qzv
 ```
