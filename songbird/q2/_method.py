@@ -15,7 +15,9 @@ def multinomial(table: biom.Table,
                 metadata: Metadata,
                 formula: str,
                 training_column: str = DEFAULTS["training-column"],
-                num_random_test_examples: int = DEFAULTS["num-random-test-examples"],
+                num_random_test_examples: int = (
+                    DEFAULTS["num-random-test-examples"]
+                ),
                 epochs: int = DEFAULTS["epochs"],
                 batch_size: int = DEFAULTS["batch-size"],
                 differential_prior: float = DEFAULTS["differential-prior"],
