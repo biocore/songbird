@@ -11,8 +11,7 @@ For more details, please see
 
 ### How do I run Songbird?
 You can run Songbird as a standalone tool from the command-line or as a
-[QIIME 2](https://qiime2.org) plugin. Either works! (Note that, in either case,
-you'll need to have [Conda](https://docs.conda.io/) installed first.)
+[QIIME 2](https://qiime2.org) plugin. Either works!
 
 ### What will this README cover?
 
@@ -30,7 +29,9 @@ Songbird, etc.
 
 ## Option 1: Using Songbird "standalone"
 ### Installation
-Songbird can be installed from conda-forge as follows:
+First off, make sure that [conda](https://docs.conda.io/) is installed.
+
+Songbird can be installed from the `conda-forge` channel as follows:
 ```
 conda create -n songbird_env songbird -c conda-forge
 source activate songbird_env
@@ -59,7 +60,7 @@ tensorboard --logdir .
 
 When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information) for a description of how to interpret this information, and see [this section](https://github.com/biocore/songbird/#1-faqs-running-songbird-standalone) for details on how to use Tensorboard.
 
-## Option 2: Using Songbird through QIIME 2
+## Option 2: Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
 First, you'll need to make sure that QIIME 2 is installed before installing
 Songbird. In your QIIME 2 conda environment, you can install Songbird by
