@@ -165,8 +165,7 @@ The x-axis is the number of iterations (meaning times the model is training acro
 
 **Number of iterations = (`--epochs` or `--p-epochs`) multiplied by (`--batch-size` or `--p-batch-size`)**
 
-The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Tensorboard graph above it means that, on average, the model is off by ~16 counts, which is low. However, this is ABSOLUTE error not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets)
-
+The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Cross Validation graphs shown above it means that, on average, the model is off by around 5 to 10 counts, which is low. However, this is ABSOLUTE error not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets)
 
 #### How can I tell if this graph "looks good"?
 
@@ -182,7 +181,8 @@ Just like the prediction accuracy graph, the x-axis is the number of iterations 
 The y-axis is MINUS log probability of the model actually fitting: so LOWER is better (maximizing the probability = minimizing the negative log probability).
 
 #### How can I tell if *this* graph "looks good"?
-Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the above Tensorboard example is a nice one).
+Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the loss graphs shown in the Tensorboard/QIIME 2 summaries above
+are nice).
 
 ## Adjusting parameters to get reasonable fitting
 
