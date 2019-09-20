@@ -90,13 +90,10 @@ plugin.methods.register_function(
 plugin.visualizers.register_function(
     function=summarize_single,
     inputs={
-        'feature_table': FeatureTable[Frequency],
         'regression_stats': SampleData[SongbirdStats]
     },
     parameters={},
     input_descriptions={
-        'feature_table': ('Input biom table that was used for the '
-                          'regression analysis.'),
         'regression_stats': ('results from multinomial regression '
                              'for reference model')
     },

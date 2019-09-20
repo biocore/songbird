@@ -37,33 +37,48 @@ def _convergence_plot(regression, baseline, ax0, ax1):
         ax1.legend()
 
 
-def _summarize(output_dir: str, n: int,
-               regression: pd.DataFrame, baseline: pd.DataFrame = None):
+def _summarize(output_dir: str, regression: pd.DataFrame,
+               baseline: pd.DataFrame = None, n: int = None):
     """ Helper method for generating summary pages
 
     Parameters
     ----------
     output_dir : str
        Name of output directory
-    n : int
-       Number of samples.
     regression : pd.DataFrame
        Regression summary with column names
        ['loss', 'cross-validation']
     baseline : pd.DataFrame
        Baseline regression summary with column names
-       ['loss', 'cross-validation']
+       ['loss', 'cross-validation']. Defaults to None (i.e. if only a single
+       set of regression stats will be summarized).
+    n : int
+       Number of samples (defaults to None). This is used for computing
+       the Q^2 score when multiple regression stats are being summarized.
+       If n is None, then baseline MUST also be None; otherwise, an error will
+       be raised.
 
     Note
     ----
     This assumes that the same summary interval was used
     for both analyses.
+
+    Raises
+    ------
+    ValueError
+        if n is None and baseline is not None (this would prevent a Q^2 score
+        from being calculated)
     """
     fig, ax = plt.subplots(2, 1, figsize=(10, 10))
     if baseline is None:
         _convergence_plot(regression, None, ax[0], ax[1])
         q2 = None
     else:
+        if n is None:
+            raise ValueError(
+                "n is None, but baseline is not None. Can't compute a Q^2 "
+                "score!"
+            )
         _convergence_plot(regression, baseline, ax[0], ax[1])
 
         # this provides a pseudo-r2 commonly provided in the context
@@ -104,16 +119,13 @@ def _summarize(output_dir: str, n: int,
         index_f.write('Download as PDF</a><br>\n')
 
 
-def summarize_single(output_dir: str,  feature_table: biom.Table,
-                     regression_stats: qiime2.Metadata):
-    n = feature_table.shape[1]
-    _summarize(output_dir, n, regression_stats.to_dataframe())
+def summarize_single(output_dir: str, regression_stats: qiime2.Metadata):
+    _summarize(output_dir, regression_stats.to_dataframe())
 
 
 def summarize_paired(output_dir: str, feature_table: biom.Table,
                      regression_stats: qiime2.Metadata,
                      baseline_stats: qiime2.Metadata):
     n = feature_table.shape[1]
-    _summarize(output_dir, n,
-               regression_stats.to_dataframe(),
-               baseline_stats.to_dataframe())
+    _summarize(output_dir, regression_stats.to_dataframe(),
+               baseline_stats.to_dataframe(), n)

@@ -4,7 +4,7 @@ import qiime2
 import unittest
 import tensorflow as tf
 from songbird.q2._method import multinomial
-from songbird.q2._summary import summarize_single, summarize_paired
+from songbird.q2._summary import summarize_single, summarize_paired, _summarize
 from songbird.util import random_multinomial_model
 
 
@@ -45,8 +45,7 @@ class TestSummary(unittest.TestCase):
         shutil.rmtree(self.results)
 
     def test_summarize_single(self):
-        summarize_single(self.results, self.table,
-                         self.ref_stats)
+        summarize_single(self.results, self.ref_stats)
 
         index_fp = os.path.join(self.results, 'index.html')
         self.assertTrue(os.path.exists(index_fp))
@@ -59,6 +58,21 @@ class TestSummary(unittest.TestCase):
                 html
             )
             self.assertIn('<a href="convergence-plot.pdf">', html)
+
+    def test_summarize_error(self):
+        """Tests that a certain error in _summarize() is raised if needed.
+
+        This error should be raised if "baseline" is not None (i.e. we're
+        calling this from summarize_paired()), but n is None (i.e. we don't
+        have data on the number of samples).
+
+        This should never happen in practice, but we might as well test to make
+        sure that an appropriate error is thrown if it ever *would* happen.
+        """
+        with self.assertRaisesRegex(
+            ValueError, "n is None, but baseline is not None."
+        ):
+            _summarize(self.results, self.ref_stats, self.base_stats)
 
     def test_summarize_paired(self):
         summarize_paired(self.results, self.table,
