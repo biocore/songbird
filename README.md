@@ -53,10 +53,10 @@ make sure it isn't "overfitting" to the data).** When running Songbird
 standalone, you can do this using Tensorboard:
 
 ```
-tensorboard --logdir <your-result-directory>
+tensorboard --logdir .
 ```
 
-This will give cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information) for a description of how to interpret this information.
+When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information) for a description of how to interpret this information, and see [this section](https://github.com/biocore/songbird/#1-faqs-running-songbird-standalone) for details on how to use Tensorboard.
 
 ## Option 2: Using Songbird through QIIME 2
 ### Installation
@@ -171,6 +171,8 @@ It's recommended to start with a small formula (with only a few variables in the
 
 If your graphs are going down but then going back up, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
+For more information about specifying formulas, see [this section](https://github.com/biocore/songbird/#3-faqs-formula-and-other-parameters).
+
 _If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
 if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph.
 
@@ -274,8 +276,7 @@ You can view the resulting visualization at [view.qiime2.org](https://view.qiime
 These biplots have a different interpretation - the points correspond to microbes and the arrow correspond to covariates of interest. Running these models on the full dataset can yield something similar to as follows:
 ![biplot](https://github.com/biocore/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
 
-## 3. FAQs: Parameters
-
+## 3. FAQs: "Formula" and other parameters
 
 **Q.** What is a formula?  What should be passed into here?
 
