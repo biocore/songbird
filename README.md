@@ -184,7 +184,7 @@ The y-axis is MINUS log probability of the model actually fitting: so LOWER is b
 #### How can I tell if *this* graph "looks good"?
 Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the above Tensorboard example is a nice one).
 
-## Adjusting models to get reasonable fitting
+## Adjusting parameters to get reasonable fitting
 
 ### An introductory note
 It's worth noting that, ignoring stuff like `--output-dir`,
