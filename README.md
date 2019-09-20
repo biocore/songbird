@@ -13,11 +13,16 @@ For more details, please see
 You can run Songbird as a standalone tool from the command-line or as a
 [QIIME 2](https://qiime2.org) plugin. Either works!
 
+### The "Redsea" dataset
+This README's tutorials use a subset of the [Redsea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/) as an example dataset. This data is stored in the `data/redsea/` directory within this repository. Throughout the rest of this README, we'll just refer to this dataset as "the Redsea dataset", "Redsea", or something like that.
+
 ### What will this README cover?
 
-The **"Getting started with Songbird"** section will briefly go over basic usage of Songbird both outside and inside of QIIME 2, using a subset of the [Redsea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/) as an example dataset.
-It will also discuss ways of checking the fit of the model Songbird creates, in
-order to validate that it looks reasonable.
+The **"Getting started with Songbird"** section will briefly go over basic usage of
+Songbird both outside and inside of QIIME 2, using the Redsea dataset (see
+above) as an example.
+This section will also discuss ways of checking the fit of the model Songbird
+creates, in order to validate that it looks reasonable.
 
 The next main section of the README, **FAQs**, will cover some common questions
 asked about Songbird in a variety of situations. If you have a question about
@@ -38,12 +43,17 @@ source activate songbird_env
 ```
 
 ### Running Songbird
-Try running the following:
+Let's try running Songbird on the "Redsea" example data included with this
+repository. You can just copy-and-paste the command below into your terminal,
+assuming you've activated your `songbird_env`.
 ```
 songbird multinomial \
-    --formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
     --input-biom data/redsea/redsea.biom \
     --metadata-file data/redsea/redsea_metadata.txt \
+    --formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
+    --epochs 10000 \
+    --differential-prior 0.5 \
+    --summary-interval 1 \
     --summary-dir results
 ```
 The output differentials will be stored in `results/differentials.tsv`.
@@ -77,8 +87,8 @@ qiime dev refresh-cache
 
 ### Importing data into QIIME 2
 Once QIIME 2 is properly interfaced with Songbird, you can import your BIOM tables
-into QIIME 2 "Artifacts." Starting from the Songbird root folder, you can import this dataset
-into QIIME 2 by running:
+into QIIME 2 "Artifacts." Starting from the Songbird root folder, let's import
+the Redsea example data into QIIME 2 by running:
 
 ```
 qiime tools import \
@@ -95,6 +105,9 @@ qiime songbird multinomial \
     --i-table redsea.biom.qza \
     --m-metadata-file data/redsea/redsea_metadata.txt \
     --p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
+    --p-epochs 10000 \
+    --p-differential-prior 0.5 \
+    --p-summary-interval 1 \
     --o-differentials differentials.qza \
     --o-regression-stats regression-stats.qza \
     --o-regression-biplot regression-biplot.qza
@@ -114,7 +127,9 @@ qiime songbird summarize-single \
     --o-visualization regression-summary.qzv
 ```
 
-The resulting visualization contains two plots. These plots are analogous to the two
+The resulting visualization (viewable using `qiime tools view` or at
+[view.qiime2.org](https://view.qiime2.org)) contains two plots.
+These plots are analogous to the two
 plots shown in Tensorboard's interface (the top plot shows cross-validation
 results, and the bottom plot shows loss information). The interpretation of
 these plots is the same as with the Tensorboard plots: see [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information) for a description of how to interpret this information.
@@ -123,23 +138,24 @@ these plots is the same as with the Tensorboard plots: see [this section](https:
 
 Regardless of whether you run Songbird standalone or through QIIME 2, **you'll need to check up on how Songbird's model has fit to your dataset.**
 
-If you ran Songbird standalone, you can open up Tensorboard in your results directory to see something like this:
+If you ran Songbird standalone, you can open up Tensorboard in your results directory (or the directory above your results directory) to see something like this:
 
-**TODO: put a screenshot of a fancy tensorboard summary here**
+![Tensorboard shown for the standalone Songbird run on the Redsea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-tensorboard-output.png "Tensorboard shown for the standalone Songbird run on the Redsea data")
+_(You may need to wait for a while for Tensorboard to fully load everything.
+Refreshing the page seems to help.)_
 
-And if you ran Songbird through QIIME 2, you can open up your `regression-summary.qzv` in [view.qiime2.org](https://view.qiime2.org) to see something like this:
+And if you ran Songbird through QIIME 2, you can open up your `regression-summary.qzv` using `qiime tools view` or using [view.qiime2.org](https://view.qiime2.org) to see something like this:
 
-**TODO: put a screenshot of the new fancy q2 summary here**
+![Summary of the QIIME 2 Songbird run on the Redsea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-single-output.png "Summary of the QIIME 2 Songbird run on the Redsea data")
 
 ### Hey! I don't see anything in my plots, what's up with that?
 **If you don't see anything in these plots, or if the plots only show a small handful of points, you probably need to decrease your `--summary-interval`/`--p-summary-interval` parameter.** This parameter (specified in seconds) impacts how often a "measurement" is taken for these plots. By default, it's set to 10 seconds -- but if your Songbird runs are finishing up in only a few seconds, that isn't very helpful!
 
 Try setting the `--summary-interval`/`--p-summary-interval` to `1` to record the loss at every second. This should give you more detail in these plots. (If what you want to do is make Songbird run *longer*, then you can also do something like increasing the `--epochs`/`--p-epochs` parameter -- but that's a different story.)
 
-If you're using Tensorboard, you may also need to refresh the graph a few times to get stuff to show up.
+Also, as mentioned above: if you're using Tensorboard, you may also need to refresh the graph a few times to get stuff to show up.
 
-
-### Graph 1: `cv_error` or `Cross validation score`
+### Explaining Graph 1: `cv_error` or `Cross validation score`
 
 This is a graph of the prediction accuracy of the model; the model will try to guess the count values for the training samples that were set aside in the script above, using only the metadata categories it has. Then it looks at the real values and sees how close it was.
 
@@ -154,7 +170,7 @@ The y-axis is the average number of counts off for each feature. The model is pr
 
 The raw numbers will be variable, so it is difficult to make a blanket statement, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau (further discussion below)
 
-### Graph 2: `loss`
+### Explaining Graph 2: `loss`
 
 This graph is labelled "loss" because "loss" is the function being optimized. The goal here is to reduce the error of the training samples.
 
@@ -167,6 +183,13 @@ The y-axis is MINUS log probability of the model actually fitting: so LOWER is b
 Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the above Tensorboard example is a nice one).
 
 ## Adjusting models to get reasonable fitting
+
+It's worth noting that, ignoring stuff like `--output-dir`,
+**the only required parameters to Songbird** are a feature table, metadata, and a formula.
+The reason we specifically set the `--epochs` and `--differential-prior` in the
+example Songbird runs on the Redsea dataset above was because these parameters
+were chosen based on consulting Tensorboard to make sure the model was properly
+fitting.
 
 It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. If your graphs are going down but not exponentially and not plateauing, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`.
 
