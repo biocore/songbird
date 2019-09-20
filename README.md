@@ -11,7 +11,8 @@ For more details, please see
 
 ### How do I run Songbird?
 You can run Songbird as a standalone tool from the command-line or as a
-[QIIME 2](https://qiime2.org) plugin. Either works!
+[QIIME 2](https://qiime2.org) plugin. Either works! (Note that, in either case,
+you'll need to have [Conda](https://docs.conda.io/) installed first.)
 
 ### What will this README cover?
 
