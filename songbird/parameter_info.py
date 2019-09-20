@@ -58,6 +58,6 @@ DEFAULTS = {
     'min-sample-count': 1000,
     'min-feature-count': 10,
     "checkpoint-interval": 3600,
-    "summary-interval": 60,
+    "summary-interval": 10,
     "summary-dir": "summarydir",
 }

@@ -133,9 +133,9 @@ And if you ran Songbird through QIIME 2, you can open up your `regression-summar
 **TODO: put a screenshot of the new fancy q2 summary here**
 
 ### Hey! I don't see anything in my plots, what's up with that?
-**If you don't see anything in these plots, or if the plots only show a small handful of points, you probably need to decrease your `--summary-interval`/`--p-summary-interval` parameter.** This parameter (specified in seconds) impacts how often a "measurement" is taken for these plots. By default, it's set to 60 seconds -- but if your Songbird runs are finishing up in less than a minute, that isn't helpful!
+**If you don't see anything in these plots, or if the plots only show a small handful of points, you probably need to decrease your `--summary-interval`/`--p-summary-interval` parameter.** This parameter (specified in seconds) impacts how often a "measurement" is taken for these plots. By default, it's set to 10 seconds -- but if your Songbird runs are finishing up in only a few seconds, that isn't very helpful!
 
-Try setting the `--summary-interval`/`--p-summary-interval` to `1` to record the loss at every second. This will give you more detail in these plots. (If what you want to do is make Songbird run *longer*, then you can also increase the `--epochs`/`--p-epochs` parameter -- but that's a different story.)
+Try setting the `--summary-interval`/`--p-summary-interval` to `1` to record the loss at every second. This should give you more detail in these plots. (If what you want to do is make Songbird run *longer*, then you can also do something like increasing the `--epochs`/`--p-epochs` parameter -- but that's a different story.)
 
 If you're using Tensorboard, you may also need to refresh the graph a few times to get stuff to show up.
 
