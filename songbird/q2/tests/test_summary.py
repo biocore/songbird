@@ -58,6 +58,11 @@ class TestSummary(unittest.TestCase):
                 html
             )
             self.assertIn('<a href="convergence-plot.pdf">', html)
+            self.assertIn("how to interpret these plots", html)
+            self.assertIn(
+                "how to adjust Songbird's parameters to get the model to fit",
+                html
+            )
 
     def test_summarize_error(self):
         """Tests that a certain error in _summarize() is raised if needed.
@@ -92,6 +97,11 @@ class TestSummary(unittest.TestCase):
                 html
             )
             self.assertIn('<a href="convergence-plot.pdf">', html)
+            self.assertIn("how to interpret these plots", html)
+            self.assertIn(
+                "how to adjust Songbird's parameters to get the model to fit",
+                html
+            )
 
 
 if __name__ == "__main__":

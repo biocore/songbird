@@ -147,6 +147,8 @@ Refreshing the page seems to help.)_
 And if you ran Songbird through QIIME 2, you can open up your `regression-summary.qzv` using `qiime tools view` or using [view.qiime2.org](https://view.qiime2.org) to see something like this:
 
 ![Summary of the QIIME 2 Songbird run on the Redsea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-single-output.png "Summary of the QIIME 2 Songbird run on the Redsea data")
+_(Note that this screenshot has been zoomed out a lot in order to show
+the full display.)_
 
 ### Hey! I don't see anything in my plots, what's up with that?
 **If you don't see anything in these plots, or if the plots only show a small handful of points, you probably need to decrease your `--summary-interval`/`--p-summary-interval` parameter.** This parameter (specified in seconds) impacts how often a "measurement" is taken for these plots. By default, it's set to 10 seconds -- but if your Songbird runs are finishing up in only a few seconds, that isn't very helpful!

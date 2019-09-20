@@ -108,6 +108,19 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
             "<kbd>--p-summary-interval 1</kbd>, which will record the loss at "
             "every second.</p>\n"
         )
+        index_f.write(
+            "<p>For information about <strong>how to interpret these "
+            "plots</strong>, please see "
+            '<a href="https://github.com/biocore/songbird#interpreting-model-fitting-information">this section</a> '  # noqa
+            "of the Songbird README.</p>"
+        )
+        index_f.write(
+            "<p>For information about <strong>how to adjust Songbird's "
+            "parameters to get the model to fit reasonably well to your "
+            "dataset</strong>, please see "
+            '<a href="https://github.com/biocore/songbird#adjusting-models-to-get-reasonable-fitting">this section</a> '  # noqa
+            "of the Songbird README.</p>"
+        )
         if q2 is not None:
             index_f.write(
                 '<p><strong>Pseudo Q-squared:</strong> %f</p>\n' % q2
