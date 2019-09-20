@@ -297,9 +297,10 @@ qiime emperor biplot \
     --o-visualization emperor-biplot
 ```
 
-You can view the resulting visualization at [view.qiime2.org](https://view.qiime2.org).
+You can view the resulting visualization using `qiime tools view` or at
+[view.qiime2.org](https://view.qiime2.org).
 
-These biplots have a different interpretation - the points correspond to microbes and the arrow correspond to covariates of interest. Running these models on the full dataset can yield something similar to as follows:
+These biplots have a different interpretation - the points correspond to features and the arrows correspond to covariates of interest. Running these models on the full dataset can yield something similar to as follows:
 ![biplot](https://github.com/biocore/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
 
 ## 3. FAQs: "Formula" and other parameters
@@ -319,7 +320,7 @@ More details can be found here: https://patsy.readthedocs.io/en/latest/formulas.
 **Q.** That's cool!  How many variables can be passed into the formula?
 
 **A.** That depends on the number of samples you have -- the rule of thumb is to only have about 10% of your samples.
-So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  You can sometime migitate this risk with the `--differential-prior` parameter.
+So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
 
 **Q.** Wait a minute, what do you mean that I can migitate overfitting with the `--differential-prior`?
 
@@ -336,7 +337,7 @@ The `--differential-prior` command specifies the width of the prior distribution
 
 **A.** That primarily depends on a few things, namely how many samples and microbes are in your dataset, and the number of `--epoch` and the `--batch-size`.  The `--batch-size` specifies the number of samples to analyze for each iteration, and the `--epoch` specifies the number of total passes through the dataset.  For example, if you have a 100 samples in your dataset and you specify `--batch-size 5` and `--epochs 200`, then you will have `(100/5)*200=4000` iterations total.
 
-The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to consult with Tensorboard (or your regression-stats output) to make sure that your model fit is sane.**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to [consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane](https://github.com/biocore/songbird/#interpreting-model-fitting-information).**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
 
 ## 4. FAQs: Output files
 
