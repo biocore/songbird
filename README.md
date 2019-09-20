@@ -186,26 +186,26 @@ Again, the numbers vary greatly by dataset. But you want to see the curve decayi
 
 ## Adjusting models to get reasonable fitting
 
+### An introductory note
 It's worth noting that, ignoring stuff like `--output-dir`,
 **the only required parameters to Songbird** are a feature table, metadata, and a formula.
-The reason we specifically set the `--epochs` and `--differential-prior` in the
-example Songbird runs on the Redsea dataset above was because these parameters
-were chosen based on consulting Tensorboard to make sure the model was properly
-fitting.
 
-It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. If your graphs are going down but not exponentially and not plateauing, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`.
+In the example Songbird runs on the Redsea dataset above, the reason we
+specifically set `--epochs` and `--differential-prior` to different values was
+due to consulting Tensorboard to make sure the model was properly fitting.
 
-If your graphs are going down but then going back up, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
+### Okay, so *how* should I adjust parameters to get my model to fit properly?
 
-For more information about specifying formulas, see [this section](https://github.com/biocore/songbird/#3-faqs-formula-and-other-parameters).
+It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. _If your graphs are going down but not exponentially and not plateauing_, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. (For more information about specifying formulas, see [this section](https://github.com/biocore/songbird/#3-faqs-formula-and-other-parameters).)
+
+_If your graphs are going down but then going back up_, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
 _If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
-if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph.
+if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
 
 ### TL;DR
 **So basically we want to futz around with the parameters until we see two
 nice exponential decay graphs. Once you have that, we can view the `differentials.tsv` output to look at the ranks!**
-
 
 # FAQs
 
