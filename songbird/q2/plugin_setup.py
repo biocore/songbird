@@ -94,15 +94,18 @@ plugin.visualizers.register_function(
     },
     parameters={},
     input_descriptions={
-        'regression_stats': ('results from multinomial regression '
-                             'for reference model')
+        'regression_stats': (
+            "Summary information produced by running "
+            "`qiime songbird multinomial`."
+        )
     },
     parameter_descriptions={
     },
     name='Regression summary statistics',
-    description=("Visualize the convergence statistics of regression fit "
-                 "including cross validation accuracy and the loglikehood "
-                 "over the iterations")
+    description=(
+        "Visualize the convergence statistics from running multinomial "
+        "regression, giving insight into how the model fit to your data."
+    )
 )
 
 plugin.visualizers.register_function(
@@ -116,17 +119,23 @@ plugin.visualizers.register_function(
     input_descriptions={
         'feature_table': ('Input biom table that was used for the '
                           'regression analysis.'),
-        'regression_stats': ('results from multinomial regression '
-                             'for reference model'),
-        'baseline_stats': ('results from multinomial regression '
-                           'for baseline model')
+        'regression_stats': (
+            "Summary information for the reference model, produced by running "
+            "`qiime songbird multinomial`."
+        ),
+        'baseline_stats': (
+            "Summary information for the baseline model, produced by running "
+            "`qiime songbird multinomial`."
+        )
     },
     parameter_descriptions={
     },
     name='Paired regression summary statistics',
-    description=("Visualize the convergence statistics of regression fit "
-                 "including cross validation accuracy, loglikehood over the "
-                 "iterations and the R2.")
+    description=(
+        "Visualize the convergence statistics from two runs of multinomial "
+        "regression, giving insight into how the models fit to your data. "
+        "The produced visualization includes a 'pseudo-Q-squared' value."
+    )
 )
 
 # Register types
