@@ -9,6 +9,17 @@ field(s) in your sample metadata. The most important aspect of these differentia
 For more details, please see
 [the paper introducing Songbird](https://www.nature.com/articles/s41467-019-10656-5).
 
+### What do I need to run Songbird?
+
+Songbird has a lot of parameters you can specify, but the three required
+parameters are:
+
+1. A BIOM table containing feature counts for the samples in your dataset
+2. A sample metadata file containing the covariates you're interested in
+   studying
+3. A "formula" specifying the covariates to be included in the model Songbird
+   produces, and their interactions
+
 ### How do I run Songbird?
 You can run Songbird as a standalone tool from the command-line or as a
 [QIIME 2](https://qiime2.org) plugin. Either works!
