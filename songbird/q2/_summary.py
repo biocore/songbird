@@ -111,14 +111,14 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
         index_f.write(
             "<p>For information about <strong>how to interpret these "
             "plots</strong>, please see "
-            '<a href="https://github.com/biocore/songbird#interpreting-model-fitting-information">this section</a> '  # noqa
+            '<a href="https://github.com/biocore/songbird#4-interpreting-model-fitting-information">this section</a> '  # noqa
             "of the Songbird README.</p>"
         )
         index_f.write(
             "<p>For information about <strong>how to adjust Songbird's "
             "parameters to get the model to fit reasonably well to your "
             "dataset</strong>, please see "
-            '<a href="https://github.com/biocore/songbird#adjusting-parameters-to-get-reasonable-fitting">this section</a> '  # noqa
+            '<a href="https://github.com/biocore/songbird#5-adjusting-parameters-to-get-reasonable-fitting">this section</a> '  # noqa
             "of the Songbird README.</p>"
         )
         if q2 is not None:

@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/biocore/songbird.svg?branch=master)](https://travis-ci.org/biocore/songbird)
 
-# Getting started with Songbird
+# Songbird
 ### What does Songbird produce?
 The primary output from Songbird is a file containing *differentials*.
 These describe the log-fold change of features with respect to certain
-field(s) in your sample metadata. The most important aspect of these differentials are *rankings*, which are obtained by just sorting each column of differentials from lowest to highest. These rankings give information on the relative associations of features with a given covariate.
+field(s) in your sample metadata. The most important aspect of these differentials are *rankings*, which are obtained by sorting a column of differentials from lowest to highest. These rankings give information on the relative associations of features with a given covariate.
 
 For more details, please see
 [the paper introducing Songbird](https://www.nature.com/articles/s41467-019-10656-5).
@@ -29,21 +29,18 @@ This README's tutorials use a subset of the [Red Sea metagenome dataset](https:/
 
 ### What will this README cover?
 
-The **"Getting started with Songbird"** section will briefly go over basic usage of
-Songbird both outside and inside of QIIME 2, using the Red Sea dataset (see
-above) as an example.
-This section will also discuss ways of checking the fit of the model Songbird
-creates, in order to validate that it looks reasonable.
+This README is divided into a few main sections:
 
-The next main section of the README, **FAQs**, will cover some common questions
-asked about Songbird in a variety of situations. If you have a question about
-Songbird, we highly suggest reading over this!
+1. **Using Songbird "standalone"**
+2. **Using Songbird through QIIME 2**
+3. **Specifying a formula**
+4. **Interpreting model fitting information**
+5. **Adjusting parameters to get reasonable fitting**
+6. **FAQs**
+7. **Visualizing Songbird's differentials**
+8. **More information**
 
-After that, the final few sections of the README are all pretty short. These
-include links to further documentation, additional packages, how to cite
-Songbird, etc.
-
-## Option 1: Using Songbird "standalone"
+# 1. Using Songbird "standalone"
 ### Installation
 First off, make sure that [conda](https://docs.conda.io/) is installed.
 
@@ -79,9 +76,9 @@ standalone, you can do this using Tensorboard:
 tensorboard --logdir .
 ```
 
-When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information) for a description of how to interpret this information, and see [this section](https://github.com/biocore/songbird/#1-faqs-running-songbird-standalone) for details on how to use Tensorboard.
+When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information) for a description of how to interpret this information, and see [this section](https://github.com/biocore/songbird/#6-1-faqs-running-songbird-standalone) for details on how to use Tensorboard.
 
-## Option 2: Using Songbird through [QIIME 2](https://qiime2.org)
+# 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
 First, you'll need to make sure that QIIME 2 is installed before installing
 Songbird. In your QIIME 2 conda environment, you can install Songbird by
@@ -143,9 +140,58 @@ The resulting visualization (viewable using `qiime tools view` or at
 These plots are analogous to the two
 plots shown in Tensorboard's interface (the top plot shows cross-validation
 results, and the bottom plot shows loss information). The interpretation of
-these plots is the same as with the Tensorboard plots: see [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information) for a description of how to interpret this information.
+these plots is the same as with the Tensorboard plots: see [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information) for a description of how to interpret this information.
 
-## Interpreting model fitting information
+# 3. Specifying a formula
+
+### Hang on, what *is* a formula?
+A **formula** specifies the statistical model to be built based on the columns in the metadata file.
+For example, if a user wanted to build a statistical model testing for differences between disease states
+while controlling for gender, the formula would look something like:
+```bash
+--formula "diseased+gender"
+```
+where "diseased" and "gender" are the columns of the sample metadata file.
+This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here is called [patsy](https://patsy.readthedocs.io/);
+more details can be found [here](https://patsy.readthedocs.io/en/latest/formulas.html).
+
+###  How many variables can be passed into a formula?
+That depends on the number of samples you have -- the rule of thumb is to only have about
+10% of your samples.
+So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
+For more information on `--differential-prior` and some other Songbird parameters, please see
+[this section of the FAQs](https://github.com/biocore/songbird/#6-3-faqs-parameters).
+
+### Do you have some simple examples of using formulas?
+
+Sure! In general, it's a good idea to read over the [patsy documentation](https://patsy.readthedocs.io/en/latest/formulas.html) --
+there are a lot of ways you can specify formulas. However, here are a few small
+examples of common formula uses.
+
+#### Example 1: I have a categorical metadata field, and I want to explicitly set the reference
+
+See [this blog post](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html) for details on how to do this.
+
+Basically, you'll want to specify a formula of something like
+
+```bash
+--formula "C(your_metadata_field, Treatment('desired_reference_value'))"
+```
+
+#### Example 2: I have a categorical metadata field with *ordered* values, and I want to account for that
+
+See [this blog post](https://mortonjt.github.io/probable-bug-bytes/probable-bug-bytes/ordinal-variables/) for details on how to do this.
+
+Basically, you'll want to specify a formula of something like
+```bash
+--formula "C(your_metadata_field, Diff, levels=['first_level', 'second_level', 'third_level'])"
+```
+
+### Hey, isn't it "formulae" instead of "formulas"?
+
+That's debatable!
+
+# 4. Interpreting model fitting information
 
 Regardless of whether you run Songbird standalone or through QIIME 2, **you'll need to check up on how Songbird's model has fit to your dataset.**
 
@@ -168,7 +214,7 @@ Try setting the `--summary-interval`/`--p-summary-interval` to `1` to record the
 
 Also, as mentioned above: if you're using Tensorboard, you may also need to refresh the graph a few times to get stuff to show up.
 
-### Explaining Graph 1: `cv_error` or `Cross validation score`
+## 4.1. Explaining Graph 1: `cv_error` or `Cross validation score`
 
 This is a graph of the prediction accuracy of the model; the model will try to guess the count values for the training samples that were set aside in the script above, using only the metadata categories it has. Then it looks at the real values and sees how close it was.
 
@@ -176,13 +222,13 @@ The x-axis is the number of iterations (meaning times the model is training acro
 
 **Number of iterations = (`--epochs` or `--p-epochs`) multiplied by (`--batch-size` or `--p-batch-size`)**
 
-The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Cross Validation graphs shown above it means that, on average, the model is off by around 5 to 10 counts, which is low. However, this is ABSOLUTE error not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets)
+The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Cross Validation graphs shown above it means that, on average, the model is off by around 5 to 10 counts, which is low. However, this is ABSOLUTE error -- not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets).
 
 #### How can I tell if this graph "looks good"?
 
-The raw numbers will be variable, so it is difficult to make a blanket statement, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau (further discussion below)
+The raw numbers will be variable, so it is difficult to make a blanket statement, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau. The cross validation graphs shown in the Tensorboard/QIIME 2 summaries above are good examples.
 
-### Explaining Graph 2: `loss`
+## 4.2. Explaining Graph 2: `loss`
 
 This graph is labelled "loss" because "loss" is the function being optimized. The goal here is to reduce the error of the training samples.
 
@@ -195,7 +241,7 @@ The y-axis is MINUS log probability of the model actually fitting: so LOWER is b
 Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the loss graphs shown in the Tensorboard/QIIME 2 summaries above
 are nice).
 
-## Adjusting parameters to get reasonable fitting
+# 5. Adjusting parameters to get reasonable fitting
 
 ### An introductory note
 It's worth noting that, ignoring stuff like `--output-dir`,
@@ -207,9 +253,9 @@ due to consulting Tensorboard to make sure the model was properly fitting.
 
 ### Okay, so *how* should I adjust parameters to get my model to fit properly?
 
-It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. _If your graphs are going down but not exponentially and not plateauing_, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. (For more information about specifying formulas, see [this section](https://github.com/biocore/songbird/#3-faqs-formula-and-other-parameters).)
+It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. (For more information about specifying formulas, see [this section](https://github.com/biocore/songbird/#3-specifying-a-formula).)
 
-_If your graphs are going down but then going back up_, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
+**If your graphs are going down but then going back up**, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
 _If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
 if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
@@ -219,9 +265,9 @@ Basically, you'll want to futz around with the parameters until you see two
 nice exponential decay graphs. Once you have that, you can view the
 `differentials.tsv` output to look at the differentials Songbird produced!
 
-# FAQs
+# 6. FAQs
 
-## 1. FAQs: Running Songbird standalone
+## 6.1. FAQs: Running Songbird standalone
 **Q.** What am I looking at in the output directory?
 
 **A.** There are 3 major types of files to note:
@@ -249,9 +295,9 @@ Open the website (highlighted in red) in a browser. (Hint; if that doesn’t wor
 
 This should produce a website with 2 graphs, which tensorflow actively updates as songbird is running.
 ![tensorboard](https://github.com/biocore/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
-A description of how to interpret these graphs is contained in [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information).
+A description of how to interpret these graphs is contained in [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information).
 
-## 2. FAQs: Running Songbird through QIIME 2
+## 6.2. FAQs: Running Songbird through QIIME 2
 
 **Q.** What are all of these QZA files, and what can I do with them?
 
@@ -259,7 +305,7 @@ A description of how to interpret these graphs is contained in [this section](ht
 
 1. `differentials.qza`: This is analagous to the `differentials.tsv` file described above. This is represented as a QIIME 2 `FeatureData[Differential]` artifact, so you can directly load it into QIIME 2 plugins that accept differentials like [Qurro](https://github.com/biocore/qurro).
 
-2. `regression-stats.qza`: This artifact contains information about how Songbird's model fitting went. You can visualize this using `qiime songbird summarize-single`, and if you have multiple Songbird runs on the same dataset you can visualize two artifacts of this type by using `qiime songbird summarize-paired`. A description of how to interpret these graphs is contained in [this section](https://github.com/biocore/songbird/#interpreting-model-fitting-information).
+2. `regression-stats.qza`: This artifact contains information about how Songbird's model fitting went. You can visualize this using `qiime songbird summarize-single`, and if you have multiple Songbird runs on the same dataset you can visualize two artifacts of this type by using `qiime songbird summarize-paired`. A description of how to interpret these graphs is contained in [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information).
 
 3. `regression-biplot.qza`: This is a biplot. It's a bit unconventionally structured, in that points in the biplot correspond to features and arrows in the biplot correspond to covariates. We'll show how to visualize this later in this FAQ section.
 
@@ -314,26 +360,9 @@ You can view the resulting visualization using `qiime tools view` or at
 These biplots have a different interpretation - the points correspond to features and the arrows correspond to covariates of interest. Running these models on the full dataset can yield something similar to as follows:
 ![biplot](https://github.com/biocore/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
 
-## 3. FAQs: "Formula" and other parameters
+## 6.3. FAQs: Parameters
 
-**Q.** What is a formula?  What should be passed into here?
-
-**A.** A formula specifies the statistical model to be built based on the columns in the metadata file.
-For example, if a user wanted to build a statistical model testing for differences between disease states
-while controlling for gender, the formula would look something like:
-```bash
---formula "diseased+gender"
-```
-where "diseased" and "gender" are the columns of the sample metadata file.
-This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here is called patsy.
-More details can be found here: https://patsy.readthedocs.io/en/latest/formulas.html
-
-**Q.** That's cool!  How many variables can be passed into the formula?
-
-**A.** That depends on the number of samples you have -- the rule of thumb is to only have about 10% of your samples.
-So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
-
-**Q.** Wait a minute, what do you mean that I can migitate overfitting with the `--differential-prior`?
+**Q.** The "specifying a formula" section mentioned that I can migitate overfitting with `--differential-prior`. What does that mean?
 
 **A.** When I mean overfitting, I'm referring to scenarios when the models attempts to memorize data points rather than
 building predictive models to undercover biological patterns.  See https://xkcd.com/1725/
@@ -348,9 +377,9 @@ The `--differential-prior` command specifies the width of the prior distribution
 
 **A.** That primarily depends on a few things, namely how many samples and microbes are in your dataset, and the number of `--epoch` and the `--batch-size`.  The `--batch-size` specifies the number of samples to analyze for each iteration, and the `--epoch` specifies the number of total passes through the dataset.  For example, if you have a 100 samples in your dataset and you specify `--batch-size 5` and `--epochs 200`, then you will have `(100/5)*200=4000` iterations total.
 
-The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to [consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane](https://github.com/biocore/songbird/#interpreting-model-fitting-information).**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to [consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information).**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
 
-## 4. FAQs: Output files
+## 6.4. FAQs: Output files
 
 **Q.** Why do I have so many columns in my `differentials` even when I'm only using one continuous variable?
 
@@ -358,25 +387,28 @@ The larger the batch size, the more samples you average per iteration, but the l
 
 **If you're having this problem and you're running Songbird standalone, you will need to delete any `#q2:` headers at the start of the sample metadata file -- otherwise, Songbird will interpret these lines as describing actual samples.**
 
+# 7. Visualizing Songbird's differentials
 
-# Further Documentation
+[Qurro](https://github.com/biocore/qurro) generates interactive visualizations of the differentials produced by Songbird.
+
+A Qurro demo using the Red Sea dataset is available [here](https://biocore.github.io/qurro/demos/red_sea/index.html).
+
+
+# 8. More information
+
+## 8.1. Further Documentation
 
 For a more complete tutorial, see the following url that includes real datasets:
 
 https://github.com/knightlab-analyses/reference-frames
 
-
-# Acknowledgements
+## 8.2. Acknowledgements
 
 Credits to Lisa Marotz ([@lisa55asil](https://github.com/lisa55asil)) for the initial FAQs and a ton of the documentation in this README.
 
-# Related packages
+## 8.3. Citations
 
-For interactively visualizing the differentials produced by Songbird, check out [Qurro](https://github.com/biocore/qurro).
-
-# Citations
-
-If you use this tool and you like it, feel free to cite at
+If you use this tool and you like it, please cite it at
 
 ```
 @article{morton2019establishing,
