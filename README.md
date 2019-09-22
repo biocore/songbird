@@ -390,7 +390,7 @@ The larger the batch size, the more samples you average per iteration, but the l
 ## 6.5. FAQs: Installation
 
 **Q.** I've installed Songbird, but when I try to run it I get an error that
-says something like `ImportError: /lib64/libc.so.6: version \`GLIBC_2.15' not found`. What's going on here?
+says something like ``ImportError: /lib64/libc.so.6: version `GLIBC_2.15' not found``. What's going on here?
 
 **A.** In our experience, this is a problem with installing TensorFlow on
 conda. You should be able to get around this problem by uninstalling
