@@ -387,6 +387,20 @@ The larger the batch size, the more samples you average per iteration, but the l
 
 **If you're having this problem and you're running Songbird standalone, you will need to delete any `#q2:` headers at the start of the sample metadata file -- otherwise, Songbird will interpret these lines as describing actual samples.**
 
+## 6.5. FAQs: Installation
+
+**Q.** I've installed Songbird, but when I try to run it I get an error that
+says something like `ImportError: /lib64/libc.so.6: version \`GLIBC_2.15' not found`. What's going on here?
+
+**A.** In our experience, this is a problem with installing TensorFlow on
+conda. You should be able to get around this problem by uninstalling
+TensorFlow, then re-installing it from the `anaconda` conda channel:
+
+```bash
+conda uninstall tensorflow
+conda install -c anaconda tensorflow
+```
+
 # 7. Visualizing Songbird's differentials
 
 [Qurro](https://github.com/biocore/qurro) generates interactive visualizations of the differentials produced by Songbird.
