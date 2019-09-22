@@ -76,7 +76,7 @@ standalone, you can do this using Tensorboard:
 tensorboard --logdir .
 ```
 
-When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information) for a description of how to interpret this information, and see [this section](https://github.com/biocore/songbird/#6-1-faqs-running-songbird-standalone) for details on how to use Tensorboard.
+When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information) for a description of how to interpret this information, and see [this section](https://github.com/biocore/songbird/#61-faqs-running-songbird-standalone) for details on how to use Tensorboard.
 
 # 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
@@ -160,7 +160,7 @@ That depends on the number of samples you have -- the rule of thumb is to only h
 10% of your samples.
 So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
 For more information on `--differential-prior` and some other Songbird parameters, please see
-[this section of the FAQs](https://github.com/biocore/songbird/#6-3-faqs-parameters).
+[this section of the FAQs](https://github.com/biocore/songbird/#63-faqs-parameters).
 
 ### Do you have some simple examples of using formulas?
 
