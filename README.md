@@ -76,7 +76,7 @@ standalone, you can do this using Tensorboard:
 tensorboard --logdir .
 ```
 
-When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See <a href="#interpreting-model-fitting">this section</a> for a description of how to interpret this information, and see <a href="#faqs-standalone">this section of the FAQs</a> for details on how to use Tensorboard.
+When you open up Tensorboard in a web browser, it will show plots of cross validation results and loss. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots, and see <a href="#faqs-standalone">the section of the FAQs on running Songbird standalone</a> for details on how to use Tensorboard.
 
 # 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
@@ -140,7 +140,7 @@ The resulting visualization (viewable using `qiime tools view` or at
 These plots are analogous to the two
 plots shown in Tensorboard's interface (the top plot shows cross-validation
 results, and the bottom plot shows loss information). The interpretation of
-these plots is the same as with the Tensorboard plots: see <a href="#interpreting-model-fitting">this section</a> for a description of how to interpret this information.
+these plots is the same as with the Tensorboard plots: see <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots.
 
 # 3. Specifying a formula <span id="specifying-a-formula"></span>
 
@@ -160,7 +160,7 @@ That depends on the number of samples you have -- the rule of thumb is to only h
 10% of your samples.
 So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
 For more information on `--differential-prior` and some other Songbird parameters, please see
-<a href="#faqs-parameters">this section of the FAQs</a>.
+<a href="#faqs-parameters">this section of the FAQs on parameters</a>.
 
 ### Do you have some simple examples of using formulas?
 
@@ -253,7 +253,7 @@ due to consulting Tensorboard to make sure the model was properly fitting.
 
 ### Okay, so *how* should I adjust parameters to get my model to fit properly?
 
-It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. (For more information about specifying formulas, see <a href="#specifying-a-formula">this section</a>.)
+It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. (See <a href="#specifying-a-formula">this section on specifying formulas</a> for more information.)
 
 **If your graphs are going down but then going back up**, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
@@ -295,7 +295,7 @@ Open the website (highlighted in red) in a browser. (Hint; if that doesn’t wor
 
 This should produce a website with 2 graphs, which tensorflow actively updates as songbird is running.
 ![tensorboard](https://github.com/biocore/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
-A description of how to interpret these graphs is contained in <a href="#interpreting-model-fitting">this section</a>.
+See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots.
 
 ## 6.2. FAQs: Running Songbird through QIIME 2
 
@@ -305,7 +305,7 @@ A description of how to interpret these graphs is contained in <a href="#interpr
 
 1. `differentials.qza`: This is analagous to the `differentials.tsv` file described above. This is represented as a QIIME 2 `FeatureData[Differential]` artifact, so you can directly load it into QIIME 2 plugins that accept differentials like [Qurro](https://github.com/biocore/qurro).
 
-2. `regression-stats.qza`: This artifact contains information about how Songbird's model fitting went. You can visualize this using `qiime songbird summarize-single`, and if you have multiple Songbird runs on the same dataset you can visualize two artifacts of this type by using `qiime songbird summarize-paired`. A description of how to interpret these graphs is contained in <a href="#interpreting-model-fitting">this section</a>.
+2. `regression-stats.qza`: This artifact contains information about how Songbird's model fitting went. You can visualize this using `qiime songbird summarize-single`, and if you have multiple Songbird runs on the same dataset you can visualize two artifacts of this type by using `qiime songbird summarize-paired`. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand the resulting visualization.
 
 3. `regression-biplot.qza`: This is a biplot. It's a bit unconventionally structured, in that points in the biplot correspond to features and arrows in the biplot correspond to covariates. We'll show how to visualize this later in this FAQ section.
 
