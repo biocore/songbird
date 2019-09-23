@@ -447,6 +447,8 @@ qiime metadata tabulate \
 (The output `.qzv` file can be viewed using `qiime tools view` or at
 [view.qiime2.org](https://view.qiime2.org).)
 
+![Tabulated differentials](https://github.com/biocore/songbird/raw/master/images/redsea-differentials-tabulated.png "Tabulated differentials, viewed at view.qiime2.org.")
+
 # 8. More information
 
 ## 8.1. Further Documentation
