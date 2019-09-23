@@ -341,6 +341,7 @@ qiime songbird summarize-single \
 
 We can _view two versions of these statistics at once_ as follows:
 ```
+# Generate a baseline model
 qiime songbird multinomial \
     --i-table redsea.biom.qza \
     --m-metadata-file data/redsea/redsea_metadata.txt \
@@ -351,6 +352,8 @@ qiime songbird multinomial \
     --o-regression-stats baseline-stats.qza \
     --o-regression-biplot baseline-biplot.qza
 
+# Visualize the first model's regression stats *and* the baseline model's
+# regression stats
 qiime songbird summarize-paired \
     --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
@@ -360,7 +363,10 @@ qiime songbird summarize-paired \
 
 The resulting visualization will also include _Q<sup>2</sup>_ values.
 
-The baseline model above just looks at the means (i.e. intercept), to determine how much better the first model can perform compared to the baseline model.
+The baseline model we generated above is super simple, and doesn't look at any
+of the sample metadata fields. This lets us look at how much better our
+"first" model performs compared to this baseline model.
+
 But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.
 
 **Q.**  _(This answer uses the Red Sea dataset.)_ What can I do with that `regression-biplot.qza` file I get from running `qiime songbird multinomial`? Can I eat it?
