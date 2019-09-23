@@ -160,7 +160,7 @@ That depends on the number of samples you have -- the rule of thumb is to only h
 10% of your samples.
 So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
 For more information on `--differential-prior` and some other Songbird parameters, please see
-<a href="faqs-parameters">this section of the FAQs</a>.
+<a href="#faqs-parameters">this section of the FAQs</a>.
 
 ### Do you have some simple examples of using formulas?
 
