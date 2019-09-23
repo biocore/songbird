@@ -439,8 +439,13 @@ You can also view the output differentials as a nice, sortable table using
 `qiime metadata tabulate`:
 
 ```bash
-qiime metadata tabulate --m-input-file differentials.qza --o-visualization differentials-viz.qzv
+qiime metadata tabulate \
+    --m-input-file differentials.qza \
+    --o-visualization differentials-viz.qzv
 ```
+
+(The output `.qzv` file can be viewed using `qiime tools view` or at
+[view.qiime2.org](https://view.qiime2.org).)
 
 # 8. More information
 
