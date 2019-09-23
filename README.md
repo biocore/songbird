@@ -76,7 +76,7 @@ standalone, you can do this using Tensorboard:
 tensorboard --logdir .
 ```
 
-When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information) for a description of how to interpret this information, and see [this section](https://github.com/biocore/songbird/#61-faqs-running-songbird-standalone) for details on how to use Tensorboard.
+When you open up Tensorboard in a web browser, it will show cross validation results and information about the loss. See <a href="#interpreting-model-fitting">this section</a> for a description of how to interpret this information, and see <a href="#faqs-standalone">this section of the FAQs</a> for details on how to use Tensorboard.
 
 # 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
@@ -140,9 +140,9 @@ The resulting visualization (viewable using `qiime tools view` or at
 These plots are analogous to the two
 plots shown in Tensorboard's interface (the top plot shows cross-validation
 results, and the bottom plot shows loss information). The interpretation of
-these plots is the same as with the Tensorboard plots: see [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information) for a description of how to interpret this information.
+these plots is the same as with the Tensorboard plots: see <a href="#interpreting-model-fitting">this section</a> for a description of how to interpret this information.
 
-# 3. Specifying a formula
+# 3. Specifying a formula <span id="specifying-a-formula"></span>
 
 ### Hang on, what *is* a formula?
 A **formula** specifies the statistical model to be built based on the columns in the metadata file.
@@ -160,7 +160,7 @@ That depends on the number of samples you have -- the rule of thumb is to only h
 10% of your samples.
 So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
 For more information on `--differential-prior` and some other Songbird parameters, please see
-[this section of the FAQs](https://github.com/biocore/songbird/#63-faqs-parameters).
+<a href="faqs-parameters">this section of the FAQs</a>.
 
 ### Do you have some simple examples of using formulas?
 
@@ -191,7 +191,7 @@ Basically, you'll want to specify a formula of something like
 
 That's debatable!
 
-# 4. Interpreting model fitting information
+# 4. Interpreting model fitting information <span id="interpreting-model-fitting"></span>
 
 Regardless of whether you run Songbird standalone or through QIIME 2, **you'll need to check up on how Songbird's model has fit to your dataset.**
 
@@ -241,7 +241,7 @@ The y-axis is MINUS log probability of the model actually fitting: so LOWER is b
 Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the loss graphs shown in the Tensorboard/QIIME 2 summaries above
 are nice).
 
-# 5. Adjusting parameters to get reasonable fitting
+# 5. Adjusting parameters to get reasonable fitting <span id="adjusting-parameters"></span>
 
 ### An introductory note
 It's worth noting that, ignoring stuff like `--output-dir`,
@@ -253,7 +253,7 @@ due to consulting Tensorboard to make sure the model was properly fitting.
 
 ### Okay, so *how* should I adjust parameters to get my model to fit properly?
 
-It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. (For more information about specifying formulas, see [this section](https://github.com/biocore/songbird/#3-specifying-a-formula).)
+It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. (For more information about specifying formulas, see <a href="#specifying-a-formula">this section</a>.)
 
 **If your graphs are going down but then going back up**, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
@@ -267,7 +267,7 @@ nice exponential decay graphs. Once you have that, you can view the
 
 # 6. FAQs
 
-## 6.1. FAQs: Running Songbird standalone
+## 6.1. FAQs: Running Songbird standalone <span id="faqs-standalone"></a>
 **Q.** What am I looking at in the output directory?
 
 **A.** There are 3 major types of files to note:
@@ -295,7 +295,7 @@ Open the website (highlighted in red) in a browser. (Hint; if that doesn’t wor
 
 This should produce a website with 2 graphs, which tensorflow actively updates as songbird is running.
 ![tensorboard](https://github.com/biocore/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
-A description of how to interpret these graphs is contained in [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information).
+A description of how to interpret these graphs is contained in <a href="#interpreting-model-fitting">this section</a>.
 
 ## 6.2. FAQs: Running Songbird through QIIME 2
 
@@ -305,7 +305,7 @@ A description of how to interpret these graphs is contained in [this section](ht
 
 1. `differentials.qza`: This is analagous to the `differentials.tsv` file described above. This is represented as a QIIME 2 `FeatureData[Differential]` artifact, so you can directly load it into QIIME 2 plugins that accept differentials like [Qurro](https://github.com/biocore/qurro).
 
-2. `regression-stats.qza`: This artifact contains information about how Songbird's model fitting went. You can visualize this using `qiime songbird summarize-single`, and if you have multiple Songbird runs on the same dataset you can visualize two artifacts of this type by using `qiime songbird summarize-paired`. A description of how to interpret these graphs is contained in [this section](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information).
+2. `regression-stats.qza`: This artifact contains information about how Songbird's model fitting went. You can visualize this using `qiime songbird summarize-single`, and if you have multiple Songbird runs on the same dataset you can visualize two artifacts of this type by using `qiime songbird summarize-paired`. A description of how to interpret these graphs is contained in <a href="#interpreting-model-fitting">this section</a>.
 
 3. `regression-biplot.qza`: This is a biplot. It's a bit unconventionally structured, in that points in the biplot correspond to features and arrows in the biplot correspond to covariates. We'll show how to visualize this later in this FAQ section.
 
@@ -360,7 +360,7 @@ You can view the resulting visualization using `qiime tools view` or at
 These biplots have a different interpretation - the points correspond to features and the arrows correspond to covariates of interest. Running these models on the full dataset can yield something similar to as follows:
 ![biplot](https://github.com/biocore/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
 
-## 6.3. FAQs: Parameters
+## 6.3. FAQs: Parameters <span id="faqs-parameters"></span>
 
 **Q.** The "specifying a formula" section mentioned that I can migitate overfitting with `--differential-prior`. What does that mean?
 
@@ -377,7 +377,7 @@ The `--differential-prior` command specifies the width of the prior distribution
 
 **A.** That primarily depends on a few things, namely how many samples and microbes are in your dataset, and the number of `--epoch` and the `--batch-size`.  The `--batch-size` specifies the number of samples to analyze for each iteration, and the `--epoch` specifies the number of total passes through the dataset.  For example, if you have a 100 samples in your dataset and you specify `--batch-size 5` and `--epochs 200`, then you will have `(100/5)*200=4000` iterations total.
 
-The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to [consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane](https://github.com/biocore/songbird/#4-interpreting-model-fitting-information).**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to <a href="#interpreting-model-fitting">consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane</a>.**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
 
 ## 6.4. FAQs: Output files
 
