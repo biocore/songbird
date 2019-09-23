@@ -76,11 +76,12 @@ standalone, you can do this using Tensorboard:
 tensorboard --logdir .
 ```
 
-When you open up Tensorboard in a web browser, it will show plots of cross validation results and loss. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots, and see <a href="#faqs-standalone">the section of the FAQs on running Songbird standalone</a> for details on how to use Tensorboard.
+When you open up Tensorboard in a web browser, it will show plots of the cross validation score and loss. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots, and see <a href="#faqs-standalone">the section of the FAQs on running Songbird standalone</a> for details on how to use Tensorboard.
 
 # 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
-First, you'll need to make sure that QIIME 2 is installed before installing
+First, you'll need to make sure that QIIME 2 (**version 2019.7 or later**) is installed
+before installing
 Songbird. In your QIIME 2 conda environment, you can install Songbird by
 running:
 
@@ -158,7 +159,7 @@ more details can be found [here](https://patsy.readthedocs.io/en/latest/formulas
 ###  How many variables can be passed into a formula?
 That depends on the number of samples you have -- the rule of thumb is to only have about
 10% of your samples.
-So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can migitate the risk of overfitting with the `--differential-prior` parameter.
+So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can mitigate the risk of overfitting with the `--differential-prior` parameter.
 For more information on `--differential-prior` and some other Songbird parameters, please see
 <a href="#faqs-parameters">this section of the FAQs on parameters</a>.
 
@@ -210,7 +211,7 @@ the full display.)_
 ### Hey! I don't see anything in my plots, what's up with that?
 **If you don't see anything in these plots, or if the plots only show a small handful of points, you probably need to decrease your `--summary-interval`/`--p-summary-interval` parameter.** This parameter (specified in seconds) impacts how often a "measurement" is taken for these plots. By default, it's set to 10 seconds -- but if your Songbird runs are finishing up in only a few seconds, that isn't very helpful!
 
-Try setting the `--summary-interval`/`--p-summary-interval` to `1` to record the loss at every second. This should give you more detail in these plots. (If what you want to do is make Songbird run *longer*, then you can also do something like increasing the `--epochs`/`--p-epochs` parameter -- but that's a different story.)
+Try setting the `--summary-interval`/`--p-summary-interval` to `1` to record the loss at every second. This should give you more detail in these plots. (If what you want to do is make Songbird run *longer*, i.e. over more iterations, then you can increase the `--epochs`/`--p-epochs` parameter -- more on this later.)
 
 Also, as mentioned above: if you're using Tensorboard, you may also need to refresh the graph a few times to get stuff to show up.
 
@@ -247,13 +248,13 @@ are nice).
 It's worth noting that, ignoring stuff like `--output-dir`,
 **the only required parameters to Songbird** are a feature table, metadata, and a formula.
 
-In the example Songbird runs on the Red Sea dataset above, the reason we
+In the examples using the Red Sea dataset above, the reason we
 specifically set `--epochs` and `--differential-prior` to different values was
 due to consulting Tensorboard to make sure the model was properly fitting.
 
 ### Okay, so *how* should I adjust parameters to get my model to fit properly?
 
-It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. (See <a href="#specifying-a-formula">this section on specifying formulas</a> for more information.) **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`.
+It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. (See <a href="#specifying-a-formula">this section on specifying formulas</a> for more information.) **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. This will increase the number of times the model runs through your dataset.
 
 **If your graphs are going down but then going back up**, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
@@ -325,7 +326,7 @@ See <a href="#interpreting-model-fitting">this section on interpreting model fit
 
 2. `regression-stats.qza`: This artifact contains information about how Songbird's model fitting went. You can visualize this using `qiime songbird summarize-single`, and if you have multiple Songbird runs on the same dataset you can visualize two artifacts of this type by using `qiime songbird summarize-paired`. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand the resulting visualization.
 
-3. `regression-biplot.qza`: This is a biplot. It's a bit unconventionally structured, in that points in the biplot correspond to features and arrows in the biplot correspond to covariates. We'll show how to visualize this later in this FAQ section.
+3. `regression-biplot.qza`: This is a biplot. It's a bit unconventionally structured in that points in the biplot correspond to features and arrows in the biplot correspond to covariates. We'll show how to visualize this later in this FAQ section.
 
 **Q.** What exactly does the `qiime songbird summarize-paired` command do? Why is it useful?
 
@@ -382,7 +383,7 @@ These biplots have a different interpretation - the points correspond to feature
 
 ## 6.3. FAQs: Parameters <span id="faqs-parameters"></span>
 
-**Q.** The "specifying a formula" section mentioned that I can migitate overfitting with `--differential-prior`. What does that mean?
+**Q.** The "specifying a formula" section mentioned that I can mitigate overfitting with `--differential-prior`. What does that mean?
 
 **A.** When I mean overfitting, I'm referring to scenarios when the models attempts to memorize data points rather than
 building predictive models to undercover biological patterns.  See https://xkcd.com/1725/
