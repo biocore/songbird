@@ -257,13 +257,13 @@ It's recommended to start with a small formula (with only a few variables in the
 
 **If your graphs are going down but then going back up**, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
-_If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
-if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
-
 There are many other parameters you can tweak in Songbird in order to adjust
 your model's fitting; depending on if you're using Songbird standalone or
 through QIIME 2, you can run `songbird multinomial --help` or `qiime songbird
 multinomial --help` to get a list of all available parameters, respectively.
+
+_If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
+if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
 
 ### TL;DR
 Basically, you'll want to futz around with the parameters until you see two
