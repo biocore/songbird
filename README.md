@@ -398,7 +398,7 @@ TensorFlow, then re-installing it from the `anaconda` conda channel:
 
 ```bash
 conda uninstall tensorflow
-conda install -c anaconda tensorflow
+conda install -c defaults tensorflow
 ```
 
 # 7. Visualizing Songbird's differentials
