@@ -257,13 +257,26 @@ It's recommended to start with a small formula (with only a few variables in the
 
 **If your graphs are going down but then going back up**, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
-There are many other parameters you can tweak in Songbird in order to adjust
-your model's fitting; depending on if you're using Songbird standalone or
-through QIIME 2, you can run `songbird multinomial --help` or `qiime songbird
-multinomial --help` to get a list of all available parameters, respectively.
+**If you have a lot of samples**, you may want to try increasing the
+`--num-random-test-examples`/`--p-num-random-test-examples` and/or
+`--batch-size`/`--p-batch-size` parameters.
+
+### Is there anything else I can do?
+
+There are other parameters besides the ones mentioned above that you can
+tweak in Songbird in order to adjust your model's fitting. Depending on if
+you're using Songbird standalone or through QIIME 2, you can run
+`songbird multinomial --help` or `qiime songbird multinomial --help` to get
+a list of all available parameters, respectively.
+
+### I want to look at multiple Songbird runs' diagnostic plots at once. Can I do this?
 
 _If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
 if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
+
+Similarly, _if you're running Songbird through QIIME 2_, the
+`qiime songbird summarize-paired` command allows you to view two sets of
+diagnostic plots at once.
 
 ### TL;DR
 Basically, you'll want to futz around with the parameters until you see two
@@ -324,7 +337,7 @@ qiime songbird summarize-single \
     --o-visualization regression-summary.qzv
 ```
 
-We can also generate _Q<sup>2</sup>_ values by comparing these plots to a baseline model's plots as follows:
+We can _view two versions of these statistics at once_ as follows:
 ```
 qiime songbird multinomial \
     --i-table redsea.biom.qza \
@@ -342,6 +355,8 @@ qiime songbird summarize-paired \
     --i-baseline-stats baseline-stats.qza \
     --o-visualization paired-summary.qzv
 ```
+
+The resulting visualization will also include _Q<sup>2</sup>_ values.
 
 The baseline model above just looks at the means (i.e. intercept), to determine how much better the first model can perform compared to the baseline model.
 But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.
