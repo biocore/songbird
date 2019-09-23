@@ -221,8 +221,8 @@ This is a graph of the prediction accuracy of the model; the model will try to g
 
 The x-axis is the number of iterations (meaning times the model is training across the entire dataset). Every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis.
 
-The number of iterations is influenced by a number of parameters, including
-`--epochs`/`--p-epochs` and `--batch-size`/`--p-batch-size`.
+The number of iterations is influenced by a number of parameters, most notably
+by the `--epochs`/`--p-epochs` parameter.
 
 The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Cross Validation graphs shown above it means that, on average, the model is off by around 5 to 10 counts, which is low. However, this is ABSOLUTE error -- not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets).
 
