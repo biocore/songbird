@@ -433,10 +433,14 @@ conda install -c defaults tensorflow
 
 # 7. Visualizing Songbird's differentials
 
-[Qurro](https://github.com/biocore/qurro) generates interactive visualizations of the differentials produced by Songbird.
+[Qurro](https://github.com/biocore/qurro) generates interactive visualizations of the differentials produced by Songbird! A Qurro demo using the Red Sea dataset is available [here](https://biocore.github.io/qurro/demos/red_sea/index.html).
 
-A Qurro demo using the Red Sea dataset is available [here](https://biocore.github.io/qurro/demos/red_sea/index.html).
+You can also view the output differentials as a nice, sortable table using
+`qiime metadata tabulate`:
 
+```bash
+qiime metadata tabulate --m-input-file differentials.qza --o-visualization differentials-viz.qzv
+```
 
 # 8. More information
 
