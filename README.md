@@ -221,7 +221,8 @@ This is a graph of the prediction accuracy of the model; the model will try to g
 
 The x-axis is the number of iterations (meaning times the model is training across the entire dataset). Every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis.
 
-**Number of iterations = (`--epochs` or `--p-epochs`) multiplied by (`--batch-size` or `--p-batch-size`)**
+The number of iterations is influenced by a number of parameters, including
+`--epochs`/`--p-epochs` and `--batch-size`/`--p-batch-size`.
 
 The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Cross Validation graphs shown above it means that, on average, the model is off by around 5 to 10 counts, which is low. However, this is ABSOLUTE error -- not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets).
 
@@ -254,7 +255,7 @@ due to consulting Tensorboard to make sure the model was properly fitting.
 
 ### Okay, so *how* should I adjust parameters to get my model to fit properly?
 
-It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. (See <a href="#specifying-a-formula">this section on specifying formulas</a> for more information.) **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by increasing `--epochs`/`--p-epochs`. This will increase the number of times the model runs through your dataset.
+It's recommended to start with a small formula (with only a few variables in the model) and increase from there, because it makes debugging easier. (See <a href="#specifying-a-formula">this section on specifying formulas</a> for more information.) **If your graphs are going down but not exponentially and not plateauing**, you should consider increasing the number of iterations by, for example, increasing `--epochs`/`--p-epochs`.
 
 **If your graphs are going down but then going back up**, this suggests overfitting; try reducing the number of variables in your formula, or reducing `--differential-prior`/`--p-differential-prior`. As a rule of thumb, you should try to keep the number of metadata categories less than 10% the number of samples (e.g. for 100 samples, no more than 10 metadata categories).
 
@@ -396,9 +397,11 @@ The `--differential-prior` command specifies the width of the prior distribution
 
 **Q.** How long should I expect this program to run?
 
-**A.** That primarily depends on a few things, namely how many samples and microbes are in your dataset, and the number of `--epoch` and the `--batch-size`.  The `--batch-size` specifies the number of samples to analyze for each iteration, and the `--epoch` specifies the number of total passes through the dataset.  For example, if you have a 100 samples in your dataset and you specify `--batch-size 5` and `--epochs 200`, then you will have `(100/5)*200=4000` iterations total.
+**A.** There are many factors that influence this. The numbers of samples and
+features in your dataset play a large role, as does the
+`--epochs`/`--p-epochs` parameter.
 
-The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epoch).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to <a href="#interpreting-model-fitting">consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane</a>.**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epochs).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to <a href="#interpreting-model-fitting">consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane</a>.**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
 
 ## 6.4. FAQs: Output files
 
