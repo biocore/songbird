@@ -333,14 +333,14 @@ See <a href="#interpreting-model-fitting">this section on interpreting model fit
 
 **A.** _(This answer uses the Red Sea dataset.)_
 As we've discussed, diagnostic plots can be created from the QIIME 2 interface as follows:
-```
+```bash
 qiime songbird summarize-single \
     --i-regression-stats regression-stats.qza \
     --o-visualization regression-summary.qzv
 ```
 
 We can _view two versions of these statistics at once_ as follows:
-```
+```bash
 # Generate a baseline model
 qiime songbird multinomial \
     --i-table redsea.biom.qza \
