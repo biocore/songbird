@@ -394,7 +394,7 @@ says something like ``ImportError: /lib64/libc.so.6: version `GLIBC_2.15' not fo
 
 **A.** In our experience, this is a problem with installing TensorFlow on
 conda. You should be able to get around this problem by uninstalling
-TensorFlow, then re-installing it from the `anaconda` conda channel:
+TensorFlow, then re-installing it from the `defaults` conda channel:
 
 ```bash
 conda uninstall tensorflow
