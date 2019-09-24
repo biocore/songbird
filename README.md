@@ -176,11 +176,12 @@ only get one of these columns; the choice of reference value, if left
 unspecified, is arbitrary.
 
 The reference value is used as the denominator in the log-fold change
-computation of differentials. So, for `healthy_or_sick[T.healthy]`, where
-`sick`-valued samples are implicitly set as the reference, the features with
-the most negative differential ranking values will be more associated with
-`sick`-valued samples, whereas the features with the most positive differential
-ranking values will be more associated with `healthy`-valued samples.
+computation of differentials. So, for `healthy_or_sick[T.healthy]` -- a
+differential column where `sick`-valued samples are implicitly set as the
+reference -- the features with the most negative differential ranking values
+will be more associated with `sick`-valued samples, whereas the features with
+the most positive differential ranking values will be more associated with
+`healthy`-valued samples.
 
 **It is possible to explicitly set the reference value** in your formula.
 Going back to the `healthy_or_sick` example, if you know you want to use
