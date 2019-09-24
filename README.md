@@ -80,6 +80,12 @@ tensorboard --logdir .
 
 When you open up Tensorboard in a web browser, it will show plots of the cross validation score and loss. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots, and see <a href="#faqs-standalone">the section of the FAQs on running Songbird standalone</a> for details on how to use Tensorboard.
 
+### A note about metadata and running Songbird standalone
+If you have any "comment rows" in your metadata -- for example, a `#q2:types`
+row -- you will need to delete these before running Songbird standalone, since
+otherwise standalone Songbird will interpret these rows as actual samples.
+([We're planning on addressing this in the future.](https://github.com/biocore/songbird/issues/78))
+
 # 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
 First, you'll need to make sure that QIIME 2 (**version 2019.7 or later**) is installed
