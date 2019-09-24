@@ -172,12 +172,17 @@ The second differential column indicates association with the given value:
 `healthy`-valued samples *using `sick`-valued samples as a reference*,
 and `healthy_or_sick[T.sick]` differentials indicate association with
 `sick`-valued samples *using `healthy`-valued samples as a reference*. You'll
-only get one of these columns; the choice of reference, if left unspecified, is
-arbitrary. (The reference might be chosen alphabetically, but that's not
-guaranteed.)
+only get one of these columns; the choice of reference value, if left
+unspecified, is arbitrary.
 
-**It is possible to explicitly set the reference value** using `C()` syntax in
-your formulas; this is shown in the first example below.
+**It is possible to explicitly set the reference value** in your formula.
+Going back to the `healthy_or_sick` example, if you know you want to use
+`healthy`-valued samples as a reference, you can describe this in
+the formula like so:
+```bash
+--formula "C(healthy_or_sick, Treatment('healthy'))"
+```
+See the first example below for details.
 
 ### Do you have some simple examples of using formulas?
 
