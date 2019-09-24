@@ -14,11 +14,13 @@ For more details, please see
 Songbird has a lot of parameters you can specify, but the three required
 parameters are:
 
-1. A BIOM table containing feature counts for the samples in your dataset
+1. A [BIOM table](http://biom-format.org/index.html) containing feature
+   counts for the samples in your dataset
 2. A sample metadata file containing the covariates you're interested in
-   studying
+   studying (this should be a tab-separated file)
 3. A "formula" specifying the covariates to be included in the model Songbird
-   produces, and their interactions
+   produces, and their interactions (see
+   <a href="#specifying-a-formula">this section</a> for details)
 
 ### How do I run Songbird?
 You can run Songbird as a standalone tool from the command-line or as a
