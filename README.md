@@ -175,10 +175,12 @@ and `healthy_or_sick[T.sick]` differentials indicate association with
 only get one of these columns; the choice of reference value, if left
 unspecified, is arbitrary.
 
-The reference value is the denominator in the differential ranking, so when 
-`sick`-valued samples are the reference, the taxa with the most negative differential
-ranking values will be associated with sick, whereas the taxa with the most positive 
-differential ranking values will be associated with health.
+The reference value is used as the denominator in the log-fold change
+computation of differentials. So, for `healthy_or_sick[T.healthy]`, where
+`sick`-valued samples are implicitly set as the reference, the features with
+the most negative differential ranking values will be more associated with
+`sick`-valued samples, whereas the features with the most positive differential
+ranking values will be more associated with `healthy`-valued samples.
 
 **It is possible to explicitly set the reference value** in your formula.
 Going back to the `healthy_or_sick` example, if you know you want to use
