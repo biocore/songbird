@@ -156,7 +156,7 @@ where "diseased" and "gender" are the columns of the sample metadata file.
 This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here is called [patsy](https://patsy.readthedocs.io/);
 more details can be found [here](https://patsy.readthedocs.io/en/latest/formulas.html).
 
-### The implicit "reference": how categorical variables are handled
+### The implicit "reference": how categorical variables are handled <span id="implicit-reference"></span>
 Let's say your formula just includes one categorical variable:
 ```bash
 --formula "healthy_or_sick"
@@ -182,9 +182,11 @@ the formula like so:
 ```bash
 --formula "C(healthy_or_sick, Treatment('healthy'))"
 ```
-See the first example below for details.
+This will ensure that your second column of differentials is
+`C(healthy_or_sick, Treatment('healthy'))[T.sick]` -- that is, the association
+with `sick`-valued samples using `healthy`-valued samples as a reference.
 
-### Do you have some simple examples of using formulas?
+### Do you have some more simple examples of using formulas?
 
 Sure! In general, it's a good idea to read over the [patsy documentation](https://patsy.readthedocs.io/en/latest/formulas.html) --
 there are a lot of ways you can specify formulas. However, here are a few small
@@ -192,13 +194,14 @@ examples of common formula uses.
 
 #### Example 1: I have a categorical metadata field, and I want to explicitly set the reference
 
-See [this blog post](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html) for details on how to do this.
-
+This was described <a href="#implicit-reference">above</a>.
 Basically, you'll want to specify a formula of something like
 
 ```bash
 --formula "C(your_metadata_field, Treatment('desired_reference_value'))"
 ```
+
+See [this blog post](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html) for more details.
 
 #### Example 2: I have a categorical metadata field with *ordered* values, and I want to account for that
 
