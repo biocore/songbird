@@ -156,12 +156,28 @@ where "diseased" and "gender" are the columns of the sample metadata file.
 This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here is called [patsy](https://patsy.readthedocs.io/);
 more details can be found [here](https://patsy.readthedocs.io/en/latest/formulas.html).
 
-###  How many variables can be passed into a formula?
-That depends on the number of samples you have -- the rule of thumb is to only have about
-10% of your samples.
-So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can mitigate the risk of overfitting with the `--differential-prior` parameter.
-For more information on `--differential-prior` and some other Songbird parameters, please see
-<a href="#faqs-parameters">this section of the FAQs on parameters</a>.
+### The implicit "reference": how categorical variables are handled
+Let's say your formula just includes one categorical variable:
+```bash
+--formula "healthy_or_sick"
+```
+...where the only possible values of `healthy_or_sick` are `healthy` and
+`sick`. The output differentials produced by Songbird will only have two
+columns:
+1. `Intercept`
+2. `healthy_or_sick[T.healthy]` OR `healthy_or_sick[T.sick]`.
+
+The second differential column indicates association with the given value:
+`healthy_or_sick[T.healthy]` differentials indicate association with
+`healthy`-valued samples *using `sick`-valued samples as a reference*,
+and `healthy_or_sick[T.sick]` differentials indicate association with
+`sick`-valued samples *using `healthy`-valued samples as a reference*. You'll
+only get one of these columns; the choice of reference, if left unspecified, is
+arbitrary. (The reference might be chosen alphabetically, but that's not
+guaranteed.)
+
+**It is possible to explicitly set the reference value** using `C()` syntax in
+your formulas; this is shown in the first example below.
 
 ### Do you have some simple examples of using formulas?
 
@@ -187,6 +203,13 @@ Basically, you'll want to specify a formula of something like
 ```bash
 --formula "C(your_metadata_field, Diff, levels=['first_level', 'second_level', 'third_level'])"
 ```
+
+###  How many variables can be passed into a formula?
+That depends on the number of samples you have -- the rule of thumb is to only have about
+10% of your samples.
+So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can mitigate the risk of overfitting with the `--differential-prior` parameter.
+For more information on `--differential-prior` and some other Songbird parameters, please see
+<a href="#faqs-parameters">this section of the FAQs on parameters</a>.
 
 ### Hey, isn't it "formulae" instead of "formulas"?
 
