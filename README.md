@@ -3,7 +3,8 @@
 # Songbird
 ### What does Songbird produce?
 The primary output from Songbird is a file containing *differentials*.
-These describe the log-fold change of features with respect to certain
+These describe the log-fold change of features (microbes, metabolites, ...)
+with respect to certain
 field(s) in your sample metadata. The most important aspect of these differentials are *rankings*, which are obtained by sorting a column of differentials from lowest to highest. These rankings give information on the relative associations of features with a given covariate.
 
 For more details, please see
@@ -28,6 +29,11 @@ You can run Songbird as a standalone tool from the command-line or as a
 
 ### The "Red Sea" dataset
 This README's tutorials use a subset of the [Red Sea metagenome dataset](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/) as an example dataset. This data is stored in the `data/redsea/` directory within this repository. Throughout the rest of this README, we'll just refer to this dataset as "the Red Sea dataset", "Red Sea", or something like that.
+
+Features in this dataset are KEGG orthologs (KOs) -- see the dataset's paper,
+in particular
+[this section](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5315489/#__sec7title),
+for more details.
 
 ### What will this README cover?
 
@@ -329,8 +335,8 @@ diagnostic plots at once.
 
 ### TL;DR
 Basically, you'll want to futz around with the parameters until you see two
-nice exponential decay graphs. Once you have that, you can view the
-`differentials.tsv` output to look at the differentials Songbird produced!
+nice exponential decay graphs. Once you have that, you can start to
+look at the `differentials` Songbird produced!
 
 # 6. FAQs
 
@@ -339,9 +345,9 @@ nice exponential decay graphs. Once you have that, you can view the
 
 **A.** There are 3 major types of files to note:
 
-1. `differentials.tsv`: This contains the ranks of the microbes for certain metadata categories.  The higher the rank, the more associated it is with that category.  The lower the rank, the more negatively associated it is with a category.  The recommended way to view these files is to sort the microbes within a given column in this file and investigate the top/bottom microbes with the highest/lowest ranks. ([Qurro](https://github.com/biocore/qurro) makes this sort of analysis easier.)
+1. `differentials.tsv`: This contains the ranks of the features for certain metadata categories.  The higher the rank, the more associated it is with that category.  The lower the rank, the more negatively associated it is with a category.  The recommended way to view these files is to sort the features within a given column in this file and investigate the top/bottom features with the highest/lowest ranks. ([Qurro](https://github.com/biocore/qurro) makes this sort of analysis easier.)
 
-   The first column in `differentials.tsv` contains the IDs of your features (if you plugged in a QIIME 2 feature table, then you can look up the sequence or bacterial name by merging with rep-seqs or taxonomy, respectively).  Once you have identified the microbes that change the most and least (have the highest and lowest differentials) you can plot the log ratio of these microbes across metadata categories or gradients!
+   The first column in `differentials.tsv` contains the IDs of your features (if you plugged in a QIIME 2 feature table and your "features" are ASVs/sOTUs/..., then you can look up the sequence or bacterial name by merging with rep-seqs or taxonomy, respectively).  Once you have identified the features that change the most and least (have the highest and lowest differentials) you can plot the log ratio of these features across metadata categories or gradients!
 
 2. `checkpoint`: this points to checkpoint files -- this can be used for saving intermediate results.  This is more important for jobs that will take days to run, where the models parameter can be investigated while the program is running, rather than waiting for `differentials.tsv` to be written.
 
@@ -446,7 +452,7 @@ The `--differential-prior` command specifies the width of the prior distribution
 
 **Q.** What's up with the `--training-column` argument?
 
-**A.** That is used for cross-validation if you have a specific reproducibility question that you are interested in answering.  If this is specified, only samples labeled "Train" under this column will be used for building the model and samples labeled "Test" will be used for cross validation.  In other words the model will attempt to predict the microbe abundances for the "Test" samples.  The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 5 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified.
+**A.** That is used for cross-validation if you have a specific reproducibility question that you are interested in answering.  If this is specified, only samples labeled "Train" under this column will be used for building the model and samples labeled "Test" will be used for cross validation.  In other words the model will attempt to predict the feature abundances for the "Test" samples.  The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 5 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified.
 
 **Q.** How long should I expect this program to run?
 
