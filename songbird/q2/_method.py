@@ -7,22 +7,25 @@ import tensorflow as tf
 from skbio import OrdinationResults
 from songbird.multinomial import MultRegression
 from songbird.util import match_and_filter, split_training
+from songbird.parameter_info import DEFAULTS
 from qiime2.plugin import Metadata
 
 
 def multinomial(table: biom.Table,
                 metadata: Metadata,
                 formula: str,
-                training_column: str = None,
-                num_random_test_examples: int = 5,
-                epochs: int = 1000,
-                batch_size: int = 5,
-                differential_prior: float = 1,
-                learning_rate: float = 1e-3,
-                clipnorm: float = 10,
-                min_sample_count: int = 1000,
-                min_feature_count: int = 10,
-                summary_interval: int = 60) -> (
+                training_column: str = DEFAULTS["training-column"],
+                num_random_test_examples: int = (
+                    DEFAULTS["num-random-test-examples"]
+                ),
+                epochs: int = DEFAULTS["epochs"],
+                batch_size: int = DEFAULTS["batch-size"],
+                differential_prior: float = DEFAULTS["differential-prior"],
+                learning_rate: float = DEFAULTS["learning-rate"],
+                clipnorm: float = DEFAULTS["clipnorm"],
+                min_sample_count: int = DEFAULTS["min-sample-count"],
+                min_feature_count: int = DEFAULTS["min-feature-count"],
+                summary_interval: int = DEFAULTS["summary-interval"]) -> (
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
 
@@ -68,7 +71,7 @@ def multinomial(table: biom.Table,
 
     convergence_stats = pd.DataFrame(
         {
-            'loglikehood': loss,
+            'loss': loss,
             'cross-validation': cv,
             'iteration': its
         }
@@ -77,8 +80,8 @@ def multinomial(table: biom.Table,
     convergence_stats.index.name = 'id'
     convergence_stats.index = convergence_stats.index.astype(np.str)
 
-    c = convergence_stats['loglikehood'].astype(np.float)
-    convergence_stats['loglikehood'] = c
+    c = convergence_stats['loss'].astype(np.float)
+    convergence_stats['loss'] = c
 
     c = convergence_stats['cross-validation'].astype(np.float)
     convergence_stats['cross-validation'] = c

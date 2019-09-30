@@ -19,6 +19,7 @@ from songbird.q2 import (
     SongbirdStats, SongbirdStatsFormat, SongbirdStatsDirFmt,
     multinomial, summarize_single, summarize_paired
 )
+from songbird.parameter_info import DESCS
 
 citations = qiime2.plugin.Citations.load('citations.bib', package='songbird')
 
@@ -56,7 +57,7 @@ plugin.methods.register_function(
         ('regression_biplot', PCoAResults % Properties('biplot'))
     ],
     input_descriptions={
-        'table': 'Input table of counts.',
+        'table': DESCS["table"],
     },
     output_descriptions={
         'differentials': ('Output differentials learned from the '
@@ -66,22 +67,18 @@ plugin.methods.register_function(
         'regression_biplot': ('A biplot of the regression coefficients')
     },
     parameter_descriptions={
-        'metadata': 'Sample metadata table with covariates of interest.',
-        'formula': ('The statistical formula specifying covariates to be '
-                    'included in the model and their interactions'),
-        'num_random_test_examples': (
-            'Number of random samples to hold out for cross-validation '
-            'if `training_column` is not specified'),
-        'epochs': ('The number of total number of iterations '
-                   'over the entire dataset'),
-        'batch_size': ('The number of samples to be evaluated per '
-                       'training iteration'),
-        'differential_prior': (
-            'Width of normal prior for the `differentials`, or '
-            'the coefficients of the multinomial regression. '
-            'Smaller values will force the coefficients towards zero. '
-            'Values must be greater than 0.'),
-        'learning_rate': ('Gradient descent decay rate.'),
+        'metadata': DESCS["metadata"],
+        'formula': DESCS["formula"],
+        "training_column": DESCS["training-column"],
+        'num_random_test_examples': DESCS["num-random-test-examples"],
+        'epochs': DESCS["epochs"],
+        'batch_size': DESCS["batch-size"],
+        'differential_prior': DESCS["differential-prior"],
+        'learning_rate': DESCS["learning-rate"],
+        "clipnorm": DESCS["clipnorm"],
+        "min_sample_count": DESCS["min-sample-count"],
+        "min_feature_count": DESCS["min-feature-count"],
+        "summary_interval": DESCS["summary-interval"],
     },
     name='Multinomial regression',
     description=("Performs multinomial regression and calculates "
@@ -93,22 +90,22 @@ plugin.methods.register_function(
 plugin.visualizers.register_function(
     function=summarize_single,
     inputs={
-        'feature_table': FeatureTable[Frequency],
         'regression_stats': SampleData[SongbirdStats]
     },
     parameters={},
     input_descriptions={
-        'feature_table': ('Input biom table that was used for the '
-                          'regression analysis.'),
-        'regression_stats': ('results from multinomial regression '
-                             'for reference model')
+        'regression_stats': (
+            "Summary information produced by running "
+            "`qiime songbird multinomial`."
+        )
     },
     parameter_descriptions={
     },
     name='Regression summary statistics',
-    description=("Visualize the convergence statistics of regression fit "
-                 "including cross validation accuracy and the loglikehood "
-                 "over the iterations")
+    description=(
+        "Visualize the convergence statistics from running multinomial "
+        "regression, giving insight into how the model fit to your data."
+    )
 )
 
 plugin.visualizers.register_function(
@@ -122,17 +119,23 @@ plugin.visualizers.register_function(
     input_descriptions={
         'feature_table': ('Input biom table that was used for the '
                           'regression analysis.'),
-        'regression_stats': ('results from multinomial regression '
-                             'for reference model'),
-        'baseline_stats': ('results from multinomial regression '
-                           'for baseline model')
+        'regression_stats': (
+            "Summary information for the reference model, produced by running "
+            "`qiime songbird multinomial`."
+        ),
+        'baseline_stats': (
+            "Summary information for the baseline model, produced by running "
+            "`qiime songbird multinomial`."
+        )
     },
     parameter_descriptions={
     },
     name='Paired regression summary statistics',
-    description=("Visualize the convergence statistics of regression fit "
-                 "including cross validation accuracy, loglikehood over the "
-                 "iterations and the R2.")
+    description=(
+        "Visualize the convergence statistics from two runs of multinomial "
+        "regression, giving insight into how the models fit to your data. "
+        "The produced visualization includes a 'pseudo-Q-squared' value."
+    )
 )
 
 # Register types
