@@ -7,36 +7,38 @@ import matplotlib.pyplot as plt
 
 def _convergence_plot(regression, baseline, ax0, ax1):
     iterations = np.array(regression['iteration'])
+
     ax0.plot(iterations[1:],
-             np.array(regression['loglikehood'])[1:], label='model')
-    ax0.set_ylabel('Loglikehood', fontsize=14)
+             np.array(regression['cross-validation'].values)[1:],
+             label='model')
+    ax0.set_ylabel('Cross validation score', fontsize=14)
     ax0.set_xlabel('# Iterations', fontsize=14)
 
     ax1.plot(iterations[1:],
-             np.array(regression['cross-validation'].values)[1:],
-             label='model')
-    ax1.set_ylabel('Cross validation score', fontsize=14)
+             np.array(regression['loss'])[1:], label='model')
+    ax1.set_ylabel('Loss', fontsize=14)
     ax1.set_xlabel('# Iterations', fontsize=14)
 
     if baseline is not None:
         iterations = baseline['iteration']
+
         ax0.plot(iterations[1:],
-                 np.array(baseline['loglikehood'])[1:], label='baseline')
-        ax0.set_ylabel('Loglikehood', fontsize=14)
+                 np.array(baseline['cross-validation'].values)[1:],
+                 label='baseline')
+        ax0.set_ylabel('Cross validation score', fontsize=14)
         ax0.set_xlabel('# Iterations', fontsize=14)
         ax0.legend()
 
         ax1.plot(iterations[1:],
-                 np.array(baseline['cross-validation'].values)[1:],
-                 label='baseline')
-        ax1.set_ylabel('Cross validation score', fontsize=14)
+                 np.array(baseline['loss'])[1:], label='baseline')
+        ax1.set_ylabel('Loss', fontsize=14)
         ax1.set_xlabel('# Iterations', fontsize=14)
-
         ax1.legend()
 
 
 def _summarize(output_dir: str, regression: pd.DataFrame,
                baseline: pd.DataFrame = None):
+
     """ Helper method for generating summary pages
 
     Parameters
@@ -45,21 +47,38 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
        Name of output directory
     regression : pd.DataFrame
        Regression summary with column names
-       ['loglikehood', 'cross-validation']
+       ['loss', 'cross-validation']
     baseline : pd.DataFrame
        Baseline regression summary with column names
-       ['loglikehood', 'cross-validation']
+       ['loss', 'cross-validation']. Defaults to None (i.e. if only a single
+       set of regression stats will be summarized).
+    n : int
+       Number of samples (defaults to None). This is used for computing
+       the Q^2 score when multiple regression stats are being summarized.
+       If n is None, then baseline MUST also be None; otherwise, an error will
+       be raised.
 
     Note
     ----
     This assumes that the same summary interval was used
     for both analyses.
+
+    Raises
+    ------
+    ValueError
+        if n is None and baseline is not None (this would prevent a Q^2 score
+        from being calculated)
     """
     fig, ax = plt.subplots(2, 1, figsize=(10, 10))
     if baseline is None:
         _convergence_plot(regression, None, ax[0], ax[1])
         q2 = None
     else:
+        if n is None:
+            raise ValueError(
+                "n is None, but baseline is not None. Can't compute a Q^2 "
+                "score!"
+            )
         _convergence_plot(regression, baseline, ax[0], ax[1])
 
         # this provides a pseudo-r2 commonly provided in the context
@@ -82,9 +101,28 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
     with open(index_fp, 'w') as index_f:
         index_f.write('<html><body>\n')
         index_f.write('<h1>Convergence summary</h1>\n')
+        index_f.write(
+            "<p>If you don't see anything in these plots, you probably need "
+            "to decrease your <kbd>--p-summary-interval</kbd>. Try setting "
+            "<kbd>--p-summary-interval 1</kbd>, which will record the loss at "
+            "every second.</p>\n"
+        )
+        index_f.write(
+            "<p>For information about <strong>how to interpret these "
+            "plots</strong>, please see "
+            '<a href="https://github.com/biocore/songbird#interpreting-model-fitting">this section</a> '  # noqa
+            "of the Songbird README.</p>"
+        )
+        index_f.write(
+            "<p>For information about <strong>how to adjust Songbird's "
+            "parameters to get the model to fit reasonably well to your "
+            "dataset</strong>, please see "
+            '<a href="https://github.com/biocore/songbird#adjusting-parameters">this section</a> '  # noqa
+            "of the Songbird README.</p>"
+        )
         if q2 is not None:
             index_f.write(
-                'Pseudo Q-squared: %f\n' % q2
+                '<p><strong>Pseudo Q-squared:</strong> %f</p>\n' % q2
             )
         index_f.write(
             '<img src="convergence-plot.svg" alt="convergence_plots">'
@@ -103,3 +141,4 @@ def summarize_paired(output_dir: str,
     _summarize(output_dir,
                regression_stats.to_dataframe(),
                baseline_stats.to_dataframe())
+
