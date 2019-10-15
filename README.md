@@ -296,6 +296,10 @@ The y-axis is MINUS log probability of the model actually fitting: so LOWER is b
 Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the loss graphs shown in the Tensorboard/QIIME 2 summaries above
 are nice).
 
+## 4.3 Explaining Q2
+
+The Q2 score is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If Q2 is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If Q2 is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting.
+
 # 5. Adjusting parameters to get reasonable fitting <span id="adjusting-parameters"></span>
 
 ### An introductory note
