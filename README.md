@@ -298,7 +298,7 @@ are nice).
 
 ## 4.3 Explaining Q2
 
-The Q2 score that is shown in the `qiime songbird summary-paired` command is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If Q2 is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If Q2 is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting.
+The Q2 score that is shown in the `qiime songbird summarize-paired` command is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If Q2 is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If Q2 is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting.
 
 # 5. Adjusting parameters to get reasonable fitting <span id="adjusting-parameters"></span>
 
