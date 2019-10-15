@@ -1,5 +1,4 @@
 import os
-import biom
 import qiime2
 import pandas as pd
 import numpy as np
@@ -38,7 +37,8 @@ def _convergence_plot(regression, baseline, ax0, ax1):
 
 
 def _summarize(output_dir: str, regression: pd.DataFrame,
-               baseline: pd.DataFrame = None, n: int = None):
+               baseline: pd.DataFrame = None):
+
     """ Helper method for generating summary pages
 
     Parameters
@@ -52,33 +52,19 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
        Baseline regression summary with column names
        ['loss', 'cross-validation']. Defaults to None (i.e. if only a single
        set of regression stats will be summarized).
-    n : int
-       Number of samples (defaults to None). This is used for computing
-       the Q^2 score when multiple regression stats are being summarized.
-       If n is None, then baseline MUST also be None; otherwise, an error will
-       be raised.
 
     Note
     ----
-    This assumes that the same summary interval was used
-    for both analyses.
-
-    Raises
-    ------
-    ValueError
-        if n is None and baseline is not None (this would prevent a Q^2 score
-        from being calculated)
+    There may be synchronizing issues if different summary intervals
+    were used between analyses. For predictable results, try to use the
+    same summary interval.
     """
     fig, ax = plt.subplots(2, 1, figsize=(10, 10))
     if baseline is None:
         _convergence_plot(regression, None, ax[0], ax[1])
         q2 = None
     else:
-        if n is None:
-            raise ValueError(
-                "n is None, but baseline is not None. Can't compute a Q^2 "
-                "score!"
-            )
+
         _convergence_plot(regression, baseline, ax[0], ax[1])
 
         # this provides a pseudo-r2 commonly provided in the context
@@ -91,8 +77,7 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
         # partial least squares for cross validation
         l0 = np.mean(baseline['cross-validation'][-end:])
         lm = np.mean(regression['cross-validation'][-end:])
-        D = lm - l0
-        q2 = np.exp(2 * D / n)
+        q2 = 1 - lm / l0
 
     plt.tight_layout()
     fig.savefig(os.path.join(output_dir, 'convergence-plot.svg'))
@@ -136,9 +121,9 @@ def summarize_single(output_dir: str, regression_stats: qiime2.Metadata):
     _summarize(output_dir, regression_stats.to_dataframe())
 
 
-def summarize_paired(output_dir: str, feature_table: biom.Table,
+def summarize_paired(output_dir: str,
                      regression_stats: qiime2.Metadata,
                      baseline_stats: qiime2.Metadata):
-    n = feature_table.shape[1]
-    _summarize(output_dir, regression_stats.to_dataframe(),
-               baseline_stats.to_dataframe(), n)
+    _summarize(output_dir,
+               regression_stats.to_dataframe(),
+               baseline_stats.to_dataframe())

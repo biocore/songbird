@@ -111,14 +111,12 @@ plugin.visualizers.register_function(
 plugin.visualizers.register_function(
     function=summarize_paired,
     inputs={
-        'feature_table': FeatureTable[Frequency],
         'regression_stats': SampleData[SongbirdStats],
         'baseline_stats': SampleData[SongbirdStats]
     },
     parameters={},
     input_descriptions={
-        'feature_table': ('Input biom table that was used for the '
-                          'regression analysis.'),
+
         'regression_stats': (
             "Summary information for the reference model, produced by running "
             "`qiime songbird multinomial`."
@@ -127,6 +125,7 @@ plugin.visualizers.register_function(
             "Summary information for the baseline model, produced by running "
             "`qiime songbird multinomial`."
         )
+
     },
     parameter_descriptions={
     },

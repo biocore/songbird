@@ -296,6 +296,10 @@ The y-axis is MINUS log probability of the model actually fitting: so LOWER is b
 Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the loss graphs shown in the Tensorboard/QIIME 2 summaries above
 are nice).
 
+## 4.3 Explaining Q2
+
+The Q2 score that is shown in the `qiime songbird summarize-paired` command is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If Q2 is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If Q2 is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting.
+
 # 5. Adjusting parameters to get reasonable fitting <span id="adjusting-parameters"></span>
 
 ### An introductory note
@@ -408,13 +412,14 @@ qiime songbird multinomial \
 # Visualize the first model's regression stats *and* the baseline model's
 # regression stats
 qiime songbird summarize-paired \
-    --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
     --i-baseline-stats baseline-stats.qza \
     --o-visualization paired-summary.qzv
 ```
 
+
 The resulting visualization will also include _Q<sup>2</sup>_ values.
+
 
 The baseline model we generated above is super simple, and doesn't look at any
 of the sample metadata fields. This lets us look at how much better our
