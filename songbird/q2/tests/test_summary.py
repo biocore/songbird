@@ -45,7 +45,7 @@ class TestSummary(unittest.TestCase):
         shutil.rmtree(self.results)
 
     def test_summarize_single(self):
-        summarize_single(self.results, self.table,
+        summarize_single(self.results,
                          self.ref_stats)
 
         index_fp = os.path.join(self.results, 'index.html')
@@ -61,7 +61,7 @@ class TestSummary(unittest.TestCase):
             self.assertIn('<a href="convergence-plot.pdf">', html)
 
     def test_summarize_paired(self):
-        summarize_paired(self.results, self.table,
+        summarize_paired(self.results,
                          self.ref_stats,
                          self.base_stats)
 

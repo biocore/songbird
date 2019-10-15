@@ -189,7 +189,6 @@ Don't forget to try out the `--verbose` option.
 Diagnostic plots can also be drawn from the qiime2 interface as follows
 ```
 qiime songbird summarize-single \
-    --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
     --o-visualization regression-summary
 ```
@@ -210,14 +209,14 @@ qiime songbird multinomial \
     --o-regression-biplot baseline-biplot.qza
 
 qiime songbird summarize-paired \
-    --i-feature-table redsea.biom.qza \
     --i-regression-stats regression-stats.qza \
     --i-baseline-stats baseline-stats.qza \
     --o-visualization paired-summary
 ```
 
 The baseline model above just looks at the means (i.e. intercept), to determine how much better the first model can perform compared to the baseline model.
-But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The Qsquared value is the predictive accuracy estimated from the samples left out of the regression fit.
+But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The Qsquared value is given by 1 - model/baseline, to serve as the predictive accuracy estimated from the samples left out of the regression fit.  If Qsquared is equal to 1, the model error much larger than the baseline model.  If the Qsquared is much less than 1, then the model is underperforming.  If Qsquared is less than 0, then the model is performing worse than the baseline.
+
 
 The resulting differentials learned from the regression model can be visualized as a biplot, given from `regression-biplot.qza`.  You can directly visualize this in emperor
 
