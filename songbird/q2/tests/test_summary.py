@@ -64,7 +64,6 @@ class TestSummary(unittest.TestCase):
                 html
             )
 
-
     def test_summarize_paired(self):
         summarize_paired(self.results,
                          self.ref_stats,
