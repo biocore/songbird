@@ -52,33 +52,19 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
        Baseline regression summary with column names
        ['loss', 'cross-validation']. Defaults to None (i.e. if only a single
        set of regression stats will be summarized).
-    n : int
-       Number of samples (defaults to None). This is used for computing
-       the Q^2 score when multiple regression stats are being summarized.
-       If n is None, then baseline MUST also be None; otherwise, an error will
-       be raised.
 
     Note
     ----
-    This assumes that the same summary interval was used
-    for both analyses.
-
-    Raises
-    ------
-    ValueError
-        if n is None and baseline is not None (this would prevent a Q^2 score
-        from being calculated)
+    There may be synchronizing issues if different summary intervals
+    were used between analyses. For predictable results, try to use the
+    same summary interval.
     """
     fig, ax = plt.subplots(2, 1, figsize=(10, 10))
     if baseline is None:
         _convergence_plot(regression, None, ax[0], ax[1])
         q2 = None
     else:
-        if n is None:
-            raise ValueError(
-                "n is None, but baseline is not None. Can't compute a Q^2 "
-                "score!"
-            )
+
         _convergence_plot(regression, baseline, ax[0], ax[1])
 
         # this provides a pseudo-r2 commonly provided in the context
@@ -141,4 +127,3 @@ def summarize_paired(output_dir: str,
     _summarize(output_dir,
                regression_stats.to_dataframe(),
                baseline_stats.to_dataframe())
-

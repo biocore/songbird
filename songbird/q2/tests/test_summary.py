@@ -47,7 +47,6 @@ class TestSummary(unittest.TestCase):
     def test_summarize_single(self):
         summarize_single(self.results, self.ref_stats)
 
-
         index_fp = os.path.join(self.results, 'index.html')
         self.assertTrue(os.path.exists(index_fp))
 
