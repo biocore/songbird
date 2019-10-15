@@ -11,6 +11,7 @@ before_install:
   - bash miniconda.sh -b -p $MINICONDA_PREFIX
   - export PATH="$MINICONDA_PREFIX/bin:$PATH"
   - conda config --set always_yes yes
+  - conda install -c anaconda setuptools
   - conda update -q conda
   - conda info -a
 install:
