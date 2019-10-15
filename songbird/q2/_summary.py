@@ -1,5 +1,4 @@
 import os
-import biom
 import qiime2
 import pandas as pd
 import numpy as np
