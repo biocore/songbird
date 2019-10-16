@@ -131,6 +131,7 @@ qiime songbird multinomial \
     --p-epochs 10000 \
     --p-differential-prior 0.5 \
     --p-summary-interval 1 \
+    --p-training-column Testing \
     --o-differentials differentials.qza \
     --o-regression-stats regression-stats.qza \
     --o-regression-biplot regression-biplot.qza
@@ -341,6 +342,7 @@ qiime songbird multinomial \
     --m-metadata-file data/redsea/redsea_metadata.txt \
     --p-formula "1" \
     --p-epochs 5000 \
+    --p-training-column Testing \
     --p-summary-interval 1 \
     --o-differentials baseline-diff.qza \
     --o-regression-stats baseline-stats.qza \
@@ -357,15 +359,39 @@ qiime songbird summarize-paired \
 The summary generated will look something like as follows.
 ![Summary of the QIIME 2 Songbird run on the Red Sea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-paired-output.png "Summary of the QIIME 2 Songbird run on the Red Sea data")
 
+Note that it is very important to have `--p-training-column Testing` in order to specify the holdout samples used for cross-validation.
+See <a href="#training-column">this section on specifying the training column</a> for details on how to assign holdout samples for cross-validation.
+
 This resulting visualization will also include _Q<sup>2</sup>_ values. <span id="explaining-q2"></span>
 
-The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting.
+The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting. This statistic behaves similarly to _R<sup>2</sup>_ classically used in a ordinary linear regression if `--p-formula 1` in the baseline model.
 
 The baseline model we generated above is super simple, and doesn't look at any
 of the sample metadata fields. This lets us look at how much better our
 "first" model performs compared to this baseline model.
 
-But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.  Another common use case is to run model with just the intercept by setting `--p-formula "1"` when running the baseline model. This will allow one to compute something that looks more similar to an _R<sup>2</sup>_ classically used in a ordinary linear regression.
+But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.  Another common use case is to run model with just the intercept by looking at other simple baseline models to gauge improvement of fit for a given set of variables. For instance, one could run the following model with just `Depth`
+
+# Generate a baseline model
+qiime songbird multinomial \
+    --i-table redsea.biom.qza \
+    --m-metadata-file data/redsea/redsea_metadata.txt \
+    --p-formula "Depth" \
+    --p-epochs 5000 \
+    --p-training-column Testing \
+    --p-summary-interval 1 \
+    --o-differentials baseline-diff.qza \
+    --o-regression-stats baseline-stats.qza \
+    --o-regression-biplot baseline-biplot.qza
+
+# Visualize the first model's regression stats *and* the baseline model's
+# regression stats
+qiime songbird summarize-paired \
+    --i-regression-stats regression-stats.qza \
+    --i-baseline-stats baseline-stats.qza \
+    --o-visualization paired-summary.qzv
+
+This plot will allow one to investigate how much the model fit improved by adding `Temperature`, `Salinity`, `Oxygen`, `Fluorescence`, and `Nitrate`. A positive _Q<sup>2</sup>_ score indicates an improvement over the baseline model.
 
 
 ### TL;DR
@@ -445,7 +471,7 @@ building predictive models to undercover biological patterns.  See https://xkcd.
 
 The `--differential-prior` command specifies the width of the prior distribution of the differentials. For `--differential-prior 1`, this means 99% of rankings (given in differentials.tsv) are within -3 and +3 (log fold change). The higher differential-prior is, the more parameters can have bigger changes, so you want to keep this relatively small.  If you see overfitting (accuracy and fit increasing over iterations in tensorboard) you may consider reducing the differential-prior in order to reduce the parameter space.
 
-**Q.** What's up with the `--training-column` argument?
+**Q.** What's up with the `--training-column` argument? <span id="training-column"></span>
 
 **A.** That is used for cross-validation if you have a specific reproducibility question that you are interested in answering.  If this is specified, only samples labeled "Train" under this column will be used for building the model and samples labeled "Test" will be used for cross validation.  In other words the model will attempt to predict the feature abundances for the "Test" samples.  The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 5 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified.
 
