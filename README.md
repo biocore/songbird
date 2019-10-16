@@ -151,7 +151,7 @@ qiime songbird summarize-single \
     --o-visualization regression-summary.qzv
 ```
 
-The resulting visualization (viewable using `qiime tools view` or at
+The resulting visualization (viewable using `qiime tools view` or at# 
 [view.qiime2.org](https://view.qiime2.org)) contains two plots.
 These plots are analogous to the two
 plots shown in Tensorboard's interface (the top plot shows cross-validation
@@ -371,7 +371,7 @@ of the sample metadata fields. This lets us look at how much better our
 "first" model performs compared to this baseline model.
 
 But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.  Another common use case is to run model with just the intercept by looking at other simple baseline models to gauge improvement of fit for a given set of variables. For instance, one could run the following model with just `Depth`
-
+```
 # Generate a baseline model
 qiime songbird multinomial \
     --i-table redsea.biom.qza \
@@ -390,7 +390,7 @@ qiime songbird summarize-paired \
     --i-regression-stats regression-stats.qza \
     --i-baseline-stats baseline-stats.qza \
     --o-visualization paired-summary.qzv
-
+```
 This plot will allow one to investigate how much the model fit improved by adding `Temperature`, `Salinity`, `Oxygen`, `Fluorescence`, and `Nitrate`. A positive _Q<sup>2</sup>_ score indicates an improvement over the baseline model.
 
 
