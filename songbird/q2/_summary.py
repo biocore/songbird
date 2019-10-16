@@ -108,8 +108,9 @@ def _summarize(output_dir: str, regression: pd.DataFrame,
         )
         if q2 is not None:
             index_f.write(
-                '<p><strong>Pseudo Q-squared:</strong> %f</p>\n' % q2
+                '<p><strong><a href="https://github.com/biocore/songbird#43-explaining-q2">Pseudo Q-squared:</a></strong> %f</p>\n' % q2
             )
+
         index_f.write(
             '<img src="convergence-plot.svg" alt="convergence_plots">'
         )
