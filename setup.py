@@ -15,7 +15,7 @@ from setuptools import find_packages, setup
 
 
 classes = """
-    Development Status :: 4 - Beta
+    Development Status :: 5 - Production/Stable
     License :: OSI Approved :: BSD License
     Topic :: Software Development :: Libraries
     Topic :: Scientific/Engineering
@@ -63,7 +63,7 @@ setup(name='songbird',
           'scikit-bio>=0.5.1',
           'biom-format',
           'tqdm',
-          'tensorflow>=1.4'
+          'tensorflow<=1.14'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
