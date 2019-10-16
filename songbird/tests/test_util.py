@@ -95,9 +95,9 @@ class TestFilters(unittest.TestCase):
         ]
         df = pd.DataFrame(
             [
-                {'intercept': 1, 'categorical' : 'b',
+                {'intercept': 1, 'categorical': 'b',
                  'continuous': 1., 'train': 'Train'},
-                {'intercept': 1, 'categorical' : 'b',
+                {'intercept': 1, 'categorical': 'b',
                  'continuous': 1., 'train': 'Train'}
             ], index=['s2', 's4']
         )
