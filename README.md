@@ -365,7 +365,7 @@ The baseline model we generated above is super simple, and doesn't look at any
 of the sample metadata fields. This lets us look at how much better our
 "first" model performs compared to this baseline model.
 
-But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.  Another common use case is to run model with just the intercept by setting `--p-formula 1`, this will allow one to compute something that looks more similar to an _R<sup>2</sup>_ classically used in a ordinary linear regression.
+But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.  Another common use case is to run model with just the intercept by setting `--p-formula "1"` when running the baseline model. This will allow one to compute something that looks more similar to an _R<sup>2</sup>_ classically used in a ordinary linear regression.
 
 
 ### TL;DR
