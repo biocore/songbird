@@ -1,5 +1,9 @@
 # songbird changelog
 
+## Version 1.0.0 (2019-10-16)
+Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
+Added Q2 statistic explanation and documentation [#87](https://github.com/biocore/songbird/pull/87)
+
 ## Version 0.9 (2019-9-5)
 Added compatibility with the new qiime2 differential type [#60](https://github.com/biocore/songbird/pull/60)
 
