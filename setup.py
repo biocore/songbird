@@ -63,7 +63,7 @@ setup(name='songbird',
           'scikit-bio>=0.5.1',
           'biom-format',
           'tqdm',
-          'tensorflow<=1.4'
+          'tensorflow<=1.14'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
