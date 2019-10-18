@@ -533,7 +533,7 @@ https://github.com/knightlab-analyses/reference-frames
 
 ## 8.2. Acknowledgements
 
-Credits to Lisa Marotz ([@lisa55asil](https://github.com/lisa55asil)) for the initial FAQs and a ton of the documentation in this README.
+Credits to Lisa Marotz ([@lisa55asil](https://github.com/lisa55asil)) and Marcus Fedarko ([@fedarko](https://github.com/fedarko)) for the FAQs and a ton of the documentation in this README.
 
 ## 8.3. Citations
 
