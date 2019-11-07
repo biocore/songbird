@@ -11,6 +11,7 @@ from songbird.multinomial import MultRegression
 from songbird.util import read_metadata, match_and_filter, split_training
 from songbird.parameter_info import DESCS, DEFAULTS
 
+
 @click.group()
 def songbird():
     pass
@@ -156,18 +157,13 @@ def multinomial(
         save_path=summary_dir,
     )
 
-    with tf.Graph().as_default():
-        summary_writer = tf.contrib.summary.create_file_writer(
-            summary_dir, flush_millis=10000)
-        # model definition code goes here
-        # and in it call
-        with tf.Session() as session, \
-                summary_writer.as_default(), \
+    with tf.Graph().as_default(), tf.Session() as session:
+        summary_writer = tf.contrib.summary.create_file_writer(summary_dir)
+        with summary_writer.as_default(), \
                 tf.contrib.summary.always_record_summaries():
 
-            model(session, trainX, trainY, testX, testY)
             hps = hp.hparams(hparams)
-            tf.global_variables_initializer().run()
+            model(session, trainX, trainY, testX, testY)
 
             model.fit(
                 epochs=epochs,
