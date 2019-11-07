@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import tensorflow as tf
+from tensorboard.plugins.hparams import api as hp
 import pandas as pd
 import numpy as np
 from biom import load_table
@@ -126,6 +127,18 @@ def multinomial(
     # convert to dense representation
     dense_table = table.to_dataframe().to_dense().T
 
+    hparams = {'input_biom': input_biom,
+               'metadata_file': metadata_file,
+               'formula': formula,
+               'num_random_test_examples': num_random_test_examples,
+               'epochs': epochs,
+               'batch_size': batch_size,
+               'differential_prior': differential_prior,
+               'learning_rate': learning_rate,
+               'min_sample_count': min_sample_count,
+               'min_feature_count': min_feature_count,
+               }
+
     trainX, testX, trainY, testY = split_training(
         dense_table,
         metadata,
@@ -142,14 +155,28 @@ def multinomial(
         batch_size=batch_size,
         save_path=summary_dir,
     )
-    with tf.Graph().as_default(), tf.Session() as session:
-        model(session, trainX, trainY, testX, testY)
 
-        model.fit(
-            epochs=epochs,
-            summary_interval=summary_interval,
-            checkpoint_interval=checkpoint_interval,
-        )
+    with tf.Graph().as_default():
+        summary_writer = tf.contrib.summary.create_file_writer(
+            summary_dir, flush_millis=10000)
+        # model definition code goes here
+        # and in it call
+        with tf.Session() as session, \
+                summary_writer.as_default(), \
+                tf.contrib.summary.always_record_summaries():
+
+            model(session, trainX, trainY, testX, testY)
+            hps = hp.hparams(hparams)
+            tf.global_variables_initializer().run()
+
+            model.fit(
+                epochs=epochs,
+                summary_interval=summary_interval,
+                checkpoint_interval=checkpoint_interval,
+            )
+
+            tf.contrib.summary.initialize(graph=session.graph)
+            session.run([hps])
 
     md_ids = np.array(design.columns)
     obs_ids = table.ids(axis="observation")
