@@ -159,13 +159,6 @@ def multinomial(
 
     with tf.Graph().as_default(), tf.Session() as session:
 
-        summary_writer = tf.contrib.summary.create_file_writer(summary_dir)
-
-        with summary_writer.as_default(), \
-                tf.contrib.summary.always_record_summaries():
-            hps = hp.hparams(hparams)
-            tf.contrib.summary.initialize(graph=session.graph)
-
         model(session, trainX, trainY, testX, testY)
 
         model.fit(
@@ -173,6 +166,13 @@ def multinomial(
             summary_interval=summary_interval,
             checkpoint_interval=checkpoint_interval,
         )
+
+        summary_writer = tf.contrib.summary.create_file_writer(summary_dir)
+
+        with summary_writer.as_default(), \
+                tf.contrib.summary.always_record_summaries():
+            hps = hp.hparams(hparams)
+            tf.contrib.summary.initialize(graph=session.graph)
 
         session.run(hps)
 
