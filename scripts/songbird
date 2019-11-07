@@ -156,9 +156,7 @@ def multinomial(
         batch_size=batch_size,
         save_path=summary_dir,
     )
-
     with tf.Graph().as_default(), tf.Session() as session:
-
         model(session, trainX, trainY, testX, testY)
 
         model.fit(
