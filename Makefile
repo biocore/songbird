@@ -11,6 +11,6 @@ test:
 	$(TEST_COMMAND)
 pep8:
 	pycodestyle songbird setup.py
-	flake8 songbird setup.py scripts
+	flake8 songbird setup.py scripts scripts/songbird
 
 all: pep8 test
