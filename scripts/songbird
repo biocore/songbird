@@ -158,21 +158,23 @@ def multinomial(
     )
 
     with tf.Graph().as_default(), tf.Session() as session:
+
         summary_writer = tf.contrib.summary.create_file_writer(summary_dir)
+
         with summary_writer.as_default(), \
                 tf.contrib.summary.always_record_summaries():
-
             hps = hp.hparams(hparams)
-            model(session, trainX, trainY, testX, testY)
-
-            model.fit(
-                epochs=epochs,
-                summary_interval=summary_interval,
-                checkpoint_interval=checkpoint_interval,
-            )
-
             tf.contrib.summary.initialize(graph=session.graph)
-            session.run([hps])
+
+        model(session, trainX, trainY, testX, testY)
+
+        model.fit(
+            epochs=epochs,
+            summary_interval=summary_interval,
+            checkpoint_interval=checkpoint_interval,
+        )
+
+        session.run(hps)
 
     md_ids = np.array(design.columns)
     obs_ids = table.ids(axis="observation")
