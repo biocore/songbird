@@ -107,8 +107,57 @@ class TestFilters(unittest.TestCase):
         self.trimmed_metadata = self.metadata.loc[
             ['s1', 's2', 's3', 's4', 's5', 's6']
         ]
-
+        df = pd.DataFrame(
+            [
+                {'intercept': 1, 'categorical': 'b',
+                 'continuous': 1., 'train': 'Train'},
+                {'intercept': 1, 'categorical': 'b',
+                 'continuous': 1., 'train': 'Train'}
+            ], index=['s2', 's4']
+        )
+        df = df.reindex(columns=['intercept', 'categorical',
+                                 'continuous', 'train'])
+        self.metadata_dup = self.metadata.append(df)
         self.table = Table(X, oids, sids)
+
+    def test_match_duplicate(self):
+        formula = 'C(categorical) + continuous'
+        res = match_and_filter(self.table, self.metadata_dup, formula,
+                               min_sample_count=0, min_feature_count=0)
+        res_table, res_metadata, res_design = res
+
+        pdt.assert_frame_equal(res_table.to_dataframe(),
+                               self.table.to_dataframe())
+
+        exp_metadata = pd.DataFrame(
+            np.vstack(
+                (
+                    np.ones(6),
+                    np.array(['a', 'a', 'b', 'b', 'a', 'a']),
+                    np.arange(6).astype(np.float64),
+                    np.array(['Test', 'Test', 'Train', 'Train',
+                              'Train', 'Train'])
+                )
+            ).T,
+            columns=['intercept', 'categorical', 'continuous', 'train'],
+            index=['s1', 's2', 's3', 's4', 's5', 's6']
+        )
+        exp_metadata['continuous'] = exp_metadata[
+            'continuous'].astype(np.float64)
+        pdt.assert_frame_equal(res_metadata, exp_metadata)
+        exp_design = pd.DataFrame(
+            np.vstack(
+                (
+                    np.ones(6),
+                    np.array([0, 0, 1, 1, 0, 0]),
+                    np.arange(6).astype(np.float64)
+                )
+            ).T,
+            columns=['Intercept', 'C(categorical)[T.b]', 'continuous'],
+            index=['s1', 's2', 's3', 's4', 's5', 's6']
+        )
+
+        pdt.assert_frame_equal(res_design, exp_design)
 
     def test_match_and_filter_no_filter(self):
         formula = 'C(categorical) + continuous'

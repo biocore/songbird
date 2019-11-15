@@ -163,6 +163,7 @@ def match_and_filter(table, metadata, formula,
     table = table.filter(read_filter, axis='observation', inplace=False)
 
     metadata = metadata.loc[table.ids(axis='sample')]
+    metadata = metadata.loc[~metadata.index.duplicated(keep='first')]
 
     def sort_f(xs):
         return [xs[metadata.index.get_loc(x)] for x in xs]
