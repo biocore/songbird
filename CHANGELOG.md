@@ -1,5 +1,8 @@
 # songbird changelog
 
+## Version 1.0.2-dev
+Correcting matching between metadata and biom table [#99](https://github.com/biocore/songbird/pull/99)
+
 ## Version 1.0.1 (2019-10-16)
 Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
 Added Q2 statistic explanation and documentation [#87](https://github.com/biocore/songbird/pull/87)

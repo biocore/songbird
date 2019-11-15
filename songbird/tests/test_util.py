@@ -75,6 +75,20 @@ class TestFilters(unittest.TestCase):
         oids = ['o1', 'o2', 'o3', 'o4', 'o5', 'o6', 'o7']
         sids = ['s1', 's2', 's3', 's4', 's5', 's6']
 
+        bigX = np.array(
+            [[10, 1, 4, 1, 4, 1, 0],
+             [0, 0, 2, 0, 2, 1, 8],
+             [0, 1, 2, 1, 2, 1, 4],
+             [0, 1, 0, 1, 0, 1, 0],
+             [2, 0, 0, 0, 0, 1, 0],
+             [1, 0, 0, 0, 0, 1, 0],
+             [4, 0, 0, 0, 0, 1, 0]]
+        )
+
+        self.big_table = Table(
+            bigX, oids, sids + ['s9'],
+        )
+
         self.metadata = pd.DataFrame(
             np.vstack(
                 (
@@ -134,6 +148,18 @@ class TestFilters(unittest.TestCase):
         )
 
         pdt.assert_frame_equal(res_design, exp_design)
+
+    def test_match_and_filter_big_table(self):
+        formula = 'C(categorical) + continuous'
+        res = match_and_filter(self.big_table, self.metadata, formula,
+                               min_sample_count=0, min_feature_count=0)
+
+        res_metadata = res[1]
+        drop_metadata = res_metadata.dropna()
+        res_design = res[2]
+        drop_design = res_design.dropna()
+        self.assertEqual(res_design.shape[0], drop_design.shape[0])
+        self.assertEqual(res_metadata.shape[0], drop_metadata.shape[0])
 
     def test_split_training_random(self):
         np.random.seed(0)

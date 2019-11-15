@@ -149,8 +149,6 @@ def match_and_filter(table, metadata, formula,
     """
     # match them
 
-    metadata = metadata.loc[table.ids(axis='sample')]
-
     def sample_filter(val, id_, md):
         return id_ in metadata.index and np.sum(val) > min_sample_count
 
@@ -160,9 +158,9 @@ def match_and_filter(table, metadata, formula,
     def metadata_filter(val, id_, md):
         return id_ in metadata.index
 
-    table = table.filter(metadata_filter, axis='sample')
-    table = table.filter(sample_filter, axis='sample')
-    table = table.filter(read_filter, axis='observation')
+    table = table.filter(metadata_filter, axis='sample', inplace=False)
+    table = table.filter(sample_filter, axis='sample', inplace=False)
+    table = table.filter(read_filter, axis='observation', inplace=False)
 
     metadata = metadata.loc[table.ids(axis='sample')]
 
