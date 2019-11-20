@@ -155,10 +155,7 @@ def match_and_filter(table, metadata, formula,
     def read_filter(val, id_, md):
         return np.sum(val > 0) > min_feature_count
 
-    def metadata_filter(val, id_, md):
-        return id_ in metadata.index
 
-    table = table.filter(metadata_filter, axis='sample', inplace=False)
     table = table.filter(sample_filter, axis='sample', inplace=False)
     table = table.filter(read_filter, axis='observation', inplace=False)
 
