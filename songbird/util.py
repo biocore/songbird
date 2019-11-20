@@ -155,7 +155,6 @@ def match_and_filter(table, metadata, formula,
     def read_filter(val, id_, md):
         return np.sum(val > 0) > min_feature_count
 
-
     table = table.filter(sample_filter, axis='sample', inplace=False)
     table = table.filter(read_filter, axis='observation', inplace=False)
 
