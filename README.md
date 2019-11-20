@@ -64,13 +64,13 @@ repository. You can just copy-and-paste the command below into your terminal,
 assuming you've activated your `songbird_env`.
 ```
 songbird multinomial \
-    --input-biom data/redsea/redsea.biom \
-    --metadata-file data/redsea/redsea_metadata.txt \
-    --formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
-    --epochs 10000 \
-    --differential-prior 0.5 \
-    --summary-interval 1 \
-    --summary-dir results
+	--input-biom data/redsea/redsea.biom \
+	--metadata-file data/redsea/redsea_metadata.txt \
+	--formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
+	--epochs 10000 \
+	--differential-prior 0.5 \
+	--summary-interval 1 \
+	--summary-dir results
 ```
 The output differentials will be stored in `results/differentials.tsv`.
 
@@ -115,9 +115,9 @@ the Red Sea example data into QIIME 2 by running:
 
 ```
 qiime tools import \
-    --input-path data/redsea/redsea.biom \
-    --output-path redsea.biom.qza \
-    --type FeatureTable[Frequency]
+	--input-path data/redsea/redsea.biom \
+	--output-path redsea.biom.qza \
+	--type FeatureTable[Frequency]
 ```
 
 ### Running Songbird
@@ -125,16 +125,16 @@ After importing your feature table, you can then run Songbird through QIIME 2 as
 
 ```
 qiime songbird multinomial \
-    --i-table redsea.biom.qza \
-    --m-metadata-file data/redsea/redsea_metadata.txt \
-    --p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
-    --p-epochs 10000 \
-    --p-differential-prior 0.5 \
-    --p-summary-interval 1 \
-    --p-training-column Testing \
-    --o-differentials differentials.qza \
-    --o-regression-stats regression-stats.qza \
-    --o-regression-biplot regression-biplot.qza
+	--i-table redsea.biom.qza \
+	--m-metadata-file data/redsea/redsea_metadata.txt \
+	--p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
+	--p-epochs 10000 \
+	--p-differential-prior 0.5 \
+	--p-summary-interval 1 \
+	--p-training-column Testing \
+	--o-differentials differentials.qza \
+	--o-regression-stats regression-stats.qza \
+	--o-regression-biplot regression-biplot.qza
 ```
 You can add the `--verbose` option to see a progress bar while this is running.
 
@@ -147,11 +147,11 @@ visualized by running:
 
 ```
 qiime songbird summarize-single \
-    --i-regression-stats regression-stats.qza \
-    --o-visualization regression-summary.qzv
+	--i-regression-stats regression-stats.qza \
+	--o-visualization regression-summary.qzv
 ```
 
-The resulting visualization (viewable using `qiime tools view` or at# 
+The resulting visualization (viewable using `qiime tools view` or at#
 [view.qiime2.org](https://view.qiime2.org)) contains two plots.
 These plots are analogous to the two
 plots shown in Tensorboard's interface (the top plot shows cross-validation
@@ -338,22 +338,22 @@ diagnostic plots at once as follows:
 ```bash
 # Generate a baseline model
 qiime songbird multinomial \
-    --i-table redsea.biom.qza \
-    --m-metadata-file data/redsea/redsea_metadata.txt \
-    --p-formula "1" \
-    --p-epochs 5000 \
-    --p-training-column Testing \
-    --p-summary-interval 1 \
-    --o-differentials baseline-diff.qza \
-    --o-regression-stats baseline-stats.qza \
-    --o-regression-biplot baseline-biplot.qza
+	--i-table redsea.biom.qza \
+	--m-metadata-file data/redsea/redsea_metadata.txt \
+	--p-formula "1" \
+	--p-epochs 5000 \
+	--p-training-column Testing \
+	--p-summary-interval 1 \
+	--o-differentials baseline-diff.qza \
+	--o-regression-stats baseline-stats.qza \
+	--o-regression-biplot baseline-biplot.qza
 
 # Visualize the first model's regression stats *and* the baseline model's
 # regression stats
 qiime songbird summarize-paired \
-    --i-regression-stats regression-stats.qza \
-    --i-baseline-stats baseline-stats.qza \
-    --o-visualization paired-summary.qzv
+	--i-regression-stats regression-stats.qza \
+	--i-baseline-stats baseline-stats.qza \
+	--o-visualization paired-summary.qzv
 ```
 
 The summary generated will look something like as follows.
@@ -374,22 +374,22 @@ But one can imagine using other baseline models to contrast - for instance, fitt
 ```
 # Generate a baseline model
 qiime songbird multinomial \
-    --i-table redsea.biom.qza \
-    --m-metadata-file data/redsea/redsea_metadata.txt \
-    --p-formula "Depth" \
-    --p-epochs 5000 \
-    --p-training-column Testing \
-    --p-summary-interval 1 \
-    --o-differentials baseline-diff.qza \
-    --o-regression-stats baseline-stats.qza \
-    --o-regression-biplot baseline-biplot.qza
+	--i-table redsea.biom.qza \
+	--m-metadata-file data/redsea/redsea_metadata.txt \
+	--p-formula "Depth" \
+	--p-epochs 5000 \
+	--p-training-column Testing \
+	--p-summary-interval 1 \
+	--o-differentials baseline-diff.qza \
+	--o-regression-stats baseline-stats.qza \
+	--o-regression-biplot baseline-biplot.qza
 
 # Visualize the first model's regression stats *and* the baseline model's
 # regression stats
 qiime songbird summarize-paired \
-    --i-regression-stats regression-stats.qza \
-    --i-baseline-stats baseline-stats.qza \
-    --o-visualization paired-summary.qzv
+	--i-regression-stats regression-stats.qza \
+	--i-baseline-stats baseline-stats.qza \
+	--o-visualization paired-summary.qzv
 ```
 This plot will allow one to investigate how much the model fit improved by adding `Temperature`, `Salinity`, `Oxygen`, `Fluorescence`, and `Nitrate`. A positive _Q<sup>2</sup>_ score indicates an improvement over the baseline model.
 
@@ -449,11 +449,11 @@ See <a href="#interpreting-model-fitting">this section on interpreting model fit
 
 ```
 qiime emperor biplot \
-    --i-biplot regression-biplot.qza \
-    --m-sample-metadata-file data/redsea/feature_metadata.txt \
-    --p-ignore-missing-samples \
-    --p-number-of-features 7 \
-    --o-visualization emperor-biplot
+	--i-biplot regression-biplot.qza \
+	--m-sample-metadata-file data/redsea/feature_metadata.txt \
+	--p-ignore-missing-samples \
+	--p-number-of-features 7 \
+	--o-visualization emperor-biplot
 ```
 
 You can view the resulting visualization using `qiime tools view` or at
@@ -482,6 +482,14 @@ features in your dataset play a large role, as does the
 `--epochs`/`--p-epochs` parameter.
 
 The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epochs).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to <a href="#interpreting-model-fitting">consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane</a>.**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
+
+**Q.** How exactly does filtering work?!?
+**A.** There are two filtering parameters `--min-feature-count` and `--min-sample-count`.  Be __careful__, these two parameters have different behaviors.
+`--min-sample-count` will filter out samples according to the total read count.  For instance, if `--min-sample-count 1000` is specified, then
+all samples that have less than 1000 reads will be filtered out.
+
+`--min-feature-count` will filter out features according to how many __samples__ they appear in.  For instance, if `--min-feature-count 10` is specified,
+then all features than appear in less than 10 samples will be thrown out.  It is important to note that we are filtering according to number of samples rather than number of reads.  The reason why this behavior is chosen relates to a rule of thumb commonly used in linear regression - if a microbe appears in less than 10 samples, it is difficult to fit a meaningful line for that microbe.  In other words, there is not even resolution in the study to say anything meaningful about that microbe in the context of differential abundance analysis.
 
 ## 6.4. FAQs: Output files
 
@@ -514,8 +522,8 @@ You can also view the output differentials as a nice, sortable table using
 
 ```bash
 qiime metadata tabulate \
-    --m-input-file differentials.qza \
-    --o-visualization differentials-viz.qzv
+	--m-input-file differentials.qza \
+	--o-visualization differentials-viz.qzv
 ```
 
 (The output `.qzv` file can be viewed using `qiime tools view` or at

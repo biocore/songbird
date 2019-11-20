@@ -1,7 +1,7 @@
 # songbird changelog
 
 ## Version 1.0.2-dev
-Correcting matching between metadata and biom table [#99](https://github.com/biocore/songbird/pull/99)
+Correcting matching between metadata and biom table and clarifying the min-feature-count parameter [#99](https://github.com/biocore/songbird/pull/99)
 
 ## Version 1.0.1 (2019-10-16)
 Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
