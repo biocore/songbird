@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import tensorflow as tf
+from tensorboard.plugins.hparams import api as hp
 import pandas as pd
 import numpy as np
 from biom import load_table
@@ -9,6 +10,7 @@ from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
 from songbird.util import read_metadata, match_and_filter, split_training
 from songbird.parameter_info import DESCS, DEFAULTS
+
 
 @click.group()
 def songbird():
@@ -126,6 +128,18 @@ def multinomial(
     # convert to dense representation
     dense_table = table.to_dataframe().to_dense().T
 
+    hparams = {'input_biom': input_biom,
+               'metadata_file': metadata_file,
+               'formula': formula,
+               'num_random_test_examples': num_random_test_examples,
+               'epochs': epochs,
+               'batch_size': batch_size,
+               'differential_prior': differential_prior,
+               'learning_rate': learning_rate,
+               'min_sample_count': min_sample_count,
+               'min_feature_count': min_feature_count,
+               }
+
     trainX, testX, trainY, testY = split_training(
         dense_table,
         metadata,
@@ -150,6 +164,15 @@ def multinomial(
             summary_interval=summary_interval,
             checkpoint_interval=checkpoint_interval,
         )
+
+        summary_writer = tf.contrib.summary.create_file_writer(summary_dir)
+
+        with summary_writer.as_default(), \
+                tf.contrib.summary.always_record_summaries():
+            hps = hp.hparams(hparams)
+            tf.contrib.summary.initialize(graph=session.graph)
+
+        session.run(hps)
 
     md_ids = np.array(design.columns)
     obs_ids = table.ids(axis="observation")
