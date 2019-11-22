@@ -2,10 +2,12 @@
 
 ## Version 1.0.2-dev
 Correcting matching between metadata and biom table and clarifying the min-feature-count parameter [#99](https://github.com/biocore/songbird/pull/99)
+
 Added Tensorboard's HParams functionality to standalone [#95](https://github.com/biocore/songbird/pull/95)
 
 ## Version 1.0.1 (2019-10-16)
 Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
+
 Added Q2 statistic explanation and documentation [#87](https://github.com/biocore/songbird/pull/87)
 
 ## Version 0.9 (2019-9-5)
