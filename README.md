@@ -484,12 +484,13 @@ features in your dataset play a large role, as does the
 The larger the batch size, the more samples you average per iteration, but the less iterations you have - which can sometimes buy you less time to reach convergence (so you may have to compensate by increasing the epochs).  On the other hand, if you decrease the batch size, you can have more iterations, but the variability between each iteration is higher. This also depends on if your program will converge.  This may also depend on the `--learning-rate` which specifies the resolution (smaller step size = smaller resolution, but may take longer to converge). **You will need to <a href="#interpreting-model-fitting">consult with Tensorboard (or your regression-stats.qza output) to make sure that your model fit is sane</a>.**  See this paper for more details on gradient descent: https://arxiv.org/abs/1609.04747
 
 **Q.** How exactly does filtering work?!?
+
 **A.** There are two filtering parameters `--min-feature-count` and `--min-sample-count`.  Be __careful__, these two parameters have different behaviors.
 `--min-sample-count` will filter out samples according to the total read count.  For instance, if `--min-sample-count 1000` is specified, then
 all samples that have less than 1000 reads will be filtered out.
 
 `--min-feature-count` will filter out features according to how many __samples__ they appear in.  For instance, if `--min-feature-count 10` is specified,
-then all features than appear in less than 10 samples will be thrown out.  It is important to note that we are filtering according to number of samples rather than number of reads.  The reason why this behavior is chosen relates to a rule of thumb commonly used in linear regression - if a microbe appears in less than 10 samples, it is difficult to fit a meaningful line for that microbe.  In other words, there is not even resolution in the study to say anything meaningful about that microbe in the context of differential abundance analysis.
+then all features than appear in less than 10 samples will be thrown out.  It is important to note that we are filtering according to number of samples rather than number of reads.  The reason why this behavior is chosen relates to a rule of thumb commonly used in linear regression - if a microbe appears in less than 10 samples, it is difficult to fit a meaningful line for that microbe.  In other words, there is not even resolution in the study to say anything meaningful about that microbe in the context of differential abundance analysis.  The `--min-feature-count` filter is applied _after_ the `--min-sample-count` is applied.
 
 ## 6.4. FAQs: Output files
 
