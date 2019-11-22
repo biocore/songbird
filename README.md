@@ -338,7 +338,7 @@ Tensorboard. You will see something like this:
 
 Above, the model with the lowest cross-validation error is highlighted in green. You can see how its performance
 compares to other models that were fit on this dataset with various parameters. Additionally, the model's diagnostic
-plots are shown, which can be used to verify that they have an exponential decay and a stable plateau.
+plots are shown, which will have an exponential decay and a stable plateau if the model converged.
 
 Similarly, _if you're running Songbird through QIIME 2_, the
 `qiime songbird summarize-paired` command allows you to view two sets of
