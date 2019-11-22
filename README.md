@@ -331,6 +331,15 @@ a list of all available parameters, respectively.
 _If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
 if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
 
+Additionally, when using the Songbird standalone, you can view a summary of final results under the `HPARAMS` tab in 
+Tensorboard. You will see something like this:
+
+![HParams for the Red Sea Data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-tensorboard-hparams.png)
+
+Above, the model with the lowest cross-validation error is highlighted in green. You can see how its performance
+compares to other models that were fit on this dataset with various parameters. Additionally, the model's diagnostic
+plots are shown, which will have an exponential decay and a stable plateau if the model converged.
+
 Similarly, _if you're running Songbird through QIIME 2_, the
 `qiime songbird summarize-paired` command allows you to view two sets of
 diagnostic plots at once as follows:

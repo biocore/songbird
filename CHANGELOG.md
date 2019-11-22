@@ -1,5 +1,8 @@
 # songbird changelog
 
+## Version x.x.x (2019-11-21)
+Added Tensorboard's HParams functionality to standalone [#95](https://github.com/biocore/songbird/pull/95)
+
 ## Version 1.0.1 (2019-10-16)
 Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
 Added Q2 statistic explanation and documentation [#87](https://github.com/biocore/songbird/pull/87)
