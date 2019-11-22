@@ -35,12 +35,12 @@ class TestSongbirdCLI(unittest.TestCase):
                      '--summary-dir', self.path]
 
         result = runner.invoke(songbird.multinomial, test_args)
-        # Uncommenting the below lines is useful for debugging if
-        #  you are getting result.exit_code != 0
-        # import traceback
-        # ex = result.exception
-        # traceback.print_exception(type(ex), ex, ex.__traceback__)
-        self.assertEqual(0, result.exit_code)
+        try:
+            self.assertEqual(0, result.exit_code)
+        except AssertionError:
+            ex = result.exception
+            error = Exception('Command failed with non-zero exit code')
+            raise error .with_traceback(ex.__traceback__)
 
 
 if __name__ == '__main__':
