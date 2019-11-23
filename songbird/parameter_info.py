@@ -32,8 +32,8 @@ DESCS = {
         "the analysis."
     ),
     'min-feature-count': (
-        "The minimum number of counts a feature needs for it to be included "
-        "in the analysis."
+        "The minimum number of samples a feature needs to be observed in "
+        "for it to be included in the analysis."
     ),
     "summary-interval": "Number of seconds before storing a summary.",
     # FYI: The following parameters are exclusive to the non-Q2 Songbird script

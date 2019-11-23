@@ -149,20 +149,14 @@ def match_and_filter(table, metadata, formula,
     """
     # match them
 
-    metadata = metadata.loc[table.ids(axis='sample')]
-
     def sample_filter(val, id_, md):
         return id_ in metadata.index and np.sum(val) > min_sample_count
 
     def read_filter(val, id_, md):
         return np.sum(val > 0) > min_feature_count
 
-    def metadata_filter(val, id_, md):
-        return id_ in metadata.index
-
-    table = table.filter(metadata_filter, axis='sample')
-    table = table.filter(sample_filter, axis='sample')
-    table = table.filter(read_filter, axis='observation')
+    table = table.filter(sample_filter, axis='sample', inplace=False)
+    table = table.filter(read_filter, axis='observation', inplace=False)
 
     metadata = metadata.loc[table.ids(axis='sample')]
     metadata = metadata.loc[~metadata.index.duplicated(keep='first')]
