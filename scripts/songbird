@@ -99,6 +99,18 @@ def songbird():
     show_default=True,
     help=DESCS["summary-dir"],
 )
+@click.option(
+    "--split-seed",
+    default=DEFAULTS["split-seed"],
+    show_default=True,
+    help=DESCS["split-seed"]
+)
+@click.option(
+    "--tf-seed",
+    default=DEFAULTS["tf-seed"],
+    show_default=True,
+    help=DESCS["tf-seed"]
+)
 def multinomial(
     input_biom,
     metadata_file,
@@ -115,6 +127,8 @@ def multinomial(
     checkpoint_interval,
     summary_interval,
     summary_dir,
+    split_seed,
+    tf_seed,
 ):
     # load metadata and tables
     metadata = read_metadata(metadata_file)
@@ -138,17 +152,21 @@ def multinomial(
                'learning_rate': learning_rate,
                'min_sample_count': min_sample_count,
                'min_feature_count': min_feature_count,
+               'split_seed': split_seed,
+               'tf_seed': tf_seed,
                }
 
+    # split up training and testing
     trainX, testX, trainY, testY = split_training(
         dense_table,
         metadata,
         design,
         training_column,
         num_random_test_examples,
+        seed=split_seed,
     )
 
-    # split up training and testing
+    # initialize and train the model
     model = MultRegression(
         learning_rate=learning_rate,
         clipnorm=clipnorm,
@@ -157,6 +175,10 @@ def multinomial(
         save_path=summary_dir,
     )
     with tf.Graph().as_default(), tf.Session() as session:
+        # set the tf random seed
+        if tf_seed is not None:
+            tf.set_random_seed(int(tf_seed))
+
         model(session, trainX, trainY, testX, testY)
 
         model.fit(
