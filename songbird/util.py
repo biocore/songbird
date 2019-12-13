@@ -176,9 +176,10 @@ def match_and_filter(table, metadata, formula,
 
 
 def split_training(dense_table, metadata, design, training_column=None,
-                   num_random_test_examples=10):
+                   num_random_test_examples=10, seed=None):
 
     if training_column is None:
+        np.random.seed(seed)
         idx = np.random.random(design.shape[0])
         i = np.argsort(idx)[num_random_test_examples]
 
