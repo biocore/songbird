@@ -75,6 +75,5 @@ class TestMultinomial(unittest.TestCase):
         npt.assert_array_equal(res_biplot1.features, res_biplot2.features)
 
 
-
 if __name__ == "__main__":
     unittest.main()
