@@ -152,9 +152,15 @@ def multinomial(
                'learning_rate': learning_rate,
                'min_sample_count': min_sample_count,
                'min_feature_count': min_feature_count,
-               'split_seed': split_seed,
-               'tf_seed': tf_seed,
                }
+    if split_seed is not None:
+        hparams.update({
+            'split_seed': split_seed,
+        })
+    if tf_seed is not None:
+        hparams.update({
+            'tf_seed': tf_seed,
+        })
 
     # split up training and testing
     trainX, testX, trainY, testY = split_training(
