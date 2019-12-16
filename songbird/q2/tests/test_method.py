@@ -1,7 +1,6 @@
 import qiime2
 import unittest
 import numpy as np
-import pandas as pd
 import tensorflow as tf
 from songbird.q2._method import multinomial
 from songbird.util import random_multinomial_model
