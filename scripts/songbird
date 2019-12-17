@@ -100,16 +100,11 @@ def songbird():
     help=DESCS["summary-dir"],
 )
 @click.option(
-    "--split-seed",
-    default=DEFAULTS["split-seed"],
+    "--random-seed",
+    default=DEFAULTS["random-seed"],
     show_default=True,
-    help=DESCS["split-seed"]
-)
-@click.option(
-    "--tf-seed",
-    default=DEFAULTS["tf-seed"],
-    show_default=True,
-    help=DESCS["tf-seed"]
+    help=DESCS["random-seed"],
+    type=int,
 )
 def multinomial(
     input_biom,
@@ -127,8 +122,7 @@ def multinomial(
     checkpoint_interval,
     summary_interval,
     summary_dir,
-    split_seed,
-    tf_seed,
+    random_seed,
 ):
     # load metadata and tables
     metadata = read_metadata(metadata_file)
@@ -153,13 +147,9 @@ def multinomial(
                'min_sample_count': min_sample_count,
                'min_feature_count': min_feature_count,
                }
-    if split_seed is not None:
+    if random_seed is not None:
         hparams.update({
-            'split_seed': split_seed,
-        })
-    if tf_seed is not None:
-        hparams.update({
-            'tf_seed': tf_seed,
+            'random_seed': random_seed,
         })
 
     # split up training and testing
@@ -169,7 +159,7 @@ def multinomial(
         design,
         training_column,
         num_random_test_examples,
-        seed=split_seed,
+        seed=random_seed,
     )
 
     # initialize and train the model
@@ -182,8 +172,8 @@ def multinomial(
     )
     with tf.Graph().as_default(), tf.Session() as session:
         # set the tf random seed
-        if tf_seed is not None:
-            tf.set_random_seed(int(tf_seed))
+        if random_seed is not None:
+            tf.set_random_seed(random_seed)
 
         model(session, trainX, trainY, testX, testY)
 

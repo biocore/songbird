@@ -45,12 +45,9 @@ DESCS = {
         'to summaries that can be loaded into Tensorboard and '
         'checkpoints for recovering parameters during runtime.'
     ),
-    "split-seed": (
-        'The number to use as a seed for splitting data into training and '
-        'test sets.'
-    ),
-    "tf-seed": (
-        'The number to use as a random seed in TensorFlow.'
+    "random-seed": (
+        'The number to used to receive consistent results for the random  '
+        'processes in the fitting procedure.'
     ),
 }
 
@@ -67,6 +64,5 @@ DEFAULTS = {
     "checkpoint-interval": 3600,
     "summary-interval": 10,
     "summary-dir": "summarydir",
-    "split-seed": 0,
-    "tf-seed": None,
+    "random-seed": 0,
 }
