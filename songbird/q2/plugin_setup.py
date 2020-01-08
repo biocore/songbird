@@ -49,7 +49,8 @@ plugin.methods.register_function(
         'clipnorm': Float,
         'min_sample_count': Int,
         'min_feature_count': Int,
-        'summary_interval': Int
+        'summary_interval': Int,
+        'random_seed': Int,
     },
     outputs=[
         ('differentials', FeatureData[Differential]),
@@ -79,6 +80,7 @@ plugin.methods.register_function(
         "min_sample_count": DESCS["min-sample-count"],
         "min_feature_count": DESCS["min-feature-count"],
         "summary_interval": DESCS["summary-interval"],
+        "random_seed": DESCS["random-seed"],
     },
     name='Multinomial regression',
     description=("Performs multinomial regression and calculates "
