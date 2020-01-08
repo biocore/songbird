@@ -45,6 +45,10 @@ DESCS = {
         'to summaries that can be loaded into Tensorboard and '
         'checkpoints for recovering parameters during runtime.'
     ),
+    "random-seed": (
+        'The number to used to receive consistent results for the random  '
+        'processes in the fitting procedure.'
+    ),
 }
 
 DEFAULTS = {
@@ -60,4 +64,5 @@ DEFAULTS = {
     "checkpoint-interval": 3600,
     "summary-interval": 10,
     "summary-dir": "summarydir",
+    "random-seed": 0,
 }

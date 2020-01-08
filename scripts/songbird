@@ -99,6 +99,13 @@ def songbird():
     show_default=True,
     help=DESCS["summary-dir"],
 )
+@click.option(
+    "--random-seed",
+    default=DEFAULTS["random-seed"],
+    show_default=True,
+    help=DESCS["random-seed"],
+    type=int,
+)
 def multinomial(
     input_biom,
     metadata_file,
@@ -115,6 +122,7 @@ def multinomial(
     checkpoint_interval,
     summary_interval,
     summary_dir,
+    random_seed,
 ):
     # load metadata and tables
     metadata = read_metadata(metadata_file)
@@ -139,16 +147,22 @@ def multinomial(
                'min_sample_count': min_sample_count,
                'min_feature_count': min_feature_count,
                }
+    if random_seed is not None:
+        hparams.update({
+            'random_seed': random_seed,
+        })
 
+    # split up training and testing
     trainX, testX, trainY, testY = split_training(
         dense_table,
         metadata,
         design,
         training_column,
         num_random_test_examples,
+        seed=random_seed,
     )
 
-    # split up training and testing
+    # initialize and train the model
     model = MultRegression(
         learning_rate=learning_rate,
         clipnorm=clipnorm,
@@ -157,6 +171,10 @@ def multinomial(
         save_path=summary_dir,
     )
     with tf.Graph().as_default(), tf.Session() as session:
+        # set the tf random seed
+        if random_seed is not None:
+            tf.set_random_seed(random_seed)
+
         model(session, trainX, trainY, testX, testY)
 
         model.fit(

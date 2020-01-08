@@ -49,6 +49,30 @@ class TestMultinomial(unittest.TestCase):
         npt.assert_allclose(exp_beta, res_beta.T, atol=0.6, rtol=0.6)
         self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
+    def test_fit_consistency(self):
+        md = self.md
+
+        md.name = 'sampleid'
+        md = qiime2.Metadata(md)
+
+        res_beta1, res_stats1, res_biplot1 = multinomial(
+            table=self.table, metadata=md,
+            min_sample_count=0, min_feature_count=0,
+            formula="X", epochs=1000)
+
+        res_beta2, res_stats2, res_biplot2 = multinomial(
+            table=self.table, metadata=md,
+            min_sample_count=0, min_feature_count=0,
+            formula="X", epochs=1000)
+
+        npt.assert_array_equal(res_beta1, res_beta2)
+        end_res_stats1 = res_stats1.to_dataframe().iloc[-1]
+        end_res_stats2 = res_stats2.to_dataframe().iloc[-1]
+        npt.assert_array_equal(end_res_stats1, end_res_stats2)
+        npt.assert_array_equal(res_biplot1.eigvals, res_biplot2.eigvals)
+        npt.assert_array_equal(res_biplot1.samples, res_biplot2.samples)
+        npt.assert_array_equal(res_biplot1.features, res_biplot2.features)
+
 
 if __name__ == "__main__":
     unittest.main()

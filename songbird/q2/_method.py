@@ -25,7 +25,9 @@ def multinomial(table: biom.Table,
                 clipnorm: float = DEFAULTS["clipnorm"],
                 min_sample_count: int = DEFAULTS["min-sample-count"],
                 min_feature_count: int = DEFAULTS["min-feature-count"],
-                summary_interval: int = DEFAULTS["summary-interval"]) -> (
+                summary_interval: int = DEFAULTS["summary-interval"],
+                random_seed: int = DEFAULTS["random-seed"],
+                ) -> (
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
 
@@ -43,7 +45,8 @@ def multinomial(table: biom.Table,
     # split up training and testing
     trainX, testX, trainY, testY = split_training(
         dense_table, metadata, design,
-        training_column, num_random_test_examples
+        training_column, num_random_test_examples,
+        seed=random_seed,
     )
 
     model = MultRegression(learning_rate=learning_rate, clipnorm=clipnorm,
@@ -51,6 +54,7 @@ def multinomial(table: biom.Table,
                            batch_size=batch_size,
                            save_path=None)
     with tf.Graph().as_default(), tf.Session() as session:
+        tf.set_random_seed(random_seed)
         model(session, trainX, trainY, testX, testY)
 
         loss, cv, its = model.fit(

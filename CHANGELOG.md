@@ -1,6 +1,8 @@
 # songbird changelog
 
 ## Version 1.0.2-dev
+Added ability to set random seed for CLI and sets fixed random seeds for qiime2 [#101](https://github.com/biocore/songbird/pull/101)
+
 Correcting matching between metadata and biom table and clarifying the min-feature-count parameter [#99](https://github.com/biocore/songbird/pull/99)
 
 Added Tensorboard's HParams functionality to standalone [#95](https://github.com/biocore/songbird/pull/95)
