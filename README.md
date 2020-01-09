@@ -212,9 +212,10 @@ This will ensure that your second column of differentials is
 `C(healthy_or_sick, Treatment('healthy'))[T.sick]` -- that is, the association
 with `sick`-valued samples using `healthy`-valued samples as a reference.
 
-If you have more than two categories in a given column (e.g. `healthy`, `sick`, or `really sick`) 
-then Songbird will return N-1 columns of differentials with each category compared to the reference.
-In this example it would return two columns; one with `sick` compared to `healthy` and one with `really sick` 
+If you have more than two categories in a given column (e.g. `healthy`, `disease A`, or `disease B`) 
+then Songbird will return `K-1` columns of differentials (where `K` is the number of categories in a given column)
+with each category compared to the reference.
+In this example it would return two columns; one with `disease A` compared to `healthy` and one with `disease B` 
 compared to `healthy`.
 
 ### Do you have some more simple examples of using formulas?
@@ -284,7 +285,7 @@ This is a graph of the prediction accuracy of the model; the model will try to g
 The x-axis is the number of iterations (meaning times the model is training across the entire dataset). Every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis.
 
 The number of iterations is influenced by a number of parameters, most notably
-by the `--epochs`/`--p-epochs` parameter. The greater this number is, the more iterations the model will go through.
+by the `--epochs`/`--p-epochs` parameter. All else being equal, the greater this number is the more iterations the model will go through.
 
 The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Cross Validation graphs shown above it means that, on average, the model is off by around 5 to 10 counts, which is low. However, this is ABSOLUTE error -- not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets).
 
@@ -342,7 +343,7 @@ a list of all available parameters, respectively.
 # 6. Validating by comparing to baseline models <span id="validating-null-model"></span>
 
 ## 6.1 Generating a null model
-Now that we have generated a model and understand how to interpret the diagnostic plots, it is important to compare this model to a model made without any metadata input. In other words, this will allow us to see how much our model is improved over a model trained by the samples alone. We can do this by simply supplying `--p-formula` with 1 as shown below. 
+Now that we have generated a model and understand how to interpret the diagnostic plots, it is important to compare this model to a model made without any metadata input. In other words, this will allow us to see how strongly the covariates in the formula can be associated with the features of the model, as compared to random chance. We can do this by simply supplying `--p-formula` with 1 as shown below. 
 
 _If you're running Songbird through QIIME 2_, the
 `qiime songbird summarize-paired` command allows you to view two sets of
@@ -426,7 +427,8 @@ This plot provides evidence for how much the model fit improved by adding `Tempe
 
 ### TL;DR
 Basically, you'll want to futz around with the parameters until you see two
-nice exponential decay graphs, where the null model looks worse in the cross-validation graph.
+nice exponential decay graphs, where your model provides an improvement in the cross-validation graph
+compared to the null model.
 Once you have that, you can start to look at the `differentials` Songbird produced!
 
 
