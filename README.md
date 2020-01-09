@@ -44,9 +44,10 @@ This README is divided into a few main sections:
 3. **Specifying a formula**
 4. **Interpreting model fitting information**
 5. **Adjusting parameters to get reasonable fitting**
-6. **FAQs**
-7. **Visualizing Songbird's differentials**
-8. **More information**
+6. **Validating by comparing to baseline models** 
+7. **FAQs**
+8. **Visualizing Songbird's differentials**
+9. **More information**
 
 # 1. Using Songbird "standalone"
 ### Installation
@@ -86,6 +87,8 @@ tensorboard --logdir .
 
 When you open up Tensorboard in a web browser, it will show plots of the cross validation score and loss. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots, and see <a href="#faqs-standalone">the section of the FAQs on running Songbird standalone</a> for details on how to use Tensorboard.
 
+Once you have a good fit for your model you need to run a null model for comparison to exclude model overfitting. See <a href="#validating-null-model">this section on how to run and compare a null model</a>.
+
 ### A note about metadata and running Songbird standalone
 If you have any "comment rows" in your metadata -- for example, a `#q2:types`
 row -- you will need to delete these before running Songbird standalone, since
@@ -95,8 +98,7 @@ otherwise standalone Songbird will interpret these rows as actual samples.
 # 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
 First, you'll need to make sure that QIIME 2 (**version 2019.7 or later**) is installed
-before installing
-Songbird. In your QIIME 2 conda environment, you can install Songbird by
+before installing Songbird. In your QIIME 2 conda environment, you can install Songbird by
 running:
 
 ```
@@ -109,8 +111,8 @@ qiime dev refresh-cache
 ```
 
 ### Importing data into QIIME 2
-Once QIIME 2 is properly interfaced with Songbird, you can import your BIOM tables
-into QIIME 2 "Artifacts." Starting from the Songbird root folder, let's import
+If your data is not already in QIIME2 format, you can import your BIOM tables
+into QIIME 2 "Artifacts". Starting from the Songbird root folder, let's import
 the Red Sea example data into QIIME 2 by running:
 
 ```
@@ -121,7 +123,7 @@ qiime tools import \
 ```
 
 ### Running Songbird
-After importing your feature table, you can then run Songbird through QIIME 2 as follows:
+With your QIIME 2-formatted feature table, you can run Songbird through QIIME 2 as follows:
 
 ```
 qiime songbird multinomial \
@@ -142,7 +144,7 @@ You can add the `--verbose` option to see a progress bar while this is running.
 
 **You need to diagnose the fit of the model Songbird creates (e.g. to
 make sure it isn't "overfitting" to the data).** When you run Songbird
-through QIIME 2, it'll generate a `regression-stats.qza` Artifact. This can be
+through QIIME 2, it will generate a `regression-stats.qza` Artifact. This can be
 visualized by running:
 
 ```
@@ -170,6 +172,7 @@ while controlling for gender, the formula would look something like:
 where "diseased" and "gender" are the columns of the sample metadata file.
 This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here is called [patsy](https://patsy.readthedocs.io/);
 more details can be found [here](https://patsy.readthedocs.io/en/latest/formulas.html).
+The metadata columns used in the `--formula` can be either numeric or categorical.
 
 ### The implicit "reference": how categorical variables are handled <span id="implicit-reference"></span>
 Let's say your formula just includes one categorical variable:
@@ -209,6 +212,11 @@ This will ensure that your second column of differentials is
 `C(healthy_or_sick, Treatment('healthy'))[T.sick]` -- that is, the association
 with `sick`-valued samples using `healthy`-valued samples as a reference.
 
+If you have more than two categories in a given column (e.g. `healthy`, `sick`, or `really sick`) 
+then Songbird will return N-1 columns of differentials with each category compared to the reference.
+In this example it would return two columns; one with `sick` compared to `healthy` and one with `really sick` 
+compared to `healthy`.
+
 ### Do you have some more simple examples of using formulas?
 
 Sure! In general, it's a good idea to read over the [patsy documentation](https://patsy.readthedocs.io/en/latest/formulas.html) --
@@ -238,8 +246,8 @@ Basically, you'll want to specify a formula of something like
 ###  How many variables can be passed into a formula?
 That depends on the number of samples you have -- the rule of thumb is to only have about
 10% of your samples.
-So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous variables will only count as 1 variable.  **Beware of overfitting, though!** You can mitigate the risk of overfitting with the `--differential-prior` parameter.
-For more information on `--differential-prior` and some other Songbird parameters, please see
+So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous (or numerical) variables will only count as 1 variable.  **Beware of overfitting, though!** You can mitigate the risk of overfitting by adjusting the `--differential-prior` parameter.
+For more information on `--differential-prior` and other Songbird parameters, please see
 <a href="#faqs-parameters">this section of the FAQs on parameters</a>.
 
 ### Hey, isn't it "formulae" instead of "formulas"?
@@ -276,13 +284,15 @@ This is a graph of the prediction accuracy of the model; the model will try to g
 The x-axis is the number of iterations (meaning times the model is training across the entire dataset). Every time you iterate across the training samples, you also run the test samples and the averaged results are being plotted on the y-axis.
 
 The number of iterations is influenced by a number of parameters, most notably
-by the `--epochs`/`--p-epochs` parameter.
+by the `--epochs`/`--p-epochs` parameter. The greater this number is, the more iterations the model will go through.
 
 The y-axis is the average number of counts off for each feature. The model is predicting the sequence counts for each feature in the samples that were set aside for testing. So in the Cross Validation graphs shown above it means that, on average, the model is off by around 5 to 10 counts, which is low. However, this is ABSOLUTE error -- not relative error (unfortunately we can’t do relative errors because of the sparsity of metagenomic datasets).
 
 #### How can I tell if this graph "looks good"?
 
-The raw numbers will be variable, so it is difficult to make a blanket statement, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau. The cross validation graphs shown in the Tensorboard/QIIME 2 summaries above are good examples.
+The raw numbers will be variable, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau. The cross validation graphs shown in the Tensorboard/QIIME 2 summaries above are good examples.
+**Importantly, you need to compare your model to a null model** to ensure that the covariates entered into the formula are _improving_ the model fit. More details on this can be found in <a href="#validating-null-model">section 6: Validating by comparing to baseline models<\a>.
+	
 
 ## 4.2. Explaining Graph 2: `loss`
 
@@ -294,7 +304,7 @@ Just like the prediction accuracy graph, the x-axis is the number of iterations 
 The y-axis is MINUS log probability of the model actually fitting: so LOWER is better (maximizing the probability = minimizing the negative log probability).
 
 #### How can I tell if *this* graph "looks good"?
-Again, the numbers vary greatly by dataset. But you want to see the curve decaying, and plateau as close to zero as possible (the loss graphs shown in the Tensorboard/QIIME 2 summaries above
+Again, the numbers vary greatly by dataset, but you want to see the curve decaying and plateau as close to zero as possible (the loss graphs shown in the Tensorboard/QIIME 2 summaries above
 are nice).
 
 
@@ -305,8 +315,8 @@ It's worth noting that, ignoring stuff like `--output-dir`,
 **the only required parameters to Songbird** are a feature table, metadata, and a formula.
 
 In the examples using the Red Sea dataset above, the reason we
-specifically set `--epochs` and `--differential-prior` to different values was
-due to consulting Tensorboard to make sure the model was properly fitting.
+changed the `--epochs` and `--differential-prior` to different values from the default was
+due to consulting Tensorboard to optimize parameter fit.
 
 ### Okay, so *how* should I adjust parameters to get my model to fit properly?
 
@@ -316,7 +326,9 @@ It's recommended to start with a small formula (with only a few variables in the
 
 **If you have a lot of samples**, you may want to try increasing the
 `--num-random-test-examples`/`--p-num-random-test-examples` and/or
-`--batch-size`/`--p-batch-size` parameters.
+`--batch-size`/`--p-batch-size` parameters. This parameter specifices how many samples will be held out of model Training and used for model Testing. As a rule of thumb, this should be ~10-20% of your samples.
+
+**If your sample categories are not evenly distributed** (i.e. you have 100 healthy samples but only 20 sick samples), you can specify which samples will be used for training versus testing. By default, the train/test samples are randomly assigned. You can add a column to your metadata file that marks each sample as either `Train` or `Test` and specifying this column in `--p-training-column`. Make sure that a relatively even number of each sample category are in the Train and Test groups (i.e. so you are not training only on healthy samples and testing on sick). More information <a href="#training-column">on specifying the training columns can be found here</a>.
 
 ### Is there anything else I can do?
 
@@ -326,21 +338,13 @@ you're using Songbird standalone or through QIIME 2, you can run
 `songbird multinomial --help` or `qiime songbird multinomial --help` to get
 a list of all available parameters, respectively.
 
-### I want to look at multiple Songbird runs' diagnostic plots at once. Can I do this?
 
-_If you're using Songbird standalone_, Tensorboard makes it particularly easy to try out different parameters:
-if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
+# 6. Validating by comparing to baseline models <span id="validating-null-model"></span>
 
-Additionally, when using the Songbird standalone, you can view a summary of final results under the `HPARAMS` tab in 
-Tensorboard. You will see something like this:
+## 6.1 Generating a null model
+Now that we have generated a model and understand how to interpret the diagnostic plots, it is important to compare this model to a model made without any metadata input. In other words, this will allow us to see how much our model is improved over a model trained by the samples alone. We can do this by simply supplying `--p-formula` with 1 as shown below. 
 
-![HParams for the Red Sea Data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-tensorboard-hparams.png)
-
-Above, the model with the lowest cross-validation error is highlighted in green. You can see how its performance
-compares to other models that were fit on this dataset with various parameters. Additionally, the model's diagnostic
-plots are shown, which will have an exponential decay and a stable plateau if the model converged.
-
-Similarly, _if you're running Songbird through QIIME 2_, the
+_If you're running Songbird through QIIME 2_, the
 `qiime songbird summarize-paired` command allows you to view two sets of
 diagnostic plots at once as follows:
 
@@ -365,21 +369,36 @@ qiime songbird summarize-paired \
 	--o-visualization paired-summary.qzv
 ```
 
-The summary generated will look something like as follows.
+The summary generated will look something like as follows:
+
 ![Summary of the QIIME 2 Songbird run on the Red Sea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-paired-output.png "Summary of the QIIME 2 Songbird run on the Red Sea data")
 
-Note that it is very important to have `--p-training-column Testing` in order to specify the holdout samples used for cross-validation.
-See <a href="#training-column">this section on specifying the training column</a> for details on how to assign holdout samples for cross-validation.
-
-This resulting visualization will also include _Q<sup>2</sup>_ values. <span id="explaining-q2"></span>
+This visualization will include _Q<sup>2</sup>_ values. <span id="explaining-q2"></span>
 
 The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting. This statistic behaves similarly to _R<sup>2</sup>_ classically used in a ordinary linear regression if `--p-formula 1` in the baseline model.
 
-The baseline model we generated above is super simple, and doesn't look at any
-of the sample metadata fields. This lets us look at how much better our
-"first" model performs compared to this baseline model.
+If the _Q<sup>2</sup>_ score is close to 0 or negative, this indicates that the model is overfit or that the metadata supplied to the model are not predictive of microbial composition across samples.
 
-But one can imagine using other baseline models to contrast - for instance, fitting a model on just Temperature to gauge how informative other variables such as Salinity and Oxygen are.  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the samples left out of the regression fit.  Another common use case is to run model with just the intercept by looking at other simple baseline models to gauge improvement of fit for a given set of variables. For instance, one could run the following model with just `Depth`
+
+_If you're using Songbird standalone_, Tensorboard makes it particularly easy to compare different parameters:
+if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
+
+Additionally, when using the Songbird standalone, you can view a summary of final results under the `HPARAMS` tab in 
+Tensorboard. You will see something like this:
+
+![HParams for the Red Sea Data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-tensorboard-hparams.png)
+
+Above, the model with the lowest cross-validation error is highlighted in green. You can see how its performance
+compares to other models that were fit on this dataset with various parameters. Additionally, the model's diagnostic
+plots are shown, which will have an exponential decay and a stable plateau if the model converged.
+
+
+
+## 6.2 Generating baseline models
+In addition to comparing your model to a null model, it may also be useful to compare it to 'baseline' models, which contain only a subset of the formula variables. The _Q<sup>2</sup>_ score will allow you to determine how much a given variable(s) improves the model, and therefore how important it is for determining differntially abundant microbes. 
+
+For instance, in the Red Sea dataset we can fit a model on just Depth and compare it to our original model to gauge how informative the other variables are (i.e. Temperature, Salinity, Oxygen, Fluorescence, and Nitrate).  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the variables left out of the regression fit.  
+
 ```
 # Generate a baseline model
 qiime songbird multinomial \
@@ -400,17 +419,20 @@ qiime songbird summarize-paired \
 	--i-baseline-stats baseline-stats.qza \
 	--o-visualization paired-summary.qzv
 ```
-This plot will allow one to investigate how much the model fit improved by adding `Temperature`, `Salinity`, `Oxygen`, `Fluorescence`, and `Nitrate`. A positive _Q<sup>2</sup>_ score indicates an improvement over the baseline model.
+This plot provides evidence for how much the model fit improved by adding `Temperature`, `Salinity`, `Oxygen`, `Fluorescence`, and `Nitrate`. A positive _Q<sup>2</sup>_ score indicates an improvement over the baseline model.
+
+ 
 
 
 ### TL;DR
 Basically, you'll want to futz around with the parameters until you see two
-nice exponential decay graphs. Once you have that, you can start to
-look at the `differentials` Songbird produced!
+nice exponential decay graphs, where the null model looks worse in the cross-validation graph.
+Once you have that, you can start to look at the `differentials` Songbird produced!
 
-# 6. FAQs
 
-## 6.1. FAQs: Running Songbird standalone <span id="faqs-standalone"></a>
+# 7. FAQs
+
+## 7.1. FAQs: Running Songbird standalone <span id="faqs-standalone"></a>
 **Q.** What am I looking at in the output directory?
 
 **A.** There are 3 major types of files to note:
@@ -440,7 +462,7 @@ This should produce a website with 2 graphs, which tensorflow actively updates a
 ![tensorboard](https://github.com/biocore/songbird/raw/master/images/tensorboard-output.png "Tensorboard")
 See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots.
 
-## 6.2. FAQs: Running Songbird through QIIME 2
+## 7.2. FAQs: Running Songbird through QIIME 2
 
 **Q.** What are all of these QZA files, and what can I do with them?
 
@@ -471,18 +493,20 @@ You can view the resulting visualization using `qiime tools view` or at
 These biplots have a different interpretation - the points correspond to features and the arrows correspond to covariates of interest. Running these models on the full dataset can yield something similar to as follows:
 ![biplot](https://github.com/biocore/songbird/raw/master/images/redsea-biplot.png "Regression biplot")
 
-## 6.3. FAQs: Parameters <span id="faqs-parameters"></span>
+## 7.3. FAQs: Parameters <span id="faqs-parameters"></span>
 
 **Q.** The "specifying a formula" section mentioned that I can mitigate overfitting with `--differential-prior`. What does that mean?
 
-**A.** When I mean overfitting, I'm referring to scenarios when the models attempts to memorize data points rather than
+**A.** By overfitting, we're referring to scenarios when the model attempts to memorize data points rather than
 building predictive models to undercover biological patterns.  See https://xkcd.com/1725/
 
 The `--differential-prior` command specifies the width of the prior distribution of the differentials. For `--differential-prior 1`, this means 99% of rankings (given in differentials.tsv) are within -3 and +3 (log fold change). The higher differential-prior is, the more parameters can have bigger changes, so you want to keep this relatively small.  If you see overfitting (accuracy and fit increasing over iterations in tensorboard) you may consider reducing the differential-prior in order to reduce the parameter space.
 
 **Q.** What's up with the `--training-column` argument? <span id="training-column"></span>
 
-**A.** That is used for cross-validation if you have a specific reproducibility question that you are interested in answering.  If this is specified, only samples labeled "Train" under this column will be used for building the model and samples labeled "Test" will be used for cross validation.  In other words the model will attempt to predict the feature abundances for the "Test" samples.  The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 5 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified.
+**A.** That is used for cross-validation if you have a specific reproducibility question that you are interested in answering.  If this is specified, only samples labeled "Train" under this column will be used for building the model and samples labeled "Test" will be used for cross validation.  In other words the model will attempt to predict the feature abundances for the "Test" samples. Ideally the random samples held out for testing will be a relatively even mix of samples from different categories. This parameter can be especially useful if your samples are not evenly distributed across sample categories, so that you can ensure even distribution of sample categories across the "Train" and "Test" groups.
+
+The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 5 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified. As a rule of thumb, the number of test samples held out for cross-validation is typically 10-20%.
 
 **Q.** How long should I expect this program to run?
 
@@ -501,7 +525,7 @@ all samples that have less than 1000 reads will be filtered out.
 `--min-feature-count` will filter out features according to how many __samples__ they appear in.  For instance, if `--min-feature-count 10` is specified,
 then all features than appear in less than 10 samples will be thrown out.  It is important to note that we are filtering according to number of samples rather than number of reads.  The reason why this behavior is chosen relates to a rule of thumb commonly used in linear regression - if a microbe appears in less than 10 samples, it is difficult to fit a meaningful line for that microbe.  In other words, there is not even resolution in the study to say anything meaningful about that microbe in the context of differential abundance analysis.  The `--min-feature-count` filter is applied _after_ the `--min-sample-count` is applied.
 
-## 6.4. FAQs: Output files
+## 7.4. FAQs: Output files
 
 **Q.** Why do I have so many columns in my `differentials` even when I'm only using one continuous variable?
 
@@ -509,7 +533,7 @@ then all features than appear in less than 10 samples will be thrown out.  It is
 
 **If you're having this problem and you're running Songbird standalone, you will need to delete any `#q2:` headers at the start of the sample metadata file -- otherwise, Songbird will interpret these lines as describing actual samples.**
 
-## 6.5. FAQs: Installation
+## 7.5. FAQs: Installation
 
 **Q.** I've installed Songbird, but when I try to run it I get an error that
 says something like ``ImportError: /lib64/libc.so.6: version `GLIBC_2.15' not found``. What's going on here?
@@ -523,7 +547,7 @@ conda uninstall tensorflow
 conda install -c defaults tensorflow
 ```
 
-# 7. Visualizing Songbird's differentials
+# 8. Visualizing Songbird's differentials
 
 [Qurro](https://github.com/biocore/qurro) generates interactive visualizations of the differentials produced by Songbird! A Qurro demo using the Red Sea dataset is available [here](https://biocore.github.io/qurro/demos/red_sea/index.html).
 
@@ -541,19 +565,19 @@ qiime metadata tabulate \
 
 ![Tabulated differentials](https://github.com/biocore/songbird/raw/master/images/redsea-differentials-tabulated.png "Tabulated differentials, viewed at view.qiime2.org.")
 
-# 8. More information
+# 9. More information
 
-## 8.1. Further Documentation
+## 9.1. Further Documentation
 
 For a more complete tutorial, see the following url that includes real datasets:
 
 https://github.com/knightlab-analyses/reference-frames
 
-## 8.2. Acknowledgements
+## 9.2. Acknowledgements
 
 Credits to Lisa Marotz ([@lisa55asil](https://github.com/lisa55asil)) and Marcus Fedarko ([@fedarko](https://github.com/fedarko)) for the FAQs and a ton of the documentation in this README.
 
-## 8.3. Citations
+## 9.3. Citations
 
 If you use this tool and you like it, please cite it at
 
