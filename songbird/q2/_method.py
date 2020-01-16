@@ -3,7 +3,12 @@ import skbio
 import qiime2
 import pandas as pd
 import numpy as np
-import tensorflow as tf
+import warnings
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    import tensorflow as tf
+
 from skbio import OrdinationResults
 from songbird.multinomial import MultRegression
 from songbird.util import match_and_filter, split_training
