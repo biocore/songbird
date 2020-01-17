@@ -1,6 +1,8 @@
 import qiime2
 import unittest
 import numpy as np
+import contextlib
+import io
 import warnings
 
 with warnings.catch_warnings():
@@ -53,6 +55,40 @@ class TestMultinomial(unittest.TestCase):
 
         npt.assert_allclose(exp_beta, res_beta.T, atol=0.6, rtol=0.6)
         self.assertGreater(len(res_stats.to_dataframe().index), 1)
+
+    def test_quiet(self):
+        tf.set_random_seed(0)
+        md = self.md
+
+        md.name = 'sampleid'
+        md = qiime2.Metadata(md)
+
+        exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
+
+        f = io.StringIO()
+        with contextlib.redirect_stderr(f):
+            res_beta, res_stats, res_biplot = multinomial(
+                table=self.table, metadata=md,
+                min_sample_count=0, min_feature_count=0,
+                formula="X", epochs=1000, quiet=True)
+        assert f.getvalue() == ""
+
+    def test_not_quiet(self):
+        tf.set_random_seed(0)
+        md = self.md
+
+        md.name = 'sampleid'
+        md = qiime2.Metadata(md)
+
+        exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
+
+        f = io.StringIO()
+        with contextlib.redirect_stderr(f):
+            res_beta, res_stats, res_biplot = multinomial(
+                table=self.table, metadata=md,
+                min_sample_count=0, min_feature_count=0,
+                formula="X", epochs=1000)
+        assert f.getvalue() != ""
 
     def test_fit_consistency(self):
         md = self.md
