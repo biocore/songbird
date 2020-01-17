@@ -82,7 +82,7 @@ plugin.methods.register_function(
         "min_feature_count": DESCS["min-feature-count"],
         "summary_interval": DESCS["summary-interval"],
         "random_seed": DESCS["random-seed"],
-        "quiet": DESCS["quiet"],
+        "quiet": DESCS["quiet"] + " (Only affects Artifact API)",
     },
     name='Multinomial regression',
     description=("Performs multinomial regression and calculates "
