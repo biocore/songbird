@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 import os
-import tensorflow as tf
+import warnings
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    import tensorflow as tf
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 from tensorboard.plugins.hparams import api as hp
 import pandas as pd
 import numpy as np
