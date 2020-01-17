@@ -35,9 +35,13 @@ def multinomial(table: biom.Table,
 
     if quiet:
         # suppress profiling messages & compilation warnings
+        # taken from:
+        # https://stackoverflow.com/questions/47068709/your-cpu-supports-
+        #     instructions-that-this-tensorflow-binary-was-not-compiled-to-u
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
         # suppress deprecation warnings
+        # taken from https://github.com/tensorflow/tensorflow/issues/27023
         tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
     # load metadata and tables
