@@ -1,14 +1,14 @@
-import biom
 import skbio
 import qiime2
 import pandas as pd
 import numpy as np
 import warnings
+import os
 
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning)
-    import tensorflow as tf
+warnings.filterwarnings("ignore", category=FutureWarning)
 
+import biom
+import tensorflow as tf
 from skbio import OrdinationResults
 from songbird.multinomial import MultRegression
 from songbird.util import match_and_filter, split_training
@@ -37,6 +37,13 @@ def multinomial(table: biom.Table,
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
 
+    if quiet:
+        # suppress profiling messages & compilation warnings
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+        # suppress deprecation warnings
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
     # load metadata and tables
     metadata = metadata.to_dataframe()
     # match them
@@ -59,6 +66,7 @@ def multinomial(table: biom.Table,
                            beta_mean=differential_prior,
                            batch_size=batch_size,
                            save_path=None)
+
     with tf.Graph().as_default(), tf.Session() as session:
         tf.set_random_seed(random_seed)
         model(session, trainX, trainY, testX, testY)
