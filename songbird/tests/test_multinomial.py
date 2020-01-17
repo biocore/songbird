@@ -1,9 +1,4 @@
-import warnings
-
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning)
-    import tensorflow as tf
-
+import tensorflow as tf
 import unittest
 import numpy as np
 import numpy.testing as npt

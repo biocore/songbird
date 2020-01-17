@@ -2,12 +2,7 @@ import os
 import shutil
 import qiime2
 import unittest
-import warnings
-
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning)
-    import tensorflow as tf
-
+import tensorflow as tf
 from songbird.q2._method import multinomial
 from songbird.q2._summary import summarize_single, summarize_paired
 from songbird.util import random_multinomial_model
