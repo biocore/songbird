@@ -22,6 +22,40 @@ class TestSongbirdCLI(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.rmtree(self.path)
 
+    def test_cli_quiet(self):
+        runner = CliRunner()
+        test_args = ['--input-biom', 'data/redsea/redsea.biom',
+                     '--metadata-file', 'data/redsea/redsea_metadata.txt',
+                     '--formula',
+                     'Depth+Temperature+Salinity+Oxygen+Fluorescence'
+                     '+Nitrate',
+                     '--epochs', '100',
+                     '--differential-prior', '0.5',
+                     '--summary-interval', '1',
+                     '--summary-dir', self.path,
+                     '--quiet']
+
+        result = runner.invoke(songbird.multinomial, test_args)
+
+        assert result.output == ""
+
+    def test_cli_not_quiet(self):
+        runner = CliRunner()
+        test_args = ['--input-biom', 'data/redsea/redsea.biom',
+                     '--metadata-file', 'data/redsea/redsea_metadata.txt',
+                     '--formula',
+                     'Depth+Temperature+Salinity+Oxygen+Fluorescence'
+                     '+Nitrate',
+                     '--epochs', '100',
+                     '--differential-prior', '0.5',
+                     '--summary-interval', '1',
+                     '--summary-dir', self.path,
+                     '--no-quiet']
+
+        result = runner.invoke(songbird.multinomial, test_args)
+
+        assert result.output != ""
+
     def test_cli_no_seed_set(self):
         runner = CliRunner()
         test_args = ['--input-biom', 'data/redsea/redsea.biom',

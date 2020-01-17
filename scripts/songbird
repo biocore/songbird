@@ -112,6 +112,12 @@ def songbird():
     help=DESCS["random-seed"],
     type=int,
 )
+@click.option(
+    "--quiet/--no-quiet",
+    default=DEFAULTS["quiet"],
+    show_default=True,
+    help=DESCS["quiet"],
+)
 def multinomial(
     input_biom,
     metadata_file,
@@ -129,7 +135,15 @@ def multinomial(
     summary_interval,
     summary_dir,
     random_seed,
+    quiet,
 ):
+    if quiet:
+        # suppress profiling messages & compilation warnings
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+        # suppress deprecation warnings
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
     # load metadata and tables
     metadata = read_metadata(metadata_file)
     table = load_table(input_biom)
@@ -152,11 +166,13 @@ def multinomial(
                'learning_rate': learning_rate,
                'min_sample_count': min_sample_count,
                'min_feature_count': min_feature_count,
+               'quiet': quiet,
                }
     if random_seed is not None:
         hparams.update({
             'random_seed': random_seed,
         })
+
 
     # split up training and testing
     trainX, testX, trainY, testY = split_training(
@@ -187,6 +203,7 @@ def multinomial(
             epochs=epochs,
             summary_interval=summary_interval,
             checkpoint_interval=checkpoint_interval,
+            quiet=quiet,
         )
 
         summary_writer = tf.contrib.summary.create_file_writer(summary_dir)
