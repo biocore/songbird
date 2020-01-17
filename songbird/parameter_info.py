@@ -36,6 +36,10 @@ DESCS = {
         "for it to be included in the analysis."
     ),
     "summary-interval": "Number of seconds before storing a summary.",
+    "quiet": (
+        'Flag denoting whether to hide tqdm progress bar. If True, tqdm '
+        'bar is displayed. If False (default), tqdm is not printed.'
+    ),
     # FYI: The following parameters are exclusive to the non-Q2 Songbird script
     "checkpoint-interval": 'Number of seconds before a saving a checkpoint.',
     "summary-dir": (
@@ -65,4 +69,5 @@ DEFAULTS = {
     "summary-interval": 10,
     "summary-dir": "summarydir",
     "random-seed": 0,
+    "quiet": False,
 }

@@ -32,6 +32,7 @@ def multinomial(table: biom.Table,
                 min_feature_count: int = DEFAULTS["min-feature-count"],
                 summary_interval: int = DEFAULTS["summary-interval"],
                 random_seed: int = DEFAULTS["random-seed"],
+                quiet: bool = DEFAULTS["quiet"],
                 ) -> (
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
@@ -65,7 +66,8 @@ def multinomial(table: biom.Table,
         loss, cv, its = model.fit(
             epochs=epochs,
             summary_interval=summary_interval,
-            checkpoint_interval=None)
+            checkpoint_interval=None,
+            quiet=quiet)
 
     md_ids = np.array(design.columns)
     obs_ids = table.ids(axis='observation')
