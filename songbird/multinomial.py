@@ -1,11 +1,6 @@
 import os
-import warnings
-
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning)
-    import tensorflow as tf
-    from tensorflow.contrib.distributions import Multinomial, Normal
-
+import tensorflow as tf
+from tensorflow.contrib.distributions import Multinomial, Normal
 from tqdm import tqdm
 import time
 import datetime

@@ -2,11 +2,7 @@ import skbio
 import qiime2
 import pandas as pd
 import numpy as np
-import warnings
 import os
-
-warnings.filterwarnings("ignore", category=FutureWarning)
-
 import biom
 import tensorflow as tf
 from skbio import OrdinationResults
