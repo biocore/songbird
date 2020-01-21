@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
 import os
-import warnings
-
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning)
-    import tensorflow as tf
-
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-from tensorboard.plugins.hparams import api as hp
 import pandas as pd
 import numpy as np
 from biom import load_table
@@ -16,6 +8,14 @@ from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
 from songbird.util import read_metadata, match_and_filter, split_training
 from songbird.parameter_info import DESCS, DEFAULTS
+import warnings
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    from tensorboard.plugins.hparams import api as hp
+    import tensorflow as tf
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 @click.group()
@@ -176,7 +176,6 @@ def multinomial(
         hparams.update({
             'random_seed': random_seed,
         })
-
 
     # split up training and testing
     trainX, testX, trainY, testY = split_training(

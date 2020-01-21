@@ -58,8 +58,6 @@ class TestMultinomial(unittest.TestCase):
         md.name = 'sampleid'
         md = qiime2.Metadata(md)
 
-        exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
-
         f = io.StringIO()
         with contextlib.redirect_stderr(f):
             res_beta, res_stats, res_biplot = multinomial(
@@ -74,8 +72,6 @@ class TestMultinomial(unittest.TestCase):
 
         md.name = 'sampleid'
         md = qiime2.Metadata(md)
-
-        exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
 
         f = io.StringIO()
         with contextlib.redirect_stderr(f):
