@@ -142,7 +142,7 @@ class MultRegression(object):
         ----------
         epochs : int
            Number of epochs to train
-        summary_interval : int
+        summary_interval : float
            Number of seconds until a summary is recorded
         checkpoint_interval : int
            Number of seconds until a checkpoint is recorded
