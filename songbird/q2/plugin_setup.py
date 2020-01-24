@@ -49,7 +49,7 @@ plugin.methods.register_function(
         'clipnorm': Float,
         'min_sample_count': Int,
         'min_feature_count': Int,
-        'summary_interval': Int,
+        'summary_interval': Float,
         'random_seed': Int,
     },
     outputs=[
