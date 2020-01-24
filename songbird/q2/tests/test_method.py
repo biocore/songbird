@@ -8,6 +8,7 @@ from songbird.util import random_multinomial_model
 from skbio import OrdinationResults
 from skbio.stats.composition import clr, clr_inv
 import numpy.testing as npt
+from songbird.q2.plugin_setup import plugin as songbird_plugin
 
 
 class TestMultinomial(unittest.TestCase):
@@ -72,6 +73,37 @@ class TestMultinomial(unittest.TestCase):
         npt.assert_array_equal(res_biplot1.eigvals, res_biplot2.eigvals)
         npt.assert_array_equal(res_biplot1.samples, res_biplot2.samples)
         npt.assert_array_equal(res_biplot1.features, res_biplot2.features)
+
+    def test_fit_float_summary_interval(self):
+        tf.set_random_seed(0)
+        md = self.md
+
+        multregression = songbird_plugin.actions['multinomial']
+
+        md.name = 'sampleid'
+        md = qiime2.Metadata(md)
+
+        exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
+
+        q2_table = qiime2.Artifact.import_data('FeatureTable[Frequency]',
+                                               self.table)
+
+        res_beta, res_stats, res_biplot = multregression(
+            table=q2_table, metadata=md,
+            min_sample_count=0, min_feature_count=0,
+            formula="X", epochs=1000,
+            summary_interval=0.5,
+        )
+
+        # test biplot
+        self.assertIsInstance(res_biplot, OrdinationResults)
+        u = res_biplot.samples.values
+        v = res_biplot.features.values.T
+        npt.assert_allclose(u @ v, res_beta.values,
+                            atol=0.5, rtol=0.5)
+
+        npt.assert_allclose(exp_beta, res_beta.T, atol=0.6, rtol=0.6)
+        self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
 
 if __name__ == "__main__":
