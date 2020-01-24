@@ -8,6 +8,7 @@ from songbird.util import random_multinomial_model
 from skbio import OrdinationResults
 from skbio.stats.composition import clr, clr_inv
 import numpy.testing as npt
+import pandas as pd
 from songbird.q2.plugin_setup import plugin as songbird_plugin
 
 
@@ -88,15 +89,29 @@ class TestMultinomial(unittest.TestCase):
         q2_table = qiime2.Artifact.import_data('FeatureTable[Frequency]',
                                                self.table)
 
-        res_beta, res_stats, res_biplot = multregression(
+        q2_res_beta, q2_res_stats, q2_res_biplot = multregression(
             table=q2_table, metadata=md,
             min_sample_count=0, min_feature_count=0,
             formula="X", epochs=1000,
             summary_interval=0.5,
         )
 
-        # test biplot
-        self.assertIsInstance(res_biplot, OrdinationResults)
+        try:
+            res_biplot = q2_res_biplot.view(OrdinationResults)
+        except Exception:
+            raise AssertionError('res_biplot unable to be coerced to '
+                                 'OrdinationResults')
+        try:
+            res_beta = q2_res_beta.view(pd.DataFrame)
+        except Exception:
+            raise AssertionError('res_beta unable to be coerced to '
+                                 'pd.DataFrame')
+        try:
+            res_stats = q2_res_stats.view(qiime2.Metadata)
+        except Exception:
+            raise AssertionError('res_stats unable to be coerced to '
+                                 'qiime2.Metadata')
+
         u = res_biplot.samples.values
         v = res_biplot.features.values.T
         npt.assert_allclose(u @ v, res_beta.values,
