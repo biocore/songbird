@@ -84,6 +84,7 @@ class TestMultinomial(unittest.TestCase):
         md.name = 'sampleid'
         md = qiime2.Metadata(md)
 
+        # See issue #31
         exp_beta = clr(clr_inv(np.hstack((np.zeros((2, 1)), self.beta.T))))
 
         q2_table = qiime2.Artifact.import_data('FeatureTable[Frequency]',
@@ -96,6 +97,7 @@ class TestMultinomial(unittest.TestCase):
             summary_interval=0.5,
         )
 
+        # try-except is for helpful error message if q2-coercion fails
         try:
             res_biplot = q2_res_biplot.view(OrdinationResults)
         except Exception:
