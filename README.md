@@ -170,9 +170,14 @@ while controlling for gender, the formula would look something like:
 --formula "diseased+gender"
 ```
 where "diseased" and "gender" are the columns of the sample metadata file.
-This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here is called [patsy](https://patsy.readthedocs.io/);
-more details can be found [here](https://patsy.readthedocs.io/en/latest/formulas.html).
+This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here for processing formulas is
+called [patsy](https://patsy.readthedocs.io/).
 The metadata columns used in the `--formula` can be either numeric or categorical.
+
+As you can imagine, there are many possible ways to specify metadata columns in
+your formula! (In particular, encoding categorical variables can be tricky.)
+We'll go over a few common cases in this section, and link to some more general
+documentation at the end of the section.
 
 ### The implicit "reference": how categorical variables are handled <span id="implicit-reference"></span>
 Let's say your formula just includes one categorical variable:
@@ -250,6 +255,23 @@ That depends on the number of samples you have -- the rule of thumb is to only h
 So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous (or numerical) variables will only count as 1 variable.  **Beware of overfitting, though!** You can mitigate the risk of overfitting by adjusting the `--differential-prior` parameter.
 For more information on `--differential-prior` and other Songbird parameters, please see
 <a href="#faqs-parameters">this section of the FAQs on parameters</a>.
+
+### Further documentation on patsy formulas
+In case the above examples didn't cut it, here are some links to external documentation that may
+be helpful, sorted roughly into "less" and "more" technical categories:
+
+##### Less technical
+
+- [Video explaining various types of categorical encodings](https://www.youtube.com/watch?v=WRxHfnl-Pcs)
+- [Blog post explaining coding basic categorical variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
+- [Blog post explaining coding ordinal variables](https://mortonjt.github.io/probable-bug-bytes/probable-bug-bytes/ordinal-variables/)
+
+##### More technical
+
+- [patsy formula documentation](https://patsy.readthedocs.io/en/latest/formulas.html)
+- [patsy API reference](https://patsy.readthedocs.io/en/latest/API-reference.html)
+
+If you have any other resources you'd like to see added here, feel free to send a PR/issue.
 
 ### Hey, isn't it "formulae" instead of "formulas"?
 
