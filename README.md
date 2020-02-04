@@ -181,9 +181,9 @@ your formula -- in particular, encoding categorical variables can get tricky.
 variable like `sex` be encoded the
 same way as an
 [ordinal](https://en.wikipedia.org/wiki/Level_of_measurement#Ordinal_scale)
-variable like `disease_progression`? Probably not.)
-We'll go over a few common cases in this section, and link to some more general
-documentation at the end of the section.
+variable like `disease_progression`? Probably not!)
+In this section we'll go over a few common cases, and link to some more general
+documentation at the end in case these examples aren't sufficient.
 
 ### The implicit "reference": how categorical variables are handled <span id="implicit-reference"></span>
 Let's say your formula just includes one categorical variable:
@@ -255,7 +255,7 @@ Basically, you'll want to specify a formula of something like
 --formula "C(your_metadata_field, Diff, levels=['first_level', 'second_level', 'third_level'])"
 ```
 
-###  How many variables can be passed into a formula?
+### How many variables can be passed into a formula?
 That depends on the number of samples you have -- the rule of thumb is to only have about
 10% of your samples.
 So if you have 100 samples, you should not have a formula with more than 10 variables.  This measure needs to be used with caution, since the number of categories will also impact this.  A categorical variable with *k* categories counts as *k-1* variables, so a column with 3 categories will be represented as 2 variables in the model.  Continuous (or numerical) variables will only count as 1 variable.  **Beware of overfitting, though!** You can mitigate the risk of overfitting by adjusting the `--differential-prior` parameter.
@@ -269,7 +269,7 @@ be helpful, sorted roughly into "less" and "more" technical categories:
 ##### Less technical
 
 - [Video explaining various types of categorical encodings](https://www.youtube.com/watch?v=WRxHfnl-Pcs)
-- [Blog post explaining coding basic categorical variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
+- [Blog post explaining coding nominal variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
 - [Blog post explaining coding ordinal variables](https://mortonjt.github.io/probable-bug-bytes/probable-bug-bytes/ordinal-variables/)
 
 ##### More technical
