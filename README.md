@@ -357,7 +357,7 @@ It's recommended to start with a small formula (with only a few variables in the
 `--num-random-test-examples`/`--p-num-random-test-examples` and/or
 `--batch-size`/`--p-batch-size` parameters. This parameter specifices how many samples will be held out of model Training and used for model Testing. As a rule of thumb, this should be ~10-20% of your samples.
 
-**If your sample categories are not evenly distributed** (i.e. you have 100 healthy samples but only 20 sick samples), you can specify which samples will be used for training versus testing. By default, the train/test samples are randomly assigned. You can add a column to your metadata file that marks each sample as either `Train` or `Test` and specifying this column in `--p-training-column`. Make sure that a relatively even number of each sample category are in the Train and Test groups (i.e. so you are not training only on healthy samples and testing on sick). More information <a href="#training-column">on specifying the training columns can be found here</a>.
+**If your sample categories are not evenly distributed** (i.e. you have 100 healthy samples but only 20 sick samples), you can specify which samples will be used for training versus testing. By default, the train/test samples are randomly assigned. You can add a column to your metadata file that marks each sample as either `Train` or `Test` (these values are case sensitive!) and specifying this column in `--p-training-column`. Make sure that a relatively even number of each sample category are in the Train and Test groups (i.e. so you are not training only on healthy samples and testing on sick). More information <a href="#training-column">on specifying the training columns can be found here</a>.
 
 ### Is there anything else I can do?
 
@@ -537,6 +537,9 @@ The `--differential-prior` command specifies the width of the prior distribution
 **A.** That is used for cross-validation if you have a specific reproducibility question that you are interested in answering.  If this is specified, only samples labeled "Train" under this column will be used for building the model and samples labeled "Test" will be used for cross validation.  In other words the model will attempt to predict the feature abundances for the "Test" samples. Ideally the random samples held out for testing will be a relatively even mix of samples from different categories. This parameter can be especially useful if your samples are not evenly distributed across sample categories, so that you can ensure even distribution of sample categories across the "Train" and "Test" groups.
 
 The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 5 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified. As a rule of thumb, the number of test samples held out for cross-validation is typically 10-20%.
+
+**Note that the `Train` and `Test` values are case sensitive** -- if you
+specify `train` and `test` instead, [things will go wrong](https://github.com/biocore/songbird/issues/102).
 
 **Q.** How long should I expect this program to run?
 
