@@ -292,7 +292,7 @@ The y-axis is the average number of counts off for each feature. The model is pr
 #### How can I tell if this graph "looks good"?
 
 The raw numbers will be variable, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau. The cross validation graphs shown in the Tensorboard/QIIME 2 summaries above are good examples.
-**Importantly, you need to compare your model to a null model** to ensure that the covariates entered into the formula are _improving_ the model fit. More details on this can be found in <a href="#validating-null-model">section 6: Validating by comparing to baseline models<\a>.
+**Importantly, you need to compare your model to a null model** to ensure that the covariates entered into the formula are _improving_ the model fit. More details on this can be found in <a href="#validating-null-model">section 6: Validating by comparing to baseline models</a>.
 	
 
 ## 4.2. Explaining Graph 2: `loss`
