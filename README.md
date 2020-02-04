@@ -165,17 +165,23 @@ these plots is the same as with the Tensorboard plots: see <a href="#interpretin
 ### Hang on, what *is* a formula?
 A **formula** specifies the statistical model to be built based on the columns in the metadata file.
 For example, if a user wanted to build a statistical model testing for differences between disease states
-while controlling for gender, the formula would look something like:
+while controlling for sex, the formula would look something like:
 ```bash
---formula "diseased+gender"
+--formula "diseased+sex"
 ```
-where "diseased" and "gender" are the columns of the sample metadata file.
-This is similar to the statistical formulas used in R, but the order of the variables is not important. The backend we use here for processing formulas is
+where `diseased` and `sex` are columns in the sample metadata file.
+This is similar to the statistical formulas used in R, but the order in which you
+specify the variables (a.k.a. column names) is not important. The backend we use here for processing formulas is
 called [patsy](https://patsy.readthedocs.io/).
-The metadata columns used in the `--formula` can be either numeric or categorical.
 
-As you can imagine, there are many possible ways to specify metadata columns in
-your formula! (In particular, encoding categorical variables can be tricky.)
+The metadata columns used in the `--formula` can be either numeric or categorical.  As you can imagine, there are many possible ways to specify metadata columns in
+your formula -- in particular, encoding categorical variables can get tricky.
+(For example, should a
+[nominal](https://en.wikipedia.org/wiki/Level_of_measurement#Nominal_level)
+variable like `sex` be encoded the
+same way as an
+[ordinal](https://en.wikipedia.org/wiki/Level_of_measurement#Ordinal_scale)
+variable like `disease_progression`? Probably not.)
 We'll go over a few common cases in this section, and link to some more general
 documentation at the end of the section.
 
