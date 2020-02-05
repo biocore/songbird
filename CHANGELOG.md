@@ -9,6 +9,8 @@ Added Tensorboard's HParams functionality to standalone [#95](https://github.com
 
 Changed the `summary-interval` parameter to accept floating-point values [#108](https://github.com/biocore/songbird/pull/108)
 
+Filtered out `FutureWarnings` caused by TensorFlow/Tensorbard, filtered out all `RuntimeWarnings`, and added a `silent` option that suppresses progress bar information and all TensorFlow warnings [#106](https://github.com/biocore/songbird/pull/106)
+
 Various README updates [#103](https://github.com/biocore/songbird/pull/103)
 
 ## Version 1.0.1 (2019-10-16)
