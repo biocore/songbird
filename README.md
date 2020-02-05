@@ -44,7 +44,7 @@ This README is divided into a few main sections:
 3. **Specifying a formula**
 4. **Interpreting model fitting information**
 5. **Adjusting parameters to get reasonable fitting**
-6. **Validating by comparing to baseline models** 
+6. **Validating by comparing to baseline models**
 7. **FAQs**
 8. **Visualizing Songbird's differentials**
 9. **More information**
