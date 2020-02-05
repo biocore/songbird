@@ -1,12 +1,12 @@
-import biom
 import skbio
 import qiime2
 import pandas as pd
 import numpy as np
+import biom
 import tensorflow as tf
 from skbio import OrdinationResults
 from songbird.multinomial import MultRegression
-from songbird.util import match_and_filter, split_training
+from songbird.util import match_and_filter, split_training, silence_output
 from songbird.parameter_info import DEFAULTS
 from qiime2.plugin import Metadata
 
@@ -27,9 +27,13 @@ def multinomial(table: biom.Table,
                 min_feature_count: int = DEFAULTS["min-feature-count"],
                 summary_interval: int = DEFAULTS["summary-interval"],
                 random_seed: int = DEFAULTS["random-seed"],
+                silent: bool = DEFAULTS["silent"],
                 ) -> (
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
+
+    if silent:
+        silence_output()
 
     # load metadata and tables
     metadata = metadata.to_dataframe()
@@ -53,6 +57,7 @@ def multinomial(table: biom.Table,
                            beta_mean=differential_prior,
                            batch_size=batch_size,
                            save_path=None)
+
     with tf.Graph().as_default(), tf.Session() as session:
         tf.set_random_seed(random_seed)
         model(session, trainX, trainY, testX, testY)
@@ -60,7 +65,8 @@ def multinomial(table: biom.Table,
         loss, cv, its = model.fit(
             epochs=epochs,
             summary_interval=summary_interval,
-            checkpoint_interval=None)
+            checkpoint_interval=None,
+            silent=silent)
 
     md_ids = np.array(design.columns)
     obs_ids = table.ids(axis='observation')

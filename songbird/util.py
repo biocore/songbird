@@ -1,3 +1,5 @@
+import os
+import tensorflow as tf
 import numpy as np
 import pandas as pd
 from sklearn.utils import check_random_state
@@ -195,3 +197,15 @@ def split_training(dense_table, metadata, design, training_column=None,
     testY = dense_table.loc[~train_idx].values
 
     return trainX, testX, trainY, testY
+
+
+def silence_output():
+    # suppress profiling messages & compilation warnings
+    # taken from:
+    # https://stackoverflow.com/questions/47068709/your-cpu-supports-
+    #     instructions-that-this-tensorflow-binary-was-not-compiled-to-u
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+    # suppress deprecation warnings
+    # taken from https://github.com/tensorflow/tensorflow/issues/27023
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)

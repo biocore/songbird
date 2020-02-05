@@ -36,6 +36,11 @@ DESCS = {
         "for it to be included in the analysis."
     ),
     "summary-interval": "Number of seconds before storing a summary.",
+    "silent": (
+        'Flag denoting whether to hide progress bar and TensorFlow warnings. '
+        'If False, progress bar and warnings are displayed. If True, neither '
+        'progress bar nor warnings are displayed.'
+    ),
     # FYI: The following parameters are exclusive to the non-Q2 Songbird script
     "checkpoint-interval": 'Number of seconds before a saving a checkpoint.',
     "summary-dir": (
@@ -65,4 +70,5 @@ DEFAULTS = {
     "summary-interval": 10,
     "summary-dir": "summarydir",
     "random-seed": 0,
+    "silent": False,
 }

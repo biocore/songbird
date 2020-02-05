@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 import os
-import tensorflow as tf
-from tensorboard.plugins.hparams import api as hp
 import pandas as pd
 import numpy as np
 from biom import load_table
 import click
 from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
-from songbird.util import read_metadata, match_and_filter, split_training
+from songbird.util import (read_metadata, match_and_filter, split_training,
+                           silence_output)
 from songbird.parameter_info import DESCS, DEFAULTS
+import warnings
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    from tensorboard.plugins.hparams import api as hp
+    import tensorflow as tf
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 @click.group()
@@ -106,6 +113,12 @@ def songbird():
     help=DESCS["random-seed"],
     type=int,
 )
+@click.option(
+    "--silent/--no-silent",
+    default=DEFAULTS["silent"],
+    show_default=True,
+    help=DESCS["silent"],
+)
 def multinomial(
     input_biom,
     metadata_file,
@@ -123,7 +136,11 @@ def multinomial(
     summary_interval,
     summary_dir,
     random_seed,
+    silent,
 ):
+    if silent:
+        silence_output()
+
     # load metadata and tables
     metadata = read_metadata(metadata_file)
     table = load_table(input_biom)
@@ -146,6 +163,7 @@ def multinomial(
                'learning_rate': learning_rate,
                'min_sample_count': min_sample_count,
                'min_feature_count': min_feature_count,
+               'silent': silent,
                }
     if random_seed is not None:
         hparams.update({
@@ -181,6 +199,7 @@ def multinomial(
             epochs=epochs,
             summary_interval=summary_interval,
             checkpoint_interval=checkpoint_interval,
+            silent=silent,
         )
 
         summary_writer = tf.contrib.summary.create_file_writer(summary_dir)

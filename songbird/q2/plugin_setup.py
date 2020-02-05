@@ -10,7 +10,7 @@ import qiime2.plugin
 import qiime2.sdk
 from songbird import __version__
 
-from qiime2.plugin import (Str, Properties, Int, Float,  Metadata)
+from qiime2.plugin import (Str, Properties, Int, Float,  Metadata, Bool)
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.ordination import PCoAResults
 from q2_types.sample_data import SampleData
@@ -49,8 +49,9 @@ plugin.methods.register_function(
         'clipnorm': Float,
         'min_sample_count': Int,
         'min_feature_count': Int,
-        'summary_interval': Int,
+        'summary_interval': Float,
         'random_seed': Int,
+        'silent': Bool,
     },
     outputs=[
         ('differentials', FeatureData[Differential]),
@@ -81,6 +82,9 @@ plugin.methods.register_function(
         "min_feature_count": DESCS["min-feature-count"],
         "summary_interval": DESCS["summary-interval"],
         "random_seed": DESCS["random-seed"],
+        "silent": (DESCS["silent"] + " (Only has an impact when using this "
+                   "command with the --verbose option or through the Qiime2 "
+                   "Artifact API)"),
     },
     name='Multinomial regression',
     description=("Performs multinomial regression and calculates "

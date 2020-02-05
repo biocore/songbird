@@ -1,4 +1,4 @@
-# songbird changelog
+# Songbird Changelog
 
 ## Version 1.0.2-dev
 Added ability to set random seed for CLI and sets fixed random seeds for qiime2 [#101](https://github.com/biocore/songbird/pull/101)
@@ -6,6 +6,12 @@ Added ability to set random seed for CLI and sets fixed random seeds for qiime2 
 Correcting matching between metadata and biom table and clarifying the min-feature-count parameter [#99](https://github.com/biocore/songbird/pull/99)
 
 Added Tensorboard's HParams functionality to standalone [#95](https://github.com/biocore/songbird/pull/95)
+
+Changed the `summary-interval` parameter to accept floating-point values [#108](https://github.com/biocore/songbird/pull/108)
+
+Filtered out `FutureWarnings` caused by TensorFlow/Tensorbard, filtered out all `RuntimeWarnings`, and added a `silent` option that suppresses progress bar information and all TensorFlow warnings [#106](https://github.com/biocore/songbird/pull/106)
+
+Various README updates [#103](https://github.com/biocore/songbird/pull/103)
 
 ## Version 1.0.1 (2019-10-16)
 Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
