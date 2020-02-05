@@ -148,8 +148,9 @@ class MultRegression(object):
         checkpoint_interval : int
            Number of seconds until a checkpoint is recorded
         silent : bool
-           Flag denoting whether to suppress tqdm. If True, show tqdm.
-           If False (default), show tqdm progress bar.
+           Flag denoting whether to suppress progress bar and TensorFlow
+           warnings. If True, show neither progress bar nor warnings. If False
+           (default), show both.
 
         Returns
         -------

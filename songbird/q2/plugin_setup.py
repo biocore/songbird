@@ -82,7 +82,9 @@ plugin.methods.register_function(
         "min_feature_count": DESCS["min-feature-count"],
         "summary_interval": DESCS["summary-interval"],
         "random_seed": DESCS["random-seed"],
-        "silent": DESCS["silent"] + " (Only affects Artifact API)",
+        "silent": (DESCS["silent"] + " (Only has an impact when using this "
+                   "command with the --verbose option or through the Qiime2 "
+                   "Artifact API)"),
     },
     name='Multinomial regression',
     description=("Performs multinomial regression and calculates "

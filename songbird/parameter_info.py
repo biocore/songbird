@@ -37,8 +37,9 @@ DESCS = {
     ),
     "summary-interval": "Number of seconds before storing a summary.",
     "silent": (
-        'Flag denoting whether to hide tqdm progress bar. If True, tqdm '
-        'bar is displayed. If False, tqdm is not printed.'
+        'Flag denoting whether to hide progress bar and TensorFlow warnings. '
+        'If False, progress bar and warnings are displayed. If True, neither '
+        'progress bar nor warnings are displayed.'
     ),
     # FYI: The following parameters are exclusive to the non-Q2 Songbird script
     "checkpoint-interval": 'Number of seconds before a saving a checkpoint.',
