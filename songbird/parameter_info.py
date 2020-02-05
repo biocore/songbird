@@ -36,7 +36,7 @@ DESCS = {
         "for it to be included in the analysis."
     ),
     "summary-interval": "Number of seconds before storing a summary.",
-    "quiet": (
+    "silent": (
         'Flag denoting whether to hide tqdm progress bar. If True, tqdm '
         'bar is displayed. If False, tqdm is not printed.'
     ),
@@ -69,5 +69,5 @@ DEFAULTS = {
     "summary-interval": 10,
     "summary-dir": "summarydir",
     "random-seed": 0,
-    "quiet": False,
+    "silent": False,
 }

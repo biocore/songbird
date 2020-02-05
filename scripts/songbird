@@ -113,10 +113,10 @@ def songbird():
     type=int,
 )
 @click.option(
-    "--quiet/--no-quiet",
-    default=DEFAULTS["quiet"],
+    "--silent/--no-silent",
+    default=DEFAULTS["silent"],
     show_default=True,
-    help=DESCS["quiet"],
+    help=DESCS["silent"],
 )
 def multinomial(
     input_biom,
@@ -135,9 +135,9 @@ def multinomial(
     summary_interval,
     summary_dir,
     random_seed,
-    quiet,
+    silent,
 ):
-    if quiet:
+    if silent:
         # suppress profiling messages & compilation warnings
         # taken from:
         # https://stackoverflow.com/questions/47068709/your-cpu-supports-
@@ -170,7 +170,7 @@ def multinomial(
                'learning_rate': learning_rate,
                'min_sample_count': min_sample_count,
                'min_feature_count': min_feature_count,
-               'quiet': quiet,
+               'silent': silent,
                }
     if random_seed is not None:
         hparams.update({
@@ -206,7 +206,7 @@ def multinomial(
             epochs=epochs,
             summary_interval=summary_interval,
             checkpoint_interval=checkpoint_interval,
-            quiet=quiet,
+            silent=silent,
         )
 
         summary_writer = tf.contrib.summary.create_file_writer(summary_dir)

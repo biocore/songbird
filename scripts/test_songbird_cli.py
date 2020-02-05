@@ -22,7 +22,7 @@ class TestSongbirdCLI(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.rmtree(self.path)
 
-    def test_cli_quiet(self):
+    def test_cli_silent(self):
         runner = CliRunner()
         test_args = ['--input-biom', 'data/redsea/redsea.biom',
                      '--metadata-file', 'data/redsea/redsea_metadata.txt',
@@ -33,13 +33,13 @@ class TestSongbirdCLI(unittest.TestCase):
                      '--differential-prior', '0.5',
                      '--summary-interval', '1',
                      '--summary-dir', self.path,
-                     '--quiet']
+                     '--silent']
 
         result = runner.invoke(songbird.multinomial, test_args)
 
         assert result.output == ""
 
-    def test_cli_not_quiet(self):
+    def test_cli_not_silent(self):
         runner = CliRunner()
         test_args = ['--input-biom', 'data/redsea/redsea.biom',
                      '--metadata-file', 'data/redsea/redsea_metadata.txt',
@@ -50,7 +50,7 @@ class TestSongbirdCLI(unittest.TestCase):
                      '--differential-prior', '0.5',
                      '--summary-interval', '1',
                      '--summary-dir', self.path,
-                     '--no-quiet']
+                     '--no-silent']
 
         result = runner.invoke(songbird.multinomial, test_args)
 

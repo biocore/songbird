@@ -51,7 +51,7 @@ class TestMultinomial(unittest.TestCase):
         npt.assert_allclose(exp_beta, res_beta.T, atol=0.6, rtol=0.6)
         self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
-    def test_quiet(self):
+    def test_silent(self):
         tf.set_random_seed(0)
         md = self.md
 
@@ -63,10 +63,10 @@ class TestMultinomial(unittest.TestCase):
             res_beta, res_stats, res_biplot = multinomial(
                 table=self.table, metadata=md,
                 min_sample_count=0, min_feature_count=0,
-                formula="X", epochs=1000, quiet=True)
+                formula="X", epochs=1000, silent=True)
         assert f.getvalue() == ""
 
-    def test_not_quiet(self):
+    def test_not_silent(self):
         tf.set_random_seed(0)
         md = self.md
 

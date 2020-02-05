@@ -136,7 +136,7 @@ class MultRegression(object):
         tf.global_variables_initializer().run()
 
     def fit(self, epochs=10, summary_interval=100, checkpoint_interval=3600,
-            quiet=False):
+            silent=False):
         """ Fits the model.
 
         Parameters
@@ -147,7 +147,7 @@ class MultRegression(object):
            Number of seconds until a summary is recorded
         checkpoint_interval : int
            Number of seconds until a checkpoint is recorded
-        quiet : bool
+        silent : bool
            Flag denoting whether to suppress tqdm. If True, show tqdm.
            If False (default), show tqdm progress bar.
 
@@ -169,7 +169,7 @@ class MultRegression(object):
         cv = []
         iter_n = []
 
-        if quiet:
+        if silent:
             iter_range = range(0, num_iter)
         else:
             iter_range = tqdm(range(0, num_iter))

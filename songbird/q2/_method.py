@@ -28,12 +28,12 @@ def multinomial(table: biom.Table,
                 min_feature_count: int = DEFAULTS["min-feature-count"],
                 summary_interval: int = DEFAULTS["summary-interval"],
                 random_seed: int = DEFAULTS["random-seed"],
-                quiet: bool = DEFAULTS["quiet"],
+                silent: bool = DEFAULTS["silent"],
                 ) -> (
                     pd.DataFrame, qiime2.Metadata, skbio.OrdinationResults
                 ):
 
-    if quiet:
+    if silent:
         # suppress profiling messages & compilation warnings
         # taken from:
         # https://stackoverflow.com/questions/47068709/your-cpu-supports-
@@ -75,7 +75,7 @@ def multinomial(table: biom.Table,
             epochs=epochs,
             summary_interval=summary_interval,
             checkpoint_interval=None,
-            quiet=quiet)
+            silent=silent)
 
     md_ids = np.array(design.columns)
     obs_ids = table.ids(axis='observation')
