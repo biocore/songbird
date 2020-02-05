@@ -27,6 +27,21 @@ class TestMultinomial(unittest.TestCase):
 
         self.table, self.md, self.beta = res
 
+    def _silent_helper(self, silent):
+        tf.set_random_seed(0)
+        md = self.md
+
+        md.name = 'sampleid'
+        md = qiime2.Metadata(md)
+
+        f = io.StringIO()
+        with contextlib.redirect_stderr(f):
+            res_beta, res_stats, res_biplot = multinomial(
+                table=self.table, metadata=md,
+                min_sample_count=0, min_feature_count=0,
+                formula="X", epochs=1000, silent=silent)
+        return f
+
     def test_fit(self):
         tf.set_random_seed(0)
         md = self.md
@@ -52,33 +67,11 @@ class TestMultinomial(unittest.TestCase):
         self.assertGreater(len(res_stats.to_dataframe().index), 1)
 
     def test_silent(self):
-        tf.set_random_seed(0)
-        md = self.md
-
-        md.name = 'sampleid'
-        md = qiime2.Metadata(md)
-
-        f = io.StringIO()
-        with contextlib.redirect_stderr(f):
-            res_beta, res_stats, res_biplot = multinomial(
-                table=self.table, metadata=md,
-                min_sample_count=0, min_feature_count=0,
-                formula="X", epochs=1000, silent=True)
+        f = self._silent_helper(silent=True)
         assert f.getvalue() == ""
 
     def test_not_silent(self):
-        tf.set_random_seed(0)
-        md = self.md
-
-        md.name = 'sampleid'
-        md = qiime2.Metadata(md)
-
-        f = io.StringIO()
-        with contextlib.redirect_stderr(f):
-            res_beta, res_stats, res_biplot = multinomial(
-                table=self.table, metadata=md,
-                min_sample_count=0, min_feature_count=0,
-                formula="X", epochs=1000)
+        f = self._silent_helper(silent=False)
         assert f.getvalue() != ""
 
     def test_fit_consistency(self):
