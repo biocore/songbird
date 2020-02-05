@@ -2,12 +2,11 @@ import skbio
 import qiime2
 import pandas as pd
 import numpy as np
-import os
 import biom
 import tensorflow as tf
 from skbio import OrdinationResults
 from songbird.multinomial import MultRegression
-from songbird.util import match_and_filter, split_training
+from songbird.util import match_and_filter, split_training, silence_output
 from songbird.parameter_info import DEFAULTS
 from qiime2.plugin import Metadata
 
@@ -34,15 +33,7 @@ def multinomial(table: biom.Table,
                 ):
 
     if silent:
-        # suppress profiling messages & compilation warnings
-        # taken from:
-        # https://stackoverflow.com/questions/47068709/your-cpu-supports-
-        #     instructions-that-this-tensorflow-binary-was-not-compiled-to-u
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-        # suppress deprecation warnings
-        # taken from https://github.com/tensorflow/tensorflow/issues/27023
-        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+        silence_output()
 
     # load metadata and tables
     metadata = metadata.to_dataframe()

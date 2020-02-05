@@ -6,7 +6,8 @@ from biom import load_table
 import click
 from skbio.stats.composition import clr, clr_inv
 from songbird.multinomial import MultRegression
-from songbird.util import read_metadata, match_and_filter, split_training
+from songbird.util import (read_metadata, match_and_filter, split_training,
+                           silence_output)
 from songbird.parameter_info import DESCS, DEFAULTS
 import warnings
 
@@ -138,15 +139,7 @@ def multinomial(
     silent,
 ):
     if silent:
-        # suppress profiling messages & compilation warnings
-        # taken from:
-        # https://stackoverflow.com/questions/47068709/your-cpu-supports-
-        #     instructions-that-this-tensorflow-binary-was-not-compiled-to-u
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-        # suppress deprecation warnings
-        # taken from https://github.com/tensorflow/tensorflow/issues/27023
-        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+        silence_output()
 
     # load metadata and tables
     metadata = read_metadata(metadata_file)
