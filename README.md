@@ -379,6 +379,17 @@ a list of all available parameters, respectively.
 ## 6.1. Generating a null model
 Now that we have generated a model and understand how to interpret the diagnostic plots, it is important to compare this model to a model made without any metadata input (a "null model"). In other words, this will allow us to see how strongly the covariates in the formula can be associated with the features of the model, as compared to random chance. We can do this by simply supplying `--formula`/`--p-formula` with `"1"` as shown below.
 
+Please note that the standalone and QIIME 2 versions of Songbird will get you
+different things. Both show you a plot with multiple model fitting curves, but:
+
+  1. The standalone version of Songbird has support through Tensorboard for
+     comparing model fitting (see the screenshot below).
+
+  2. The QIIME 2 version of Songbird uses a much simpler interface.
+     It also includes a <a href="#explaining-q2">_Q<sup>2</sup>_ value</a>.
+
+We recommend trying this out with the QIIME 2 version at first.
+
 ### 6.1.1. Null models and "standalone" Songbird
 
 If you're using Songbird standalone, Tensorboard makes it particularly easy to compare different parameters:
@@ -447,7 +458,9 @@ but it does include a _Q<sup>2</sup>_ value.
 
 The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q^2 = 1 - m1/m2`, where `m1` indicates the average absolute model error and `m2` indicates the average absolute null or baseline model error.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validation samples. If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting. This statistic behaves similarly to the _R<sup>2</sup>_ classically used in a ordinary linear regression if `--p-formula` is `"1"` in the `m2` model.
 
-If the _Q<sup>2</sup>_ score is close to 0 or negative, this indicates that the model is overfit or that the metadata supplied to the model are not predictive of microbial composition across samples. You can think about this in terms of "how does using the metadata columns in my formula *improve* a model?" If there isn't really an improvement, then you may want to reconsider your formula.
+If the _Q<sup>2</sup>_ score is extremely close to 0 (or negative), this indicates that the model is overfit or that the metadata supplied to the model are not predictive of microbial composition across samples. You can think about this in terms of "how does using the metadata columns in my formula *improve* a model?" If there isn't really an improvement, then you may want to reconsider your formula.
+
+... [But as long as your _Q<sup>2</sup>_ score is above zero, your model is learning something useful](https://forum.qiime2.org/t/songbird-optimizing-the-loss-function/13479/8).
 
 ## 6.2. Generating baseline models
 _(For the sake of simplicity, this subsection just uses Songbird through QIIME
