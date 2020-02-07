@@ -44,7 +44,7 @@ This README is divided into a few main sections:
 3. **Specifying a formula**
 4. **Interpreting model fitting information**
 5. **Adjusting parameters to get reasonable fitting**
-6. **Validating by comparing to baseline models**
+6. **Validating by comparing to null/baseline models**
 7. **FAQs**
 8. **Visualizing Songbird's differentials**
 9. **More information**
@@ -326,7 +326,7 @@ The y-axis is the average number of counts off for each feature. The model is pr
 #### How can I tell if this graph "looks good"?
 
 The raw numbers will be variable, but the most important thing is the shape of the graph. You want to see exponential decay and a stable plateau. The cross validation graphs shown in the Tensorboard/QIIME 2 summaries above are good examples.
-**Importantly, you need to compare your model to a null model** to ensure that the covariates entered into the formula are _improving_ the model fit. More details on this can be found in <a href="#validating-null-model">section 6: Validating by comparing to baseline models</a>.
+**Importantly, you need to compare your model to a null model** to ensure that the covariates entered into the formula are _improving_ the model fit. More details on this can be found in <a href="#validating-null-model">section 6: Validating by comparing to null/baseline models</a>.
 	
 
 ## 4.2. Explaining Graph 2: `loss`
@@ -374,7 +374,7 @@ you're using Songbird standalone or through QIIME 2, you can run
 a list of all available parameters, respectively.
 
 
-# 6. Validating by comparing to baseline models <span id="validating-null-model"></span>
+# 6. Validating by comparing to null/baseline models <span id="validating-null-model"></span>
 
 ## 6.1. Generating a null model
 Now that we have generated a model and understand how to interpret the diagnostic plots, it is important to compare this model to a model made without any metadata input (a "null model"). In other words, this will allow us to see how strongly the covariates in the formula can be associated with the features of the model, as compared to random chance. We can do this by simply supplying `--formula`/`--p-formula` with `"1"` as shown below.
@@ -428,7 +428,7 @@ qiime songbird multinomial \
 	--o-regression-stats null-stats.qza \
 	--o-regression-biplot null-biplot.qza
 
-# Visualize the first model's regression stats *and* the baseline model's
+# Visualize the first model's regression stats *and* the null model's
 # regression stats
 qiime songbird summarize-paired \
 	--i-regression-stats regression-stats.qza \
@@ -445,7 +445,7 @@ but it does include a _Q<sup>2</sup>_ value.
 
 #### 6.1.2.1. Sidenote: Interpreting _Q<sup>2</sup>_ values <span id="explaining-q2"></span>
 
-The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q2 = 1 - model/baseline`, where `model` indicates the average absolute model error and `baseline` indicates the average absolute baseline model error.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validation samples. If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting. This statistic behaves similarly to the _R<sup>2</sup>_ classically used in a ordinary linear regression if `--p-formula` is `"1"` in the baseline model.
+The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q^2 = 1 - m1/m2`, where `m1` indicates the average absolute model error and `m2` indicates the average absolute null or baseline model error.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validation samples. If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting. This statistic behaves similarly to the _R<sup>2</sup>_ classically used in a ordinary linear regression if `--p-formula` is `"1"` in the `m2` model.
 
 If the _Q<sup>2</sup>_ score is close to 0 or negative, this indicates that the model is overfit or that the metadata supplied to the model are not predictive of microbial composition across samples. You can think about this in terms of "how does using the metadata columns in my formula *improve* a model?" If there isn't really an improvement, then you may want to reconsider your formula.
 
