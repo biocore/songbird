@@ -11,12 +11,19 @@ Changed the `summary-interval` parameter to accept floating-point values [#108](
 
 Filtered out `FutureWarnings` caused by TensorFlow/Tensorbard, filtered out all `RuntimeWarnings`, and added a `silent` option that suppresses progress bar information and all TensorFlow warnings [#106](https://github.com/biocore/songbird/pull/106)
 
-Various README updates [#103](https://github.com/biocore/songbird/pull/103)
+Various README updates about comparing your model to null/baseline models,
+specifying formulas, _Q<sup>2</sup>_ scores, etc.
+[#103](https://github.com/biocore/songbird/pull/103),
+[#109](https://github.com/biocore/songbird/pull/109)
+
+Pinned TensorFlow's version to be at least 1.15.2 and less than 2. This may be
+a temporary solution, depending on [how we move forward from here](https://github.com/biocore/songbird/issues/110).
+[#109](https://github.com/biocore/songbird/pull/109)
 
 ## Version 1.0.1 (2019-10-16)
 Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
 
-Added Q2 statistic explanation and documentation [#87](https://github.com/biocore/songbird/pull/87)
+Added _Q<sup>2</sup>_ statistic explanation and documentation [#87](https://github.com/biocore/songbird/pull/87)
 
 ## Version 0.9 (2019-9-5)
 Added compatibility with the new qiime2 differential type [#60](https://github.com/biocore/songbird/pull/60)

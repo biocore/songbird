@@ -36,11 +36,6 @@ class MultRegression(object):
 
         self.beta_mean = beta_mean
         self.beta_scale = beta_scale
-        self.batch_size = batch_size
-        self.learning_rate = learning_rate
-        self.beta_1 = beta_1
-        self.beta_2 = beta_2
-        self.clipnorm = clipnorm
         self.save_path = save_path
 
     def __call__(self, session, trainX, trainY, testX, testY):

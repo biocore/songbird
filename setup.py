@@ -59,11 +59,10 @@ setup(name='songbird',
           'scipy >= 0.15.1',
           'nose >= 1.3.7',
           'patsy',
-          'tqdm',
           'scikit-bio>=0.5.1',
           'biom-format',
           'tqdm',
-          'tensorflow<=1.14'
+          'tensorflow>=1.15.2,<2'
       ],
       classifiers=classifiers,
       license='BSD-3-Clause',
