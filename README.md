@@ -70,6 +70,7 @@ songbird multinomial \
 	--formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
 	--epochs 10000 \
 	--differential-prior 0.5 \
+	--training-column Testing \
 	--summary-interval 1 \
 	--summary-dir results
 ```
@@ -87,7 +88,9 @@ tensorboard --logdir .
 
 When you open up Tensorboard in a web browser, it will show plots of the cross validation score and loss. See <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots, and see <a href="#faqs-standalone">the section of the FAQs on running Songbird standalone</a> for details on how to use Tensorboard.
 
-Once you have a good fit for your model you need to run a null model for comparison to exclude model overfitting. See <a href="#validating-null-model">this section on how to run and compare a null model</a>.
+**Once you have a good fit for your model, you need to run a null model for comparison to make
+sure that your model is more predictive than the null model.**
+See <a href="#validating-null-model">this section on how to run and compare a null model</a>.
 
 ### A note about metadata and running Songbird standalone
 If you have any "comment rows" in your metadata -- for example, a `#q2:types`
@@ -132,8 +135,8 @@ qiime songbird multinomial \
 	--p-formula "Depth+Temperature+Salinity+Oxygen+Fluorescence+Nitrate" \
 	--p-epochs 10000 \
 	--p-differential-prior 0.5 \
-	--p-summary-interval 1 \
 	--p-training-column Testing \
+	--p-summary-interval 1 \
 	--o-differentials differentials.qza \
 	--o-regression-stats regression-stats.qza \
 	--o-regression-biplot regression-biplot.qza
@@ -153,13 +156,16 @@ qiime songbird summarize-single \
 	--o-visualization regression-summary.qzv
 ```
 
-The resulting visualization (viewable using `qiime tools view` or at#
+The resulting visualization (viewable using `qiime tools view` or at
 [view.qiime2.org](https://view.qiime2.org)) contains two plots.
 These plots are analogous to the two
 plots shown in Tensorboard's interface (the top plot shows cross-validation
 results, and the bottom plot shows loss information). The interpretation of
 these plots is the same as with the Tensorboard plots: see <a href="#interpreting-model-fitting">this section on interpreting model fitting</a> for details on how to understand these plots.
 
+**Once you have a good fit for your model, you need to run a null model for comparison to make
+sure that your model is more predictive than the null model.**
+See <a href="#validating-null-model">this section on how to run and compare a null model</a>.
 # 3. Specifying a formula <span id="specifying-a-formula"></span>
 
 ### Hang on, what *is* a formula?
@@ -370,50 +376,32 @@ a list of all available parameters, respectively.
 
 # 6. Validating by comparing to baseline models <span id="validating-null-model"></span>
 
-## 6.1 Generating a null model
-Now that we have generated a model and understand how to interpret the diagnostic plots, it is important to compare this model to a model made without any metadata input. In other words, this will allow us to see how strongly the covariates in the formula can be associated with the features of the model, as compared to random chance. We can do this by simply supplying `--p-formula` with 1 as shown below. 
+## 6.1. Generating a null model
+Now that we have generated a model and understand how to interpret the diagnostic plots, it is important to compare this model to a model made without any metadata input (a "null model"). In other words, this will allow us to see how strongly the covariates in the formula can be associated with the features of the model, as compared to random chance. We can do this by simply supplying `--formula`/`--p-formula` with `"1"` as shown below.
 
-_If you're running Songbird through QIIME 2_, the
-`qiime songbird summarize-paired` command allows you to view two sets of
-diagnostic plots at once as follows:
+### 6.1.1. Null models and "standalone" Songbird
 
-```bash
-# Generate a baseline model
-qiime songbird multinomial \
-	--i-table redsea.biom.qza \
-	--m-metadata-file data/redsea/redsea_metadata.txt \
-	--p-formula "1" \
-	--p-epochs 5000 \
-	--p-training-column Testing \
-	--p-summary-interval 1 \
-	--o-differentials baseline-diff.qza \
-	--o-regression-stats baseline-stats.qza \
-	--o-regression-biplot baseline-biplot.qza
+If you're using Songbird standalone, Tensorboard makes it particularly easy to compare different parameters:
+if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard!
+Let's generate a null model as follows:
 
-# Visualize the first model's regression stats *and* the baseline model's
-# regression stats
-qiime songbird summarize-paired \
-	--i-regression-stats regression-stats.qza \
-	--i-baseline-stats baseline-stats.qza \
-	--o-visualization paired-summary.qzv
+```
+songbird multinomial \
+	--input-biom data/redsea/redsea.biom \
+	--metadata-file data/redsea/redsea_metadata.txt \
+	--formula "1" \
+	--epochs 10000 \
+	--differential-prior 0.5 \
+	--training-column Testing \
+	--summary-interval 1 \
+	--summary-dir results
 ```
 
-The summary generated will look something like as follows:
+Notice how this is the same command that we used before (e.g. we have the same
+`--differential-prior` and `--epochs`), with the exception that the `--formula`
+is now just `"1"`.
 
-![Summary of the QIIME 2 Songbird run on the Red Sea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-paired-output.png "Summary of the QIIME 2 Songbird run on the Red Sea data")
-
-This visualization will include _Q<sup>2</sup>_ values. <span id="explaining-q2"></span>
-
-The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q2=1 - model/baseline` where `model=average absolute model error` and `baseline=average absolute baseline error`.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validations amples.  If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting. This statistic behaves similarly to _R<sup>2</sup>_ classically used in a ordinary linear regression if `--p-formula 1` in the baseline model.
-
-If the _Q<sup>2</sup>_ score is close to 0 or negative, this indicates that the model is overfit or that the metadata supplied to the model are not predictive of microbial composition across samples.
-
-
-_If you're using Songbird standalone_, Tensorboard makes it particularly easy to compare different parameters:
-if you simply change a parameter and run Songbird again (under a different output file name) that graph will pop up on top of the first graphs in Tensorboard! You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. (You'll need to run Tensorboard in the directory *directly above* your various result directories in order to get this to work.)
-
-Additionally, when using the Songbird standalone, you can view a summary of final results under the `HPARAMS` tab in 
-Tensorboard. You will see something like this:
+Let's open up Tensorboard. You can click the graphs on and off in the lower left hand panel, and read just the axis for a given graph (or set of graphs) by clicking the blue expansion rectangle underneath the graph. Within Tensorboard, you can also view a summary of final results under the `HPARAMS` tab -- that will look something like this:
 
 ![HParams for the Red Sea Data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-tensorboard-hparams.png)
 
@@ -421,20 +409,62 @@ Above, the model with the lowest cross-validation error is highlighted in green.
 compares to other models that were fit on this dataset with various parameters. Additionally, the model's diagnostic
 plots are shown, which will have an exponential decay and a stable plateau if the model converged.
 
+### 6.1.2. Null models and QIIME 2 + Songbird
+If you're running Songbird through QIIME 2, the
+`qiime songbird summarize-paired` command allows you to view two sets of
+diagnostic plots at once as follows:
 
+```bash
+# Generate a null model
+qiime songbird multinomial \
+	--i-table redsea.biom.qza \
+	--m-metadata-file data/redsea/redsea_metadata.txt \
+	--p-formula "1" \
+	--p-epochs 10000 \
+	--p-differential-prior 0.5 \
+	--p-training-column Testing \
+	--p-summary-interval 1 \
+	--o-differentials null-diff.qza \
+	--o-regression-stats null-stats.qza \
+	--o-regression-biplot null-biplot.qza
 
-## 6.2 Generating baseline models
+# Visualize the first model's regression stats *and* the baseline model's
+# regression stats
+qiime songbird summarize-paired \
+	--i-regression-stats regression-stats.qza \
+	--i-baseline-stats null-stats.qza \
+	--o-visualization paired-summary.qzv
+```
+
+The summary generated will look something like as follows:
+
+![Summary of the QIIME 2 Songbird run on the Red Sea data](https://github.com/biocore/songbird/raw/master/images/redsea-tutorial-summarize-paired-output.png "Summary of the QIIME 2 Songbird run on the Red Sea data")
+
+This visualization isn't quite as fancy as the Tensorboard one we showed above,
+but it does include a _Q<sup>2</sup>_ value.
+
+#### 6.1.2.1. Sidenote: Interpreting _Q<sup>2</sup>_ values <span id="explaining-q2"></span>
+
+The _Q<sup>2</sup>_ score is adapted from the Partial least squares literature.  Here it is given by `Q2 = 1 - model/baseline`, where `model` indicates the average absolute model error and `baseline` indicates the average absolute baseline model error.  If _Q<sup>2</sup>_ is close to 1, that indicates a high predictive accuracy on the cross validation samples. If _Q<sup>2</sup>_ is low or below zero, that indicates poor predictive accuracy, suggesting possible overfitting. This statistic behaves similarly to the _R<sup>2</sup>_ classically used in a ordinary linear regression if `--p-formula` is `"1"` in the baseline model.
+
+If the _Q<sup>2</sup>_ score is close to 0 or negative, this indicates that the model is overfit or that the metadata supplied to the model are not predictive of microbial composition across samples. You can think about this in terms of "how does using the metadata columns in my formula *improve* a model?" If there isn't really an improvement, then you may want to reconsider your formula.
+
+## 6.2. Generating baseline models
+_(For the sake of simplicity, this subsection just uses Songbird through QIIME
+2.)_
+
 In addition to comparing your model to a null model, it may also be useful to compare it to 'baseline' models, which contain only a subset of the formula variables. The _Q<sup>2</sup>_ score will allow you to determine how much a given variable(s) improves the model, and therefore how important it is for determining differntially abundant microbes. 
 
-For instance, in the Red Sea dataset we can fit a model on just Depth and compare it to our original model to gauge how informative the other variables are (i.e. Temperature, Salinity, Oxygen, Fluorescence, and Nitrate).  The _Q<sup>2</sup>_ value is the predictive accuracy estimated from the variables left out of the regression fit.  
+For instance, in the Red Sea dataset we can fit a model on just Depth and compare it to our original model to gauge how informative the other variables are (i.e. Temperature, Salinity, Oxygen, Fluorescence, and Nitrate).  The _Q<sup>2</sup>_ value we see in the `paired-summary.qzv` is the predictive accuracy estimated from the variables left out of the regression fit.  
 
-```
+```bash
 # Generate a baseline model
 qiime songbird multinomial \
 	--i-table redsea.biom.qza \
 	--m-metadata-file data/redsea/redsea_metadata.txt \
 	--p-formula "Depth" \
-	--p-epochs 5000 \
+	--p-epochs 10000 \
+	--p-differential-prior 0.5 \
 	--p-training-column Testing \
 	--p-summary-interval 1 \
 	--o-differentials baseline-diff.qza \
@@ -446,12 +476,9 @@ qiime songbird multinomial \
 qiime songbird summarize-paired \
 	--i-regression-stats regression-stats.qza \
 	--i-baseline-stats baseline-stats.qza \
-	--o-visualization paired-summary.qzv
+	--o-visualization paired-summary-2.qzv
 ```
 This plot provides evidence for how much the model fit improved by adding `Temperature`, `Salinity`, `Oxygen`, `Fluorescence`, and `Nitrate`. A positive _Q<sup>2</sup>_ score indicates an improvement over the baseline model.
-
- 
-
 
 ### TL;DR
 Basically, you'll want to futz around with the parameters until you see two
@@ -539,7 +566,7 @@ The `--differential-prior` command specifies the width of the prior distribution
 The resulting prediction accuracy is used to evaluate the generalizability of the model in order to determine if the model is overfitting or not.  If this argument is not specified, then 5 random samples will be chosen for the test dataset.  If you want to specify more random samples to allocate for cross-validation, the `--num-random-test-examples` argument can be specified. As a rule of thumb, the number of test samples held out for cross-validation is typically 10-20%.
 
 **Note that the `Train` and `Test` values are case sensitive** -- if you
-specify `train` and `test` instead, [things will go wrong](https://github.com/biocore/songbird/issues/102).
+specify `train` and `test` instead, [things may go wrong](https://github.com/biocore/songbird/issues/102).
 
 **Q.** How long should I expect this program to run?
 
