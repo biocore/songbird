@@ -16,9 +16,13 @@ specifying formulas, _Q<sup>2</sup>_ scores, etc.
 [#103](https://github.com/biocore/songbird/pull/103),
 [#109](https://github.com/biocore/songbird/pull/109)
 
-Pinned TensorFlow's version to be at least 1.15.2 and less than 2. This may be
-a temporary solution, depending on [how we move forward from here](https://github.com/biocore/songbird/issues/110).
-[#109](https://github.com/biocore/songbird/pull/109)
+Pinned TensorFlow's version to be at least 1.15 and less than 2. This is due in
+part to recent security issues that have been identified in TensorFlow
+([1](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/security/advisory/tfsa-2019-002.md),
+[2](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/security/advisory/tfsa-2020-001.md)) -- the latter of these does not seem to have been addressed yet on conda, but neither of these issues should have an impact on normal usage of Songbird.
+
+  - Pinning the TensorFlow version in this way may be a temporary solution, depending on [how we move forward from here](https://github.com/biocore/songbird/issues/110).
+  - [#109](https://github.com/biocore/songbird/pull/109)
 
 ## Version 1.0.1 (2019-10-16)
 Enable duplicate metadata ids [#89](https://github.com/biocore/songbird/pull/89)
