@@ -275,7 +275,8 @@ be helpful, sorted roughly into "less" and "more" technical categories:
 ##### Less technical
 
 - [Video explaining various types of categorical encodings](https://www.youtube.com/watch?v=WRxHfnl-Pcs)
-- [Blog post explaining coding nominal variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
+  - [Text counterpart to this video](http://www.statsmodels.org/devel/contrasts.html)
+- [Blog post introducing design matrices and explaining coding nominal variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
 - [Blog post explaining coding ordinal variables](https://mortonjt.github.io/probable-bug-bytes/probable-bug-bytes/ordinal-variables/)
 
 ##### More technical
