@@ -270,15 +270,17 @@ For more information on `--differential-prior` and other Songbird parameters, pl
 
 ### Further documentation on patsy formulas
 In case the above examples didn't cut it, here are some links to external documentation that may
-be helpful, sorted roughly into "less" and "more" technical categories:
+be helpful, sorted very roughly into "less" and "more" technical categories:
 
-##### Less technical
+##### A bit less technical
 
 - [Video explaining various types of categorical encodings](https://www.youtube.com/watch?v=WRxHfnl-Pcs)
-- [Blog post explaining coding nominal variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
+  - [Text counterpart to this video](http://www.statsmodels.org/devel/contrasts.html)
+- [Blog post introducing design matrices and explaining coding nominal variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
 - [Blog post explaining coding ordinal variables](https://mortonjt.github.io/probable-bug-bytes/probable-bug-bytes/ordinal-variables/)
+- [Jupyter Notebooks explaining formulas](https://github.com/cameronmartino/hartig-net/blob/master/regression-formulas/), starting [here](https://github.com/cameronmartino/hartig-net/blob/master/regression-formulas/static-intro.ipynb)
 
-##### More technical
+##### A bit more technical
 
 - [patsy formula documentation](https://patsy.readthedocs.io/en/latest/formulas.html)
 - [patsy API reference](https://patsy.readthedocs.io/en/latest/API-reference.html)
