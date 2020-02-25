@@ -55,9 +55,15 @@ First off, make sure that [conda](https://docs.conda.io/) is installed.
 
 Songbird can be installed from the `conda-forge` channel as follows:
 ```
-conda create -n songbird_env songbird -c conda-forge
+conda create -n songbird_env songbird "pandas>=0.18.0,<1" -c conda-forge
 source activate songbird_env
 ```
+
+##### Sidenote
+If you get an error about "redirecting" from that first command, you probably
+need to add a `\` (a backslash character) before the `>` and `<` characters.
+This can be a problem if you're using [fish](https://fishshell.com/) as your
+shell.
 
 ### Running Songbird
 Let's try running Songbird on the "Red Sea" example data included with this
