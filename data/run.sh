@@ -15,6 +15,33 @@ songbird multinomial \
     --batch-size 3 \
     --epochs 10000 \
     --num-random-test-examples 5 \
+    --summary-dir summary1 \
+    --summary-interval 1
+
+
+formula="Depth+Temperature+Salinity+Oxygen"
+songbird multinomial \
+    --input-biom $biom \
+    --metadata-file $mdfile \
+    --formula $formula \
+    --min-feature-count 10 \
+    --batch-size 3 \
+    --epochs 10000 \
+    --num-random-test-examples 5 \
+    --summary-dir summary2 \
+    --summary-interval 1
+
+
+formula="Depth+Temperature"
+songbird multinomial \
+    --input-biom $biom \
+    --metadata-file $mdfile \
+    --formula $formula \
+    --min-feature-count 10 \
+    --batch-size 3 \
+    --epochs 10000 \
+    --num-random-test-examples 5 \
+    --summary-dir summary3 \
     --summary-interval 1
 
 #Usage: songbird multinomial [OPTIONS]
