@@ -55,9 +55,15 @@ First off, make sure that [conda](https://docs.conda.io/) is installed.
 
 Songbird can be installed from the `conda-forge` channel as follows:
 ```
-conda create -n songbird_env songbird -c conda-forge
+conda create -n songbird_env songbird "pandas>=0.18.0,<1" -c conda-forge
 source activate songbird_env
 ```
+
+##### Sidenote
+If you get an error about "redirecting" from that first command, you probably
+need to add a `\` (a backslash character) before the `>` and `<` characters.
+This can be a problem if you're using [fish](https://fishshell.com/) as your
+shell.
 
 ### Running Songbird
 Let's try running Songbird on the "Red Sea" example data included with this
@@ -270,15 +276,17 @@ For more information on `--differential-prior` and other Songbird parameters, pl
 
 ### Further documentation on patsy formulas
 In case the above examples didn't cut it, here are some links to external documentation that may
-be helpful, sorted roughly into "less" and "more" technical categories:
+be helpful, sorted very roughly into "less" and "more" technical categories:
 
-##### Less technical
+##### A bit less technical
 
 - [Video explaining various types of categorical encodings](https://www.youtube.com/watch?v=WRxHfnl-Pcs)
-- [Blog post explaining coding nominal variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
+  - [Text counterpart to this video](http://www.statsmodels.org/devel/contrasts.html)
+- [Blog post introducing design matrices and explaining coding nominal variables](http://mortonjt.blogspot.com/2018/05/encoding-design-matrices-in-patsy.html)
 - [Blog post explaining coding ordinal variables](https://mortonjt.github.io/probable-bug-bytes/probable-bug-bytes/ordinal-variables/)
+- [Jupyter Notebooks explaining formulas](https://github.com/cameronmartino/hartig-net/blob/master/regression-formulas/), starting [here](https://github.com/cameronmartino/hartig-net/blob/master/regression-formulas/static-intro.ipynb)
 
-##### More technical
+##### A bit more technical
 
 - [patsy formula documentation](https://patsy.readthedocs.io/en/latest/formulas.html)
 - [patsy API reference](https://patsy.readthedocs.io/en/latest/API-reference.html)
