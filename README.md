@@ -111,7 +111,7 @@ before installing Songbird. In your QIIME 2 conda environment, you can install S
 running:
 
 ```
-conda install songbird -c conda-forge
+pip install songbird
 ```
 
 Next, run the following command to get QIIME 2 to "recognize" Songbird:
