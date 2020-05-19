@@ -1,5 +1,7 @@
 # Songbird Changelog
 
+## Version 1.0.3-dev
+
 ## Version 1.0.2
 Added ability to set random seed for CLI and sets fixed random seeds for qiime2 [#101](https://github.com/biocore/songbird/pull/101)
 
