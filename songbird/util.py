@@ -135,6 +135,11 @@ def match_and_filter(table, metadata, formula,
 
     This will also return the patsy representation.
 
+    NOTE that this does sample filtering before read filtering -- it's possible
+    that this could impact the results in unintuitive ways, for example a
+    sample is filtered out which causes a feature to then be filtered out for
+    not being present in enough samples.
+
     Parameters
     ----------
     table : biom.Table
@@ -148,6 +153,8 @@ def match_and_filter(table, metadata, formula,
         Filtered biom table
     metadata : pd.DataFrame
         Sample metadata
+    design : patsy.DesignMatrix
+        Design matrix created from the formula and filtered metadata
     """
     # Use >= so that samples with exactly "min_sample_count" counts, or
     # features present in exactly "min_feature_count" samples, are *not*
