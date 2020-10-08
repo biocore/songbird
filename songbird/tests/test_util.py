@@ -210,6 +210,94 @@ class TestFilters(unittest.TestCase):
         self.assertEqual(res_design.shape[0], drop_design.shape[0])
         self.assertEqual(res_metadata.shape[0], drop_metadata.shape[0])
 
+    def test_match_and_filter_exact_minimum_feature_count_used(self):
+        formula = 'C(categorical) + continuous'
+
+        # None of the features should be dropped when min_feature_count is 2 or
+        # below, since all features occur in at least two samples.
+        res = match_and_filter(self.big_table, self.metadata, formula,
+                               min_sample_count=0, min_feature_count=2)
+
+        self.assertEqual(
+            set(res[0].ids("observation")),
+            set(self.big_table.ids("observation"))
+        )
+        # Samples should be unchanged (well, s9 gets filtered because it's not
+        # in the metadata, but everything else is kept)
+        self.assertEqual(
+            set(res[0].ids()),
+            set(['s1', 's2', 's3', 's4', 's5', 's6'])
+        )
+
+        # When we bump min_feature_count up to 3, though, stuff should start
+        # getting filtered -- the last three features in self.big_table all
+        # occur in just two samples each.
+        res = match_and_filter(self.big_table, self.metadata, formula,
+                               min_sample_count=0, min_feature_count=3)
+        self.assertEqual(
+            set(res[0].ids("observation")),
+            set(['o1', 'o2', 'o3', 'o4'])
+        )
+        # Again, non-s9 samples unchanged because min sample count is 0
+        self.assertEqual(
+            set(res[0].ids()),
+            set(['s1', 's2', 's3', 's4', 's5', 's6'])
+        )
+
+    def test_match_and_filter_exact_minimum_sample_count_used(self):
+        formula = 'C(categorical) + continuous'
+
+        # None of the samples (except s9, which isn't in the metadata)
+        # should be dropped when min_sample_count is 3 or
+        # below, since all samples have a total count of at least 3.
+        res = match_and_filter(self.big_table, self.metadata, formula,
+                               min_sample_count=3, min_feature_count=0)
+
+        self.assertEqual(
+            set(res[0].ids()),
+            set(self.big_table.ids()) - set(["s9"])
+        )
+        # Features should remain unchanged due to min feature count being 0.
+        self.assertEqual(
+            set(res[0].ids("observation")),
+            set(self.big_table.ids("observation"))
+        )
+
+        # When we bump min_feature_count up to 4, s2 and s4 should get filtered
+        # since they each have a total count of 3
+        res = match_and_filter(self.big_table, self.metadata, formula,
+                               min_sample_count=4, min_feature_count=0)
+        self.assertEqual(set(res[0].ids()), set(['s1', 's3', 's5', 's6']))
+        # Features should remain unchanged due to min feature count being 0.
+        self.assertEqual(
+            set(res[0].ids("observation")),
+            set(self.big_table.ids("observation"))
+        )
+
+    def test_match_and_filter_exact_minima_together_in_sequence(self):
+        formula = 'C(categorical) + continuous'
+
+        res = match_and_filter(self.big_table, self.metadata, formula,
+                               min_sample_count=4, min_feature_count=4)
+
+        # Since min_sample_count is 4, s2 and s4 get filtered out due to having
+        # a total count of 3
+        self.assertEqual(
+            set(res[0].ids()),
+            set(['s1', 's3', 's5', 's6'])
+        )
+        # Since min_feature_count is 4, o4, o5, o6, and o7 all get filtered out
+        # since they were present in 3, 2, 2, and 2 samples respectively
+        # *BEFORE* the sample filtering was done. However, in addition to this,
+        # o2 and o3 will get filtered out because (since we filtered out s2 and
+        # s4) they are now not present in 4 samples! And as match_and_filter's
+        # docs explain, the sample filtering is done first, and this can impact
+        # the feature filtering. So... "oops, all o1".
+        self.assertEqual(
+            set(res[0].ids("observation")),
+            set(['o1'])
+        )
+
     def test_split_training_random(self):
         np.random.seed(0)
         design = pd.DataFrame(

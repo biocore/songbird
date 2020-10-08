@@ -604,7 +604,7 @@ The larger the batch size, the more samples you average per iteration, but the l
 all samples that have less than 1000 reads will be filtered out.
 
 `--min-feature-count` will filter out features according to how many __samples__ they appear in.  For instance, if `--min-feature-count 10` is specified,
-then all features than appear in less than 10 samples will be thrown out.  It is important to note that we are filtering according to number of samples rather than number of reads.  The reason why this behavior is chosen relates to a rule of thumb commonly used in linear regression - if a microbe appears in less than 10 samples, it is difficult to fit a meaningful line for that microbe.  In other words, there is not even resolution in the study to say anything meaningful about that microbe in the context of differential abundance analysis.  The `--min-feature-count` filter is applied _after_ the `--min-sample-count` is applied.
+then all features than appear in less than 10 samples will be thrown out.  It is important to note that we are filtering according to number of samples rather than number of reads.  The reason why this behavior is chosen relates to a rule of thumb commonly used in linear regression - if a microbe appears in less than 10 samples, it is difficult to fit a meaningful line for that microbe.  In other words, there is not even resolution in the study to say anything meaningful about that microbe in the context of differential abundance analysis.  The `--min-feature-count` filter is applied _after_ the `--min-sample-count` is applied, so it's possible for (for example) a sample to get filtered out which in turn causes a feature to get filtered out.
 
 ## 7.4. FAQs: Output files
 
