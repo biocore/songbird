@@ -149,13 +149,14 @@ def match_and_filter(table, metadata, formula,
     metadata : pd.DataFrame
         Sample metadata
     """
-    # match them
-
+    # Use >= so that samples with exactly "min_sample_count" counts, or
+    # features present in exactly "min_feature_count" samples, are *not*
+    # filtered out.
     def sample_filter(val, id_, md):
-        return id_ in metadata.index and np.sum(val) > min_sample_count
+        return id_ in metadata.index and np.sum(val) >= min_sample_count
 
     def read_filter(val, id_, md):
-        return np.sum(val > 0) > min_feature_count
+        return np.sum(val > 0) >= min_feature_count
 
     table = table.filter(sample_filter, axis='sample', inplace=False)
     table = table.filter(read_filter, axis='observation', inplace=False)
