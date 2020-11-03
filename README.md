@@ -106,7 +106,7 @@ otherwise standalone Songbird will interpret these rows as actual samples.
 
 # 2. Using Songbird through [QIIME 2](https://qiime2.org)
 ### Installation
-First, you'll need to make sure that QIIME 2 (**version 2019.7 or later**) is installed
+First, you'll need to make sure that QIIME 2 is in between (**version 2019.7 and 2020.8**) is installed
 before installing Songbird. In your QIIME 2 conda environment, you can install Songbird by
 running:
 
