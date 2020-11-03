@@ -1,5 +1,8 @@
 # Songbird Changelog
 
+## Version 1.0.4
+Clarify confusion regarding feature filtering [#140](https://github.com/biocore/songbird/pull/140)
+
 ## Version 1.0.3-dev
 
 ## Version 1.0.2
